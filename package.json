@@ -44,6 +44,7 @@
 		"bench:bundle": "node scripts/bench/bundle.ts",
 		"bench:runtime": "node scripts/bench/runtime.ts",
 		"bench:export": "node scripts/bench/export.ts",
+		"bench:ci": "npm run bench:bundle && npm run bench:runtime",
 		"test:browser": "vitest --config vitest.browser.config.ts --run",
 		"test:browser:install": "playwright install --with-deps chromium-headless-shell",
 		"test:e2e": "playwright test",

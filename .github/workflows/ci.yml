@@ -41,6 +41,16 @@ jobs:
       - uses: ./.github/actions/setup
       - run: npx vite build
 
+  perf:
+    name: Performance budgets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: npx vite build
+      - run: npm run test:browser:install
+      - run: xvfb-run -a npm run bench:ci
+
   semantic-pr:
     name: Validate PR title (semantic)
     runs-on: ubuntu-latest
