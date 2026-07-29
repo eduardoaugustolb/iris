@@ -13,7 +13,7 @@
 //   node diagnostic.mjs --window              # capture a window (default: display)
 //
 // Helper discovery:
-//   1. $OPENSCREEN_HELPER_EXE (any path)
+//   1. $IRIS_HELPER_EXE (any path)
 //   2. ./wgc-capture.exe                          (Windows)
 //      ./openscreen-screencapturekit-helper        (macOS)
 //   3. ./helpers/<platform>-<arch>/<helper-name>  (CI artifact layout)
@@ -93,7 +93,7 @@ Flags:
 }
 
 function findHelper() {
-	const explicit = process.env.OPENSCREEN_HELPER_EXE?.trim();
+	const explicit = process.env.IRIS_HELPER_EXE?.trim();
 	if (explicit && fs.existsSync(explicit)) return { path: explicit, kind: null };
 
 	const platform = process.platform;
@@ -111,7 +111,7 @@ function findHelper() {
 
 	throw new Error(
 		`Native helper not found for ${platform}-${arch}. Looked for:\n` +
-			`  $OPENSCREEN_HELPER_EXE\n` +
+			`  $IRIS_HELPER_EXE\n` +
 			`  ${inScriptDir}\n` +
 			`  ${inHelpersDir}\n` +
 			`Download the matching diagnostic bundle from the OpenScreen releases / CI artifacts.`,
@@ -247,7 +247,7 @@ function run(opts) {
 function buildReport(result) {
 	const stopTiming = parseStopTiming(result.stderr);
 	const stopElapsedMs = result.stopSentAt > 0 ? result.tExit - result.stopSentAt : null;
-	const helperPath = process.env.OPENSCREEN_HELPER_EXE?.trim() || "(auto-resolved)";
+	const helperPath = process.env.IRIS_HELPER_EXE?.trim() || "(auto-resolved)";
 
 	return {
 		timestamp: new Date(result.t0).toISOString(),

@@ -41,7 +41,7 @@ All five must be green before merge. Native helper code is NOT covered by CI —
 
 ## Release flow
 
-Two `workflow_dispatch` workflows cut a release. Trunk-based on `main`, but **release branches freeze the RC codebase between cut and promote** (see § Release branches below). Both require the `OPENSCREEN_RELEASE_TOKEN` secret — see `docs/secrets.md`.
+Two `workflow_dispatch` workflows cut a release. Trunk-based on `main`, but **release branches freeze the RC codebase between cut and promote** (see § Release branches below). Both require the `IRIS_RELEASE_TOKEN` secret — see `docs/secrets.md`.
 
 ### Step 1: cut a release candidate
 
@@ -81,7 +81,7 @@ The workflow:
 1. Validates the tag matches `^vX.Y.Z-(rc|beta|alpha)\.N$`.
 2. Closes the `vX.Y.Z` milestone (snapshotting it for the release notes).
 3. Checks out `release/vX.Y.Z-rc.N` (the frozen branch), strips `-rc.N` from `package.json`, and commits the bump there. The stable tag points at this tip — the released code is the exact RC + cherry-picks.
-4. Pushes the tag `vX.Y.Z` and triggers `build.yml` (full notarization). The `release: published` event fires Tier 3 (homebrew/winget/nix/aur) thanks to `OPENSCREEN_RELEASE_TOKEN`.
+4. Pushes the tag `vX.Y.Z` and triggers `build.yml` (full notarization). The `release: published` event fires Tier 3 (homebrew/winget/nix/aur) thanks to `IRIS_RELEASE_TOKEN`.
 5. Opens a **release-sync PR** (e.g. `release/v1.6.0-sync → main`) that brings `main` into line with the released snapshot. Rebase-merged via PAT (EtienneLescot is a ruleset bypass actor).
 6. Posts in `#announcements` on Discord with the release notes + a "Closed issues in this release" list pulled from the milestone.
 

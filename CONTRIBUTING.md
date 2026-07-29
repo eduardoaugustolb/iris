@@ -1,49 +1,43 @@
- # Contribution Guidelines
+# Contribution Guidelines
 
-Thank you for considering contributing to this project! By contributing, you help make this project better for everyone. Please take a moment to review these guidelines to ensure a smooth contribution process.
+Thank you for considering contributing to Íris! By contributing, you help make this project better for everyone. Please take a moment to review these guidelines to ensure a smooth contribution process.
 
 ## How to Contribute
 
 1. **Fork the Repository**
    - Click the "Fork" button at the top right of this repository to create your own copy.
-
 2. **Clone Your Fork**
    - Clone your forked repository to your local machine:
      ```bash
-     git clone https://github.com/your-username/openscreen.git
+     git clone https://github.com/eduardoaugustolb/iris.git
      ```
-
 3. **Create a New Branch**
    - Create a branch for your feature or bug fix:
      ```bash
      git checkout -b feature/your-feature-name
      ```
-
 4. **Make Changes**
    - Make your changes.
-
+   - If your change touches the UI, follow the visual spec in [`DESIGN.md`](./DESIGN.md) — colors, spacing, typography, and glass material values are fixed tokens, not free choices. PRs that introduce ad hoc values outside that spec will be asked to align before merge.
 5. **Test Your Changes**
    - Test your changes thoroughly to ensure they work as expected and do not break existing functionality.
-
 6. **Commit Your Changes**
    - Commit your changes with a clear and concise commit message:
      ```bash
      git add .
      git commit -m "Add a brief description of your changes"
      ```
-
 7. **Push Your Changes**
    - Push your branch to your forked repository:
      ```bash
      git push origin feature/your-feature-name
      ```
-
 8. **Open a Pull Request**
    - Go to the original repository and open a pull request from your branch. Provide a clear description of your changes and the problem they solve.
 
 ## Reporting Issues
 
-If you encounter a bug or have a feature request, please open an issue in the [Issues](https://github.com/EtienneLescot/openscreen/issues) section of this repository. Provide as much detail as possible to help us address the issue effectively.
+If you encounter a bug or have a feature request, please open an issue in the [Issues](https://github.com/eduardoaugustolb/iris/issues) section of this repository. Provide as much detail as possible to help us address the issue effectively.
 
 ## Issue lifecycle
 
@@ -53,7 +47,7 @@ For desktop users, this does not always mean the change is already available in 
 
 Once a GitHub Release containing the change is published, the issue can be marked as `status: released`.
 
-The next version number is not always known when a PR is merged. In that case, issues are assigned to the `Next Release` milestone. When preparing a release, this milestone can be renamed to the actual version, such as `v1.6.0` or `v2.0.0`, and a new `Next Release` milestone can be created.
+The next version number is not always known when a PR is merged. In that case, issues are assigned to the `Next Release` milestone. When preparing a release, this milestone can be renamed to the actual version, such as `v0.2.0` or `v1.0.0`, and a new `Next Release` milestone can be created.
 
 When a PR fully resolves an issue, link it with a GitHub closing keyword:
 
@@ -75,6 +69,7 @@ Related to #123
 
 - Write clear, concise, and descriptive commit messages.
 - Include comments where necessary to explain complex code.
+- UI copy follows the voice guidelines in [`DESIGN.md`](./DESIGN.md#10-voz-e-copy): direct, no exclamation points, no artificial enthusiasm.
 
 ## License
 

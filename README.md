@@ -1,40 +1,35 @@
 > [!NOTE]
-> This repository is an independent continuation of OpenScreen.
+> This repository is an independent fork of [OpenScreen](https://github.com/EtienneLescot/openscreen).
 >
-> OpenScreen was originally created by [Siddharth Vaddem](https://github.com/siddharthvaddem). The original repository was archived after v1.5.0 and remains available here: [siddharthvaddem/openscreen](https://github.com/siddharthvaddem/openscreen).
+> OpenScreen was originally created by [Siddharth Vaddem](https://github.com/siddharthvaddem); that repository was archived after v1.5.0 and remains available here: [siddharthvaddem/openscreen](https://github.com/siddharthvaddem/openscreen). It was continued as a community project by [Etienne Lescot](https://github.com/EtienneLescot) at [EtienneLescot/openscreen](https://github.com/EtienneLescot/openscreen), which this fork builds on.
 >
-> This fork continues development under the OpenScreen name with the original author's approval, while remaining fully MIT open source.
+> Íris keeps the same MIT-licensed, fully open-source core, focused on a lighter, more stable, and more polished experience.
 
 > [!WARNING]
-> OpenScreen is not production-grade software. You should expect bugs, rough edges, and occasional breaking changes.
+> Íris is early-stage software. You should expect bugs, rough edges, and occasional breaking changes.
 
 <p align="center">
-  <img src="public/openscreen.png" alt="OpenScreen Logo" width="64" />
+  <img src="public/iris.png" alt="Íris Logo" width="64" />
 </p>
 
-# <p align="center">OpenScreen</p>
-
-<p align="center"><strong>OpenScreen is a free, open-source tool for creating polished screen recordings, product demos, and walkthroughs.</strong></p>
+# <p align="center">Íris</p>
+<p align="center"><strong>Íris is a free, open-source screen recorder for creating polished screen recordings, product demos, and walkthroughs — a leaner, faster, more refined fork of OpenScreen.</strong></p>
 
 <p align="center">
-  <a href="https://github.com/EtienneLescot/openscreen/blob/main/LICENSE"><img src="https://img.shields.io/github/license/EtienneLescot/openscreen?style=for-the-badge&label=License" alt="License" /></a>
-  <a href="https://github.com/EtienneLescot/openscreen/releases/latest"><img src="https://img.shields.io/github/v/release/EtienneLescot/openscreen?style=for-the-badge&label=Release" alt="Latest Release" /></a>
-  <a href="https://github.com/EtienneLescot/openscreen/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/EtienneLescot/openscreen/ci.yml?style=for-the-badge&label=CI" alt="CI Status" /></a>
-  <a href="https://discord.gg/VvT6Vtnyh"><img src="https://img.shields.io/badge/Discord-Join%20us-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" /></a>
-  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey?style=for-the-badge" alt="Platform" />
+  <a href="./LICENSE"><img src="https://img.shields.io/github/license/eduardoaugustolb/iris?style=for-the-badge&label=License" alt="License" /></a>
+  <a href="https://github.com/eduardoaugustolb/iris/releases/latest"><img src="https://img.shields.io/github/v/release/eduardoaugustolb/iris?style=for-the-badge&label=Release" alt="Latest Release" /></a>
+  <a href="https://github.com/eduardoaugustolb/iris/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/eduardoaugustolb/iris/ci.yml?style=for-the-badge&label=CI" alt="CI Status" /></a>
+  <img src="https://img.shields.io/badge/platform-macOS-lightgrey?style=for-the-badge" alt="Platform" />
 </p>
 
+Íris takes everything OpenScreen already did well — recording, zooms, cursor effects, webcam overlay, captions, editing, annotations, and export — and rebuilds the experience around three goals: **lighter** (lower resource usage, faster startup), **more stable** (fewer crashes, more predictable recording pipeline), and **more refined** (a native, premium interface with real attention to detail, documented in [`DESIGN.md`](./DESIGN.md)).
 
-OpenScreen was originally positioned as a free, open-source alternative to Screen Studio: something you can use to create quick, polished product demos and walkthroughs for X, Reddit, YouTube, documentation, landing pages, or internal demos.
-
-It is not a 1:1 clone of Screen Studio. Screen Studio is an excellent commercial product. OpenScreen focuses on covering the core open-source workflow: recording, zooms, cursor effects, webcam overlay, captions, editing, annotations, and export.
-
-The goal of this continuation is to keep OpenScreen alive as a fully open-source project and progressively evolve it toward a broader recording and editing workflow.
+It is not a rewrite from scratch and not a divergent product — it's the same open-source workflow, tuned and polished. The goal is to keep everything that made OpenScreen good, while removing friction and rough edges.
 
 **100% free** for both **personal** and **commercial** use. Use it, modify it, distribute it. Please respect the license.
 
 > [!NOTE]
-> Software should be accessible. OpenScreen has no paid tiers, premium features, upsells, or functionality locked behind a paywall.
+> Software should be accessible. Íris has no paid tiers, premium features, upsells, or functionality locked behind a paywall.
 
 <p align="center">
 	<img src="public/demo.png" alt="" style="height: 320px; margin-right: 12px;" />
@@ -42,6 +37,7 @@ The goal of this continuation is to keep OpenScreen alive as a fully open-source
 </p>
 
 ## Core Features
+
 - Record a specific window, or your whole screen.
 - Record microphone and system audio.
 - Webcam overlay with picture-in-picture, drag-to-position, mirroring, and shape options.
@@ -57,117 +53,61 @@ The goal of this continuation is to keep OpenScreen alive as a fully open-source
 - Export to MP4 or GIF in multiple aspect ratios and resolutions.
 - Languages supported: Arabic, English, Spanish, French, Italian, Japanese, Korean, Portuguese (Brazil), Russian, Turkish, Vietnamese, Simplified Chinese, and Traditional Chinese.
 
+## Why this fork exists
+
+OpenScreen's core workflow is solid, but this fork exists to push three things further than the upstream roadmap prioritizes:
+
+- **Performance** — lower idle and recording-time resource usage, faster app launch, smaller install size.
+- **Stability** — hardening the capture and export pipeline so recordings don't fail silently or corrupt on edge cases.
+- **Interface polish** — a redesigned, native-feeling UI built around a documented design system (see [`DESIGN.md`](./DESIGN.md)), instead of incremental UI tweaks on top of the original.
 
 ## Installation
 
-Download the latest installer for your platform from the [GitHub Releases](https://github.com/EtienneLescot/openscreen/releases) page.
+Download the latest installer from the [GitHub Releases](https://github.com/eduardoaugustolb/iris/releases) page.
 
 ### macOS
 
-Download the `.dmg` installer directly from the [Releases page](https://github.com/EtienneLescot/openscreen/releases). If Gatekeeper blocks the app, you can bypass it by running the following command in your terminal after installation:
+Download the `.dmg` installer directly from the [Releases page](https://github.com/eduardoaugustolb/iris/releases). If Gatekeeper blocks the app, bypass it by running the following command in your terminal after installation:
 
 ```bash
-xattr -rd com.apple.quarantine /Applications/Openscreen.app
+xattr -rd com.apple.quarantine /Applications/Iris.app
 ```
 
-Note: Give your terminal Full Disk Access in **System Settings > Privacy & Security** to grant you access and then run the above command.
+Note: Give your terminal Full Disk Access in **System Settings > Privacy & Security** to grant you access, then run the command above.
 
-After running this command, proceed to **System Settings > Privacy & Security** to grant the necessary permissions for "screen recording" and "accessibility". Once permissions are granted, you can launch the app.
+After running this command, go to **System Settings > Privacy & Security** to grant the necessary permissions for "Screen Recording" and "Accessibility." Once permissions are granted, launch the app.
 
 > [!NOTE]
-> **Upgrading from an older version and hitting permission issues?** If you already had OpenScreen installed and the new version won't record (Screen Recording or Accessibility keep failing even after you grant them), uninstall the old version, remove OpenScreen's existing entries under **System Settings > Privacy & Security** (both Screen Recording and Accessibility), then do a fresh install and grant the permissions again when prompted.
+> **Upgrading and hitting permission issues?** If you already had Íris installed and the new version won't record (Screen Recording or Accessibility keep failing even after you grant them), uninstall the old version, remove Íris's existing entries under **System Settings > Privacy & Security** (both Screen Recording and Accessibility), then do a fresh install and grant the permissions again when prompted.
 
-### Windows
+> [!NOTE]
+> Íris currently targets **macOS only**. Windows and Linux support from upstream OpenScreen is not carried over in this fork — see [Platform scope](#platform-scope) below.
 
-Download the `.exe` installer directly from the [Releases page](https://github.com/EtienneLescot/openscreen/releases).
+## Platform scope
 
-### Linux
+Everything in the editor and export — zooms, backgrounds, motion blur, crop/trim/speed, blur regions, annotations, auto-captions, projects, export, and all languages — targets macOS exclusively in this fork. Capture uses the native ScreenCaptureKit pipeline for higher-quality, clean window-level recording, real cursor capture (shape, type, and clicks) powering cursor themes and click effects, and native webcam capture.
 
-Three packages are published to the [Releases page](https://github.com/EtienneLescot/openscreen/releases) for each version. Pick the one that matches your distro:
+**System audio**: requires macOS 13+. On macOS 14.2+ you'll be prompted to grant audio capture permission. macOS 12 and below can't capture system audio (microphone still works).
 
-**Debian / Ubuntu / Pop!_OS (`.deb`)**
-```bash
-sudo apt install ./Openscreen-Linux-latest.deb
-```
+## Design
 
-**Arch / Manjaro (`.pacman`)**
-```bash
-sudo pacman -U Openscreen-Linux-latest.pacman
-```
-
-**Any distro (`.AppImage`)**
-```bash
-chmod +x Openscreen-Linux-*.AppImage
-./Openscreen-Linux-*.AppImage
-```
-
-**NixOS / Nix (flake)**
-
-Try without installing:
-```bash
-nix run github:EtienneLescot/openscreen
-```
-
-Install into your user profile:
-```bash
-nix profile install github:EtienneLescot/openscreen
-```
-
-For a NixOS system config (flake):
-```nix
-{
-  inputs.openscreen.url = "github:EtienneLescot/openscreen";
-
-  outputs = { nixpkgs, openscreen, ... }: {
-    nixosConfigurations.<host> = nixpkgs.lib.nixosSystem {
-      modules = [
-        openscreen.nixosModules.default
-        { programs.openscreen.enable = true; }
-      ];
-    };
-  };
-}
-```
-
-For Home Manager, use `openscreen.homeManagerModules.default` with the same `programs.openscreen.enable = true;`.
-
-You may need to grant screen recording permissions depending on your desktop environment.
-
-**Sandbox error:** If the AppImage fails to launch with a "sandbox" error, run it with `--no-sandbox`:
-```bash
-./Openscreen-Linux-*.AppImage --no-sandbox
-```
-
-### Platform differences
-
-Everything in the editor and export is the same on macOS, Windows, and Linux: zooms, backgrounds, motion blur, crop/trim/speed, blur regions, annotations, auto-captions, projects, export, and all languages. The differences are in **capture**, where macOS and Windows use a native pipeline that Linux doesn't have:
-
-- **Native recording**: macOS (ScreenCaptureKit) and Windows (Windows Graphics Capture) record through a native pipeline for higher quality and clean window-level capture. Linux records through the browser pipeline instead.
-- **Custom cursors**: on macOS and Windows the real cursor is captured (shape, type, and clicks), which powers the cursor themes, click effects, and editable cursor overlay. On Linux only the cursor position is captured (used for auto-zoom), so those cursor options aren't available.
-- **Webcam**: captured natively on macOS and Windows; on Linux it's recorded through the browser, but still works as a picture-in-picture overlay.
-- **System audio** support varies by OS:
-  - **macOS**: requires macOS 13+. On macOS 14.2+ you'll be prompted to grant audio capture permission. macOS 12 and below can't capture system audio (mic still works).
-  - **Windows**: works out of the box.
-  - **Linux**: needs PipeWire (default on Ubuntu 22.04+, Fedora 34+). Older PulseAudio-only setups may not capture system audio (mic should still work).
+Íris follows a documented visual identity — color tokens, typography scale, glass material specification, motion curves, and component states are all defined in [`DESIGN.md`](./DESIGN.md). Any UI contribution should be built against that spec rather than ad hoc styling.
 
 ## Official links
 
-This repository is the community-maintained continuation of OpenScreen.
+This repository is an independent continuation of OpenScreen, maintained separately from both the original project and the EtienneLescot fork.
 
-Official / trusted links:
-
+Related projects:
 * Original archived repository: https://github.com/siddharthvaddem/openscreen
-* Community continuation: https://github.com/EtienneLescot/openscreen
+* Upstream continuation (OpenScreen): https://github.com/EtienneLescot/openscreen
+* Íris: https://github.com/eduardoaugustolb/iris
 
-For safety, download OpenScreen only from the official GitHub Releases linked from this repository. Third-party websites using the OpenScreen name are not affiliated with this continuation unless explicitly listed here.
+For safety, download Íris only from the official GitHub Releases linked from this repository. Third-party websites using the Íris name are not affiliated with this project unless explicitly listed here.
 
 ## Community
 
-OpenScreen is community-driven. If you need help, want to report a bug, or just want to chat with other users and contributors:
-
-- 💬 **Discord** — [Join the OpenScreen Discord](https://discord.gg/VvT6Vtnyh) for real-time help, showcase, and discussion
-- 🐞 **[GitHub Issues](https://github.com/EtienneLescot/openscreen/issues)** — bug reports and feature requests
-- 🗺️ **[Roadmap](./ROADMAP.md)** — see what we're building next
+- 🐞 **[GitHub Issues](https://github.com/eduardoaugustolb/iris/issues)** — bug reports and feature requests
+- 🗺️ **[Roadmap](./ROADMAP.md)** — see what's being built next
 
 ---
 

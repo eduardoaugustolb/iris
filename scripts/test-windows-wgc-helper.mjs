@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const HELPER_PATH =
-	process.env.OPENSCREEN_WGC_CAPTURE_EXE ??
+	process.env.IRIS_WGC_CAPTURE_EXE ??
 	path.join(ROOT, "electron", "native", "bin", "win32-x64", "wgc-capture.exe");
 
 const DURATION_MS = Number(process.env.OPENSCREEN_WGC_TEST_DURATION_MS ?? 5000);

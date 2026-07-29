@@ -59,10 +59,10 @@ npm run capture:openscreen-preview
 Useful environment overrides:
 
 ```powershell
-$env:OPENSCREEN_PREVIEW_SKIP_BUILD = "true"
-$env:OPENSCREEN_PREVIEW_FRAME_COUNT = "120"
-$env:OPENSCREEN_PREVIEW_FPS = "30"
-$env:OPENSCREEN_PREVIEW_OUTPUT_DIR = "C:\temp\openscreen-preview"
+$env:IRIS_PREVIEW_SKIP_BUILD = "true"
+$env:IRIS_PREVIEW_FRAME_COUNT = "120"
+$env:IRIS_PREVIEW_FPS = "30"
+$env:IRIS_PREVIEW_OUTPUT_DIR = "C:\temp\openscreen-preview"
 npm run capture:openscreen-preview
 ```
 
@@ -122,7 +122,7 @@ npm run test:wgc-webcam:win
 For local diagnostics with another compatible helper, point OpenScreen at that executable:
 
 ```powershell
-$env:OPENSCREEN_WGC_CAPTURE_EXE = "C:\path\to\wgc-capture.exe"
+$env:IRIS_WGC_CAPTURE_EXE = "C:\path\to\wgc-capture.exe"
 npm run build-vite
 npm run dev
 ```

@@ -107,7 +107,7 @@ All three build jobs use a shared caption-assets cache keyed by `runner.os` and 
 
 ## Tier 2.5: Release management
 
-Two `workflow_dispatch` workflows manage the release cycle. Both run on `main` and require the `OPENSCREEN_RELEASE_TOKEN` secret.
+Two `workflow_dispatch` workflows manage the release cycle. Both run on `main` and require the `IRIS_RELEASE_TOKEN` secret.
 
 ### prerelease.yml
 
@@ -134,7 +134,7 @@ Triggered manually to promote an RC to a stable release.
 2. Close the `vX.Y.Z` milestone (snapshots the closed-issue list for release notes).
 3. Strip `-rc.N` from `package.json` and commit on `main`.
 4. Push the `vX.Y.Z` tag → triggers `build.yml` → publishes a stable release.
-5. Tier 3 fires automatically because the release was created with `OPENSCREEN_RELEASE_TOKEN` (which propagates the `release: published` event).
+5. Tier 3 fires automatically because the release was created with `IRIS_RELEASE_TOKEN` (which propagates the `release: published` event).
 6. Announce in `#announcements` on Discord with the release notes + closed-issue list.
 
 ### Manual fallback
@@ -150,9 +150,9 @@ git push origin v1.5.0
 
 This works because `build.yml` is triggered by any tag matching `v*`. It skips milestone migration and Discord announcements — useful for emergency cuts when the dispatch UI is unavailable.
 
-### Why a fine-grained PAT (`OPENSCREEN_RELEASE_TOKEN`)?
+### Why a fine-grained PAT (`IRIS_RELEASE_TOKEN`)?
 
-`GITHUB_TOKEN` cannot trigger downstream workflows from the actions it performs. Specifically, `gh release create` using `GITHUB_TOKEN` does **not** fire the `release: published` event, so homebrew/winget/nix/aur would silently skip every release. The fine-grained PAT (scoped to `getopenscreen/openscreen` with `contents: write` + `issues: write`) is the standard fix. See `docs/secrets.md` for creation and rotation instructions.
+`GITHUB_TOKEN` cannot trigger downstream workflows from the actions it performs. Specifically, `gh release create` using `GITHUB_TOKEN` does **not** fire the `release: published` event, so homebrew/winget/nix/aur would silently skip every release. The fine-grained PAT (scoped to `eduardoaugustolb/iris` with `contents: write` + `issues: write`) is the standard fix. See `docs/secrets.md` for creation and rotation instructions.
 
 ## Tier 3: Package registries
 

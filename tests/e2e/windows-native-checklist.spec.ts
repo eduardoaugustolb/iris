@@ -229,7 +229,7 @@ test.describe("Windows native checklist smoke tests", () => {
 			await hudWindow.waitForLoadState("domcontentloaded");
 			await dismissLanguagePrompt(hudWindow);
 			testVideoInRecordings = await copyFixtureToRecordings(app, "checklist-project-sample.webm");
-			projectPath = path.join(os.tmpdir(), `openscreen-checklist-${Date.now()}.openscreen`);
+			projectPath = path.join(os.tmpdir(), `iris-checklist-${Date.now()}.iris`);
 			const project = {
 				version: 2,
 				videoPath: testVideoInRecordings,

@@ -31,6 +31,12 @@ import {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// package.json's "name" is the lowercase npm/bundle identifier ("iris"), which Electron
+// otherwise uses verbatim for app.name/app.getName() in dev (unpackaged) runs -- packaged
+// builds get electron-builder's "productName" instead, so without this the menu bar/app
+// name would read "iris" in dev but "Iris" once packaged.
+app.setName("Íris");
+
 // Use Screen & System Audio Recording permissions instead of the CoreAudio Tap API on macOS.
 // Tap needs NSAudioCaptureUsageDescription in the parent app's Info.plist, which breaks when
 // running from a terminal/IDE during dev.
@@ -98,7 +104,7 @@ const isMac = process.platform === "darwin";
 const trayIconSize = isMac ? 16 : 24;
 
 // Tray Icons
-const defaultTrayIcon = getTrayIcon("openscreen.png", trayIconSize);
+const defaultTrayIcon = getTrayIcon("iris.png", trayIconSize);
 const recordingTrayIcon = getTrayIcon("rec-button.png", trayIconSize);
 
 function createWindow() {
@@ -169,7 +175,7 @@ function setupApplicationMenu() {
 			submenu: [
 				{
 					role: "about",
-					label: mainT("common", "actions.about") || "About OpenScreen",
+					label: mainT("common", "actions.about") || "About Íris",
 				},
 				{ type: "separator" },
 				{
@@ -179,7 +185,7 @@ function setupApplicationMenu() {
 				{ type: "separator" },
 				{
 					role: "hide",
-					label: mainT("common", "actions.hide") || "Hide OpenScreen",
+					label: mainT("common", "actions.hide") || "Hide Íris",
 				},
 				{
 					role: "hideOthers",
@@ -337,7 +343,7 @@ function updateTrayMenu(recording: boolean = false) {
 		? mainT("common", "actions.recordingStatus", {
 				source: selectedSourceName,
 			}) || `Recording: ${selectedSourceName}`
-		: "OpenScreen";
+		: "Íris";
 	const menuTemplate = recording
 		? [
 				{
@@ -508,7 +514,7 @@ const appReady = hasSingleInstanceLock ? app.whenReady() : null;
 appReady?.then(async () => {
 	if (isDiagnosticModeEnabled()) {
 		mainLogBuffer.install();
-		console.info("[diagnostic] OPENSCREEN_DIAGNOSTIC=1, capturing console.* into ring buffer");
+		console.info("[diagnostic] IRIS_DIAGNOSTIC=1, capturing console.* into ring buffer");
 	}
 
 	// Force "regular" activation policy so the Dock icon appears. The HUD overlay

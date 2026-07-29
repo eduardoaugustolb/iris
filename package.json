@@ -1,5 +1,5 @@
 {
-	"name": "openscreen",
+	"name": "iris",
 	"private": true,
 	"version": "1.7.0",
 	"type": "module",
@@ -9,15 +9,9 @@
 		"npm": "10.9.4"
 	},
 	"author": {
-		"name": "Siddharth Vaddem",
-		"url": "https://github.com/siddharthvaddem"
+		"name": "Eduardo Augusto Lima Bueno",
+		"url": "https://github.com/eduardoaugustolb"
 	},
-	"maintainers": [
-		{
-			"name": "Etienne Lescot",
-			"url": "https://github.com/EtienneLescot"
-		}
-	],
 	"scripts": {
 		"dev": "vite",
 		"build": "tsc && vite build && electron-builder",
@@ -42,7 +36,7 @@
 		"test:wgc-mixed-audio:win": "node scripts/test-windows-wgc-helper.mjs --system-audio --microphone",
 		"test:wgc-webcam:win": "node scripts/test-windows-wgc-helper.mjs --webcam",
 		"test:wgc-full:win": "node scripts/test-windows-wgc-helper.mjs --webcam --system-audio --microphone",
-		"capture:openscreen-preview": "node scripts/capture-openscreen-preview.mjs",
+		"capture:iris-preview": "node scripts/capture-iris-preview.mjs",
 		"inspect:cursor-click-bounce": "node scripts/inspect-native-cursor-click-bounce.mjs",
 		"diagnostic:run": "node scripts/diagnostic-tool/diagnostic.mjs",
 		"diagnostic:smoke:win": "node scripts/diagnostic-tool/diagnostic.mjs --duration 3",

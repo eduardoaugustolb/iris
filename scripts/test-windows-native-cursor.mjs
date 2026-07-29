@@ -23,8 +23,7 @@ const DURATION_MS = readPositiveIntEnv("CURSOR_TEST_DURATION_MS", 1800);
 const SCREEN_FRAME_INTERVAL_MS = readPositiveIntEnv("CURSOR_TEST_SCREEN_FRAME_INTERVAL_MS", 100);
 const READY_TIMEOUT_MS = readPositiveIntEnv("CURSOR_TEST_READY_TIMEOUT_MS", 5000);
 const OUTPUT_DIR =
-	process.env.CURSOR_TEST_OUTPUT_DIR ??
-	path.join(os.tmpdir(), `openscreen-cursor-native-${Date.now()}`);
+	process.env.CURSOR_TEST_OUTPUT_DIR ?? path.join(os.tmpdir(), `iris-cursor-native-${Date.now()}`);
 
 if (process.platform !== "win32") {
 	console.error("This diagnostic is Windows-only.");

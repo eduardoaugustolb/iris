@@ -65,12 +65,12 @@
 		"saveGif": "Guardar GIF exportado",
 		"saveVideo": "Guardar video exportado",
 		"selectVideo": "Seleccionar archivo de video",
-		"saveProject": "Guardar proyecto OpenScreen",
-		"openProject": "Abrir proyecto OpenScreen",
+		"saveProject": "Guardar proyecto Íris",
+		"openProject": "Abrir proyecto Íris",
 		"gifImage": "Imagen GIF",
 		"mp4Video": "Video MP4",
 		"videoFiles": "Archivos de video",
-		"openscreenProject": "Proyecto OpenScreen",
+		"irisProject": "Proyecto Íris",
 		"allFiles": "Todos los archivos"
 	}
 }

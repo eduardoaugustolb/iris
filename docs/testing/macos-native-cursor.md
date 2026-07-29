@@ -69,7 +69,7 @@ Move the cursor over a text input while the helper is running and check that a n
 ## Point the app at a custom helper binary
 
 ```bash
-export OPENSCREEN_MAC_CURSOR_HELPER_EXE=/path/to/openscreen-macos-cursor-helper
+export IRIS_MAC_CURSOR_HELPER_EXE=/path/to/openscreen-macos-cursor-helper
 npm run dev
 ```
 
@@ -172,7 +172,7 @@ npm run build:native:mac
 For local diagnostics with a custom helper binary, use the environment override:
 
 ```bash
-export OPENSCREEN_MAC_CURSOR_HELPER_EXE=/path/to/openscreen-macos-cursor-helper
+export IRIS_MAC_CURSOR_HELPER_EXE=/path/to/openscreen-macos-cursor-helper
 npm run dev
 ```
 
