@@ -836,8 +836,16 @@ Criar `src/lib/perf/renderCounter.tsx`:
  * Test-only helper. Mount `Probe` inside the subtree under test and assert on
  * `count()` to pin down how often that subtree re-renders. Used by the render
  * budgets: the playback path is meant to reach zero React renders per frame.
+ *
+ * Counting happens during render, so under `StrictMode` React's development
+ * double-invocation doubles every count. Never mount `Probe` inside a
+ * `StrictMode` boundary when asserting a render budget.
  */
-export function createRenderCounter() {
+export function createRenderCounter(): {
+	count: () => number;
+	reset: () => void;
+	Probe: () => null;
+} {
 	let renders = 0;
 
 	return {
