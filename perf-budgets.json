@@ -1,0 +1,3 @@
+{
+	"budgets": [{ "metric": "bundle.total", "max": 4000000, "unit": "bytes" }]
+}
