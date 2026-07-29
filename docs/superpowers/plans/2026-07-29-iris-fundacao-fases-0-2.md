@@ -299,6 +299,7 @@ describe("toMeasurements", () => {
 		expect(toMeasurements(files)).toEqual([
 			{ metric: "bundle.pixi.js", value: 531_000 },
 			{ metric: "bundle.index.css", value: 74_000 },
+			{ metric: "bundle.total", value: 605_000 },
 		]);
 	});
 
