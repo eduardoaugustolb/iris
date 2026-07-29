@@ -22,6 +22,7 @@ import { mainT, setMainLocale } from "./i18n";
 import { getSelectedDesktopSource, registerIpcHandlers } from "./ipc/handlers";
 import { acquireStableInstanceLock } from "./singleInstanceLock";
 import {
+	applyThrottlePolicy,
 	createCountdownOverlayWindow,
 	createEditorWindow,
 	createHudOverlayWindow,
@@ -100,6 +101,14 @@ let countdownOverlayWindow: BrowserWindow | null = null;
 let notesWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let selectedSourceName = "";
+// Tracked so applyThrottlePolicy always sees the current combined activity, not
+// just the transition that just fired.
+let isRecordingActive = false;
+let isCountdownVisible = false;
+
+function syncThrottlePolicy() {
+	applyThrottlePolicy({ recording: isRecordingActive, countdownVisible: isCountdownVisible });
+}
 const isMac = process.platform === "darwin";
 const trayIconSize = isMac ? 16 : 24;
 
@@ -620,8 +629,14 @@ appReady?.then(async () => {
 			if (!recording) {
 				showMainWindow();
 			}
+			isRecordingActive = recording;
+			syncThrottlePolicy();
 		},
 		switchToHudWrapper,
+		(visible: boolean) => {
+			isCountdownVisible = visible;
+			syncThrottlePolicy();
+		},
 	);
 
 	await loadAndRegisterGlobalShortcut(showMainWindow);

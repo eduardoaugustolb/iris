@@ -1306,6 +1306,7 @@ export function registerIpcHandlers(
 	getCountdownOverlayWindow?: () => BrowserWindow | null,
 	onRecordingStateChange?: (recording: boolean, sourceName: string) => void,
 	_switchToHud?: () => void,
+	onCountdownVisibilityChange?: (visible: boolean) => void,
 ) {
 	async function requestScreenAccess() {
 		if (process.platform !== "darwin") {
@@ -1546,6 +1547,7 @@ export function registerIpcHandlers(
 			overlayWindow.showInactive();
 		}
 
+		onCountdownVisibilityChange?.(true);
 		overlayWindow.webContents.send("countdown-overlay-value", value, runId);
 	});
 
@@ -1566,6 +1568,7 @@ export function registerIpcHandlers(
 
 		overlayWindow.webContents.send("countdown-overlay-value", null, runId);
 		overlayWindow.hide();
+		onCountdownVisibilityChange?.(false);
 	});
 
 	ipcMain.handle("is-native-windows-capture-available", async () => {

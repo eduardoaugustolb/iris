@@ -1,6 +1,7 @@
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { BrowserWindow, ipcMain, screen } from "electron";
+import { type AppActivity, shouldDisableThrottling, type WindowKind } from "./throttlePolicy";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,6 +16,27 @@ const ASSET_BASE_DIR = process.defaultApp
 	? path.join(__dirname, "..", "public")
 	: process.resourcesPath;
 const ASSET_BASE_URL_ARG = `--asset-base-url=${pathToFileURL(`${ASSET_BASE_DIR}${path.sep}`).toString()}`;
+
+const trackedWindows = new Map<WindowKind, BrowserWindow>();
+
+function track(kind: WindowKind, win: BrowserWindow): BrowserWindow {
+	trackedWindows.set(kind, win);
+	win.on("closed", () => trackedWindows.delete(kind));
+
+	return win;
+}
+
+/**
+ * Chromium only reads `backgroundThrottling` at creation time, so the policy is
+ * applied live through the WebContents setter instead.
+ */
+export function applyThrottlePolicy(activity: AppActivity): void {
+	for (const [kind, win] of trackedWindows) {
+		if (win.isDestroyed()) continue;
+
+		win.webContents.setBackgroundThrottling(!shouldDisableThrottling(kind, activity));
+	}
+}
 
 let hudOverlayWindow: BrowserWindow | null = null;
 
@@ -121,7 +143,7 @@ export function createHudOverlayWindow(): BrowserWindow {
 			additionalArguments: [ASSET_BASE_URL_ARG],
 			nodeIntegration: false,
 			contextIsolation: true,
-			backgroundThrottling: false,
+			sandbox: true,
 		},
 	});
 	win.setIgnoreMouseEvents(true, { forward: true });
@@ -158,7 +180,7 @@ export function createHudOverlayWindow(): BrowserWindow {
 		});
 	}
 
-	return win;
+	return track("hud", win);
 }
 
 /**
@@ -190,7 +212,7 @@ export function createEditorWindow(): BrowserWindow {
 			nodeIntegration: false,
 			contextIsolation: true,
 			webSecurity: false,
-			backgroundThrottling: false,
+			sandbox: true,
 		},
 	});
 
@@ -228,7 +250,7 @@ export function createEditorWindow(): BrowserWindow {
 		});
 	}
 
-	return win;
+	return track("editor", win);
 }
 
 /**
@@ -255,6 +277,7 @@ export function createSourceSelectorWindow(): BrowserWindow {
 			additionalArguments: [ASSET_BASE_URL_ARG],
 			nodeIntegration: false,
 			contextIsolation: true,
+			sandbox: true,
 		},
 	});
 
@@ -272,7 +295,7 @@ export function createSourceSelectorWindow(): BrowserWindow {
 		});
 	}
 
-	return win;
+	return track("sourceSelector", win);
 }
 
 /**
@@ -307,7 +330,7 @@ export function createCountdownOverlayWindow(): BrowserWindow {
 			additionalArguments: [ASSET_BASE_URL_ARG],
 			nodeIntegration: false,
 			contextIsolation: true,
-			backgroundThrottling: false,
+			sandbox: true,
 		},
 	});
 
@@ -325,7 +348,7 @@ export function createCountdownOverlayWindow(): BrowserWindow {
 		});
 	}
 
-	return win;
+	return track("countdown", win);
 }
 
 // Frameless Notes Window for taking notes during a recording.
@@ -348,7 +371,7 @@ export function createNotesWindow(): BrowserWindow {
 			additionalArguments: [ASSET_BASE_URL_ARG],
 			nodeIntegration: false,
 			contextIsolation: true,
-			backgroundThrottling: false,
+			sandbox: true,
 		},
 	});
 
@@ -371,5 +394,5 @@ export function createNotesWindow(): BrowserWindow {
 		});
 	}
 
-	return win;
+	return track("notes", win);
 }
