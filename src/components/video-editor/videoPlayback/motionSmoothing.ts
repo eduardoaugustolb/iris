@@ -1,4 +1,4 @@
-import { spring } from "motion";
+import { integrateSpring } from "@/lib/spring";
 
 export interface SpringState {
 	value: number;
@@ -68,23 +68,21 @@ export function stepSpringValue(
 	}
 
 	const previousValue = state.value;
-	const generator = spring({
-		keyframes: [state.value, target],
+	const next = integrateSpring({
+		value: state.value,
 		velocity: state.velocity,
+		target,
+		deltaMs: safeDeltaMs,
 		stiffness: config.stiffness,
 		damping: config.damping,
 		mass: config.mass,
-		restDelta,
-		restSpeed,
 	});
 
-	const result = generator.next(safeDeltaMs);
-	state.value = result.done ? target : result.value;
-	state.velocity = ((state.value - previousValue) / safeDeltaMs) * 1000;
+	const settled =
+		Math.abs(target - next.value) <= restDelta && Math.abs(next.velocity) <= restSpeed;
 
-	if (result.done) {
-		state.velocity = 0;
-	}
+	state.value = settled ? target : next.value;
+	state.velocity = settled ? 0 : ((state.value - previousValue) / safeDeltaMs) * 1000;
 
 	return state.value;
 }
