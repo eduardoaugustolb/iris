@@ -592,6 +592,7 @@ git commit -m "test: aggregate electron process memory metrics"
 ### Task 5: CLI de startup e memória
 
 **Files:**
+- Create: `scripts/bench/closeElectron.ts`
 - Create: `scripts/bench/runtime.ts`
 - Modify: `package.json` (script `bench:runtime`)
 
@@ -600,6 +601,46 @@ git commit -m "test: aggregate electron process memory metrics"
 - Produces: comando `npm run bench:runtime`, emitindo as métricas `startup.hudFirstFrame` (ms) e `memory.idle.*` (kb).
 
 Reaproveita o padrão de lançamento já usado em `tests/e2e/gif-export.spec.ts:17-30`: Playwright `_electron` com `HEADLESS=true`, `--no-sandbox` e `--enable-unsafe-swiftshader`.
+
+- [ ] **Step 0: Escrever o desligamento garantido, compartilhado pelos dois CLIs de runtime**
+
+Criar `scripts/bench/closeElectron.ts`:
+
+```ts
+import { spawnSync } from "node:child_process";
+import type { ElectronApplication } from "@playwright/test";
+
+/**
+ * Shuts the app down on every path, including failures. Playwright's launch
+ * spawns Electron as an independent subprocess: if a measurement throws and
+ * nothing kills it, the orphan keeps running and the next run's idle memory
+ * sample measures the leak too. Mirrors the teardown in
+ * tests/e2e/gif-export.spec.ts.
+ */
+export async function closeElectron(app: ElectronApplication): Promise<void> {
+	const electronProcess = app.process();
+
+	await app.close().catch(() => {
+		// Already gone, or never became responsive — the kill below is the backstop.
+	});
+
+	const pid = electronProcess.pid;
+
+	if (!pid || electronProcess.killed) {
+		return;
+	}
+
+	if (process.platform === "win32") {
+		spawnSync("taskkill", ["/PID", String(pid), "/T", "/F"], { stdio: "ignore" });
+	} else {
+		try {
+			electronProcess.kill("SIGKILL");
+		} catch {
+			// The process exited between the check and the signal.
+		}
+	}
+}
+```
 
 - [ ] **Step 1: Escrever o CLI**
 
@@ -612,6 +653,7 @@ import { fileURLToPath } from "node:url";
 import { _electron as electron } from "@playwright/test";
 import { type Budget, findViolations, formatViolations } from "../../src/lib/perf/budgets.ts";
 import { type ProcessMetric, toMemoryMeasurements } from "../../src/lib/perf/appMetrics.ts";
+import { closeElectron } from "./closeElectron.ts";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const MAIN_JS = path.join(ROOT, "dist-electron/main.js");
@@ -632,21 +674,29 @@ async function main() {
 		env: { ...process.env, HEADLESS: "true" },
 	});
 
-	const hudWindow = await app.firstWindow({ timeout: 60_000 });
-	await hudWindow.waitForLoadState("domcontentloaded");
-	await hudWindow.evaluate(
-		() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
-	);
+	let hudFirstFrameMs: number;
+	let processMetrics: ProcessMetric[];
 
-	const hudFirstFrameMs = Date.now() - startedAt;
+	// Everything after launch runs under a finally: a measurement that throws
+	// (HUD never appears, evaluate rejects) must not leave an orphaned Electron
+	// behind, or the next run's idle memory sample is measuring the leak too.
+	try {
+		const hudWindow = await app.firstWindow({ timeout: 60_000 });
+		await hudWindow.waitForLoadState("domcontentloaded");
+		await hudWindow.evaluate(
+			() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
+		);
 
-	await new Promise((resolve) => setTimeout(resolve, IDLE_SETTLE_MS));
+		hudFirstFrameMs = Date.now() - startedAt;
 
-	const processMetrics = (await app.evaluate(({ app: electronApp }) =>
-		electronApp.getAppMetrics(),
-	)) as ProcessMetric[];
+		await new Promise((resolve) => setTimeout(resolve, IDLE_SETTLE_MS));
 
-	await app.close();
+		processMetrics = (await app.evaluate(({ app: electronApp }) =>
+			electronApp.getAppMetrics(),
+		)) as ProcessMetric[];
+	} finally {
+		await closeElectron(app);
+	}
 
 	const measurements = [
 		{ metric: "startup.hudFirstFrame", value: hudFirstFrameMs },
@@ -854,6 +904,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { _electron as electron, expect } from "@playwright/test";
 import { type Budget, findViolations, formatViolations } from "../../src/lib/perf/budgets.ts";
+import { closeElectron } from "./closeElectron.ts";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const MAIN_JS = path.join(ROOT, "dist-electron/main.js");
@@ -874,79 +925,91 @@ async function main() {
 		env: { ...process.env, HEADLESS: "true" },
 	});
 
-	const hudWindow = await app.firstWindow({ timeout: 60_000 });
-	await hudWindow.waitForLoadState("domcontentloaded");
-
-	// Capture the export bytes in the main process instead of writing to disk,
-	// so the measurement isn't dominated by the save dialog or filesystem.
-	await app.evaluate(({ ipcMain }, targetPath: string) => {
-		ipcMain.removeHandler("pick-export-save-path");
-		ipcMain.removeHandler("write-export-to-path");
-		ipcMain.handle("pick-export-save-path", () => ({
-			success: true,
-			path: targetPath,
-			canceled: false,
-		}));
-		ipcMain.handle("write-export-to-path", () => {
-			(globalThis as Record<string, unknown>)["__benchExportDone"] = true;
-			return { success: true, path: targetPath };
-		});
-	}, outputPath);
-
-	const userDataDir = await app.evaluate(({ app: electronApp }) =>
-		electronApp.getPath("userData"),
-	);
-	const recordingsDir = path.join(userDataDir, "recordings");
-	const fixtureCopy = path.join(recordingsDir, "bench-sample.webm");
-	fs.mkdirSync(recordingsDir, { recursive: true });
-	fs.copyFileSync(FIXTURE, fixtureCopy);
-
-	await hudWindow.evaluate(
-		(videoPath: string) => window.electronAPI.setCurrentVideoPath(videoPath),
-		fixtureCopy,
-	);
+	// Declared outside the try so the finally can always clean them up, and so
+	// the measurement survives past the block that produced it.
+	let fixtureCopy = "";
+	let elapsedMs: number;
 
 	try {
-		await hudWindow.evaluate(() => window.electronAPI.switchToEditor());
-	} catch (error) {
-		// The HUD tears down as the editor takes over; that isn't a failure.
-		if (
-			!(error instanceof Error) ||
-			!/closed|destroyed|target page|target closed/i.test(error.message)
-		) {
-			throw error;
+		const hudWindow = await app.firstWindow({ timeout: 60_000 });
+		await hudWindow.waitForLoadState("domcontentloaded");
+
+		// Capture the export completion in the main process instead of writing to
+		// disk, so the measurement isn't dominated by the save dialog or filesystem.
+		await app.evaluate(({ ipcMain }, targetPath: string) => {
+			ipcMain.removeHandler("pick-export-save-path");
+			ipcMain.removeHandler("write-export-to-path");
+			ipcMain.handle("pick-export-save-path", () => ({
+				success: true,
+				path: targetPath,
+				canceled: false,
+			}));
+			ipcMain.handle("write-export-to-path", () => {
+				(globalThis as Record<string, unknown>)["__benchExportDone"] = true;
+				return { success: true, path: targetPath };
+			});
+		}, outputPath);
+
+		const userDataDir = await app.evaluate(({ app: electronApp }) =>
+			electronApp.getPath("userData"),
+		);
+		const recordingsDir = path.join(userDataDir, "recordings");
+		fixtureCopy = path.join(recordingsDir, "bench-sample.webm");
+		fs.mkdirSync(recordingsDir, { recursive: true });
+		fs.copyFileSync(FIXTURE, fixtureCopy);
+
+		await hudWindow.evaluate(
+			(videoPath: string) => window.electronAPI.setCurrentVideoPath(videoPath),
+			fixtureCopy,
+		);
+
+		try {
+			await hudWindow.evaluate(() => window.electronAPI.switchToEditor());
+		} catch (error) {
+			// The HUD tears down as the editor takes over; that isn't a failure.
+			if (
+				!(error instanceof Error) ||
+				!/closed|destroyed|target page|target closed/i.test(error.message)
+			) {
+				throw error;
+			}
+		}
+
+		const editorWindow = await app.waitForEvent("window", {
+			predicate: (w) => w.url().includes("windowType=editor"),
+			timeout: 15_000,
+		});
+
+		// WebCodecs may not be registered in the renderer on first load.
+		await editorWindow.reload();
+		await editorWindow.waitForLoadState("domcontentloaded");
+		await expect(editorWindow.getByText("Loading video...")).not.toBeVisible({ timeout: 15_000 });
+
+		await editorWindow.getByTestId("testId-export-panel-button").click();
+		await editorWindow.getByTestId("testId-mp4-format-button").click();
+
+		// The clock starts at the click, not at launch: this measures encoding.
+		const startedAt = Date.now();
+		await editorWindow.getByTestId("testId-export-button").click();
+
+		await expect
+			.poll(
+				() =>
+					app.evaluate(() =>
+						Boolean((globalThis as Record<string, unknown>)["__benchExportDone"]),
+					),
+				{ timeout: 180_000 },
+			)
+			.toBe(true);
+
+		elapsedMs = Date.now() - startedAt;
+	} finally {
+		await closeElectron(app);
+
+		if (fixtureCopy) {
+			fs.rmSync(fixtureCopy, { force: true });
 		}
 	}
-
-	const editorWindow = await app.waitForEvent("window", {
-		predicate: (w) => w.url().includes("windowType=editor"),
-		timeout: 15_000,
-	});
-
-	// WebCodecs may not be registered in the renderer on first load.
-	await editorWindow.reload();
-	await editorWindow.waitForLoadState("domcontentloaded");
-	await expect(editorWindow.getByText("Loading video...")).not.toBeVisible({ timeout: 15_000 });
-
-	await editorWindow.getByTestId("testId-export-panel-button").click();
-	await editorWindow.getByTestId("testId-mp4-format-button").click();
-
-	// The clock starts at the click, not at launch: this measures encoding.
-	const startedAt = Date.now();
-	await editorWindow.getByTestId("testId-export-button").click();
-
-	await expect
-		.poll(
-			() =>
-				app.evaluate(() => Boolean((globalThis as Record<string, unknown>)["__benchExportDone"])),
-			{ timeout: 180_000 },
-		)
-		.toBe(true);
-
-	const elapsedMs = Date.now() - startedAt;
-
-	await app.evaluate(({ app: electronApp }) => electronApp.exit(0)).catch(() => {});
-	fs.rmSync(fixtureCopy, { force: true });
 
 	const measurement = {
 		metric: "export.mp4.msPerSecondOfVideo",
