@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { _electron as electron } from "@playwright/test";
 import { type ProcessMetric, toMemoryMeasurements } from "../../src/lib/perf/appMetrics.ts";
 import { type Budget, findViolations, formatViolations } from "../../src/lib/perf/budgets.ts";
+import { closeElectron } from "./closeElectron.ts";
 
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const MAIN_JS = path.join(ROOT, "dist-electron/main.js");
@@ -24,21 +25,29 @@ async function main() {
 		env: { ...process.env, HEADLESS: "true" },
 	});
 
-	const hudWindow = await app.firstWindow({ timeout: 60_000 });
-	await hudWindow.waitForLoadState("domcontentloaded");
-	await hudWindow.evaluate(
-		() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
-	);
+	let hudFirstFrameMs: number;
+	let processMetrics: ProcessMetric[];
 
-	const hudFirstFrameMs = Date.now() - startedAt;
+	// Everything after launch runs under a finally: a measurement that throws
+	// (HUD never appears, evaluate rejects) must not leave an orphaned Electron
+	// behind, or the next run's idle memory sample is measuring the leak too.
+	try {
+		const hudWindow = await app.firstWindow({ timeout: 60_000 });
+		await hudWindow.waitForLoadState("domcontentloaded");
+		await hudWindow.evaluate(
+			() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())),
+		);
 
-	await new Promise((resolve) => setTimeout(resolve, IDLE_SETTLE_MS));
+		hudFirstFrameMs = Date.now() - startedAt;
 
-	const processMetrics = (await app.evaluate(({ app: electronApp }) =>
-		electronApp.getAppMetrics(),
-	)) as ProcessMetric[];
+		await new Promise((resolve) => setTimeout(resolve, IDLE_SETTLE_MS));
 
-	await app.close();
+		processMetrics = (await app.evaluate(({ app: electronApp }) =>
+			electronApp.getAppMetrics(),
+		)) as ProcessMetric[];
+	} finally {
+		await closeElectron(app);
+	}
 
 	const measurements = [
 		{ metric: "startup.hudFirstFrame", value: hudFirstFrameMs },
