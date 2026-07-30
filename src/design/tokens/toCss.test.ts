@@ -38,7 +38,7 @@ describe("tokensToCss", () => {
 	});
 
 	it("emits elevation blur pairs so no surface can raise one without the other", () => {
-		expect(css).toContain("--elevation-2-backdrop-blur: 24px;");
+		expect(css).toContain("--elevation-2-glass-blur: 24px;");
 		expect(css).toContain("--elevation-2-shadow-blur: 32px;");
 	});
 });

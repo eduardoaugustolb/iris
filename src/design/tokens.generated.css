@@ -23,11 +23,11 @@
 	--radius-md: 14px;
 	--radius-lg: 20px;
 	--radius-xl: 28px;
-	--elevation-1-backdrop-blur: 12px;
+	--elevation-1-glass-blur: 12px;
 	--elevation-1-shadow-blur: 8px;
-	--elevation-2-backdrop-blur: 24px;
+	--elevation-2-glass-blur: 24px;
 	--elevation-2-shadow-blur: 32px;
-	--elevation-3-backdrop-blur: 40px;
+	--elevation-3-glass-blur: 40px;
 	--elevation-3-shadow-blur: 48px;
 	--font-display: "Iris Sans", system-ui, sans-serif;
 	--font-text: "Iris Sans", system-ui, sans-serif;

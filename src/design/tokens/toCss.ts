@@ -38,7 +38,7 @@ export function tokensToCss(): string {
 	}
 
 	for (const [level, blur] of Object.entries(elevation)) {
-		lines.push(`\t--elevation-${level}-backdrop-blur: ${blur.backdropBlurPx}px;`);
+		lines.push(`\t--elevation-${level}-glass-blur: ${blur.backdropBlurPx}px;`);
 		lines.push(`\t--elevation-${level}-shadow-blur: ${blur.shadowBlurPx}px;`);
 	}
 
