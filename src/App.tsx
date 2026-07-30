@@ -7,6 +7,7 @@ import { Toaster } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { useScopedT } from "./contexts/I18nContext";
 import { ShortcutsProvider } from "./contexts/ShortcutsContext";
+import { IconSpriteProvider } from "./design/icons/Icon";
 import { loadAllCustomFonts } from "./lib/customFonts";
 
 const VideoEditor = lazy(() => import("./components/video-editor/VideoEditor"));
@@ -116,6 +117,7 @@ export default function App() {
 
 	return (
 		<TooltipProvider>
+			<IconSpriteProvider />
 			{showNotes ? <NotesWindow /> : content}
 			<Toaster theme="dark" />
 		</TooltipProvider>

@@ -1,4 +1,16 @@
-import spriteUrl from "./sprite.svg";
+import spriteMarkup from "./sprite.svg?raw";
+
+/**
+ * Mounts the icon sprite's raw SVG markup once, hidden, so every `<Icon>`'s
+ * `<use href="#icon-x">` resolves against the current document instead of an
+ * external (and, once built, `data:`) URI. Chromium refuses to resolve `<use>`
+ * against an external `data:` URI (opaque-origin restriction), which made
+ * every icon render as an empty 0x0 box in production builds — see Íris
+ * plan Task 27 fix wave. Mount this once near the app root.
+ */
+export function IconSpriteProvider() {
+	return <div style={{ display: "none" }} dangerouslySetInnerHTML={{ __html: spriteMarkup }} />;
+}
 
 export type IconName =
 	| "record"
@@ -33,7 +45,7 @@ export function Icon({ name, size = 20, label, className }: IconProps) {
 			aria-hidden={label ? undefined : true}
 			focusable="false"
 		>
-			<use href={`${spriteUrl}#icon-${name}`} />
+			<use href={`#icon-${name}`} />
 		</svg>
 	);
 }

@@ -3440,8 +3440,29 @@ Desenhar os nove restantes seguindo as mesmas regras. Referência de peso óptic
 
 Criar `src/design/icons/Icon.tsx`:
 
+> **Nota (fix wave pós-revisão):** a primeira versão deste passo importava
+> `spriteUrl` de `"./sprite.svg"` e referenciava `<use href={`${spriteUrl}#icon-${name}`} />`.
+> Isso quebra em build de produção: `sprite.svg` (2895 bytes) fica abaixo do
+> `assetsInlineLimit` padrão do Vite (4096 bytes), então o Vite o inlina como
+> uma `data:image/svg+xml,...` URI em build. O Chromium recusa resolver
+> `<use>` contra uma `data:` URI externa (restrição de origem opaca), então
+> todo ícone renderiza como uma caixa 0×0 em qualquer build real — confirmado
+> em Electron/Chromium real, não pego pelos testes porque jsdom nunca resolve
+> `<use>`. A versão correta abaixo inlina o próprio markup do sprite no
+> documento uma vez (via `?raw`) e referencia apenas a âncora local
+> `#icon-x`, que o Chromium resolve normalmente por ser same-document.
+
 ```tsx
-import spriteUrl from "./sprite.svg";
+import spriteMarkup from "./sprite.svg?raw";
+
+/**
+ * Mounts the icon sprite's raw SVG markup once, hidden, so every `<Icon>`'s
+ * `<use href="#icon-x">` resolves against the current document. Mount once
+ * near the app root (see src/App.tsx).
+ */
+export function IconSpriteProvider() {
+	return <div style={{ display: "none" }} dangerouslySetInnerHTML={{ __html: spriteMarkup }} />;
+}
 
 export type IconName =
 	| "record"
@@ -3476,25 +3497,20 @@ export function Icon({ name, size = 20, label, className }: IconProps) {
 			aria-hidden={label ? undefined : true}
 			focusable="false"
 		>
-			<use href={`${spriteUrl}#icon-${name}`} />
+			<use href={`#icon-${name}`} />
 		</svg>
 	);
 }
 ```
+
+Mount `<IconSpriteProvider />` once near the app root (`src/App.tsx`), alongside the other top-level providers, so every `Icon` instance anywhere in the tree can resolve `#icon-x`.
 
 - [ ] **Step 5: Rodar o teste e confirmar que passa**
 
 Run: `npx vitest --run src/design/icons/Icon.test.tsx`
 Expected: PASS, 8 testes.
 
-Se o Vitest não resolver o import de `.svg`, declarar o módulo em `src/vite-env.d.ts`:
-
-```ts
-declare module "*.svg" {
-	const url: string;
-	export default url;
-}
-```
+`?raw` imports are already typed by Vite's built-in client types (`vite/client`, referenced from `src/vite-env.d.ts`) — no extra module declaration needed.
 
 - [ ] **Step 6: Commit**
 
