@@ -14,9 +14,20 @@ const LEGACY_ALLOWLIST = ["components", "hooks", "lib", "utils", "contexts"];
 function sourceFiles(dir: string): string[] {
 	return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
 		const full = path.join(dir, entry.name);
+		const relative = path.relative(SRC, full);
 
 		if (entry.isDirectory()) {
-			return LEGACY_ALLOWLIST.includes(path.relative(SRC, full)) ? [] : sourceFiles(full);
+			// components/hud is rebuilt on the design layer (Íris Fase 3) — always
+			// walk it even though the rest of "components" is still legacy.
+			if (relative === path.join("components", "hud")) return sourceFiles(full);
+
+			// Skip subdirectories of components except hud, and walk components itself
+			if (relative === "components") return sourceFiles(full);
+
+			// Skip other legacy directories
+			if (relative.startsWith("components" + path.sep)) return [];
+
+			return LEGACY_ALLOWLIST.includes(relative) ? [] : sourceFiles(full);
 		}
 
 		return /\.(ts|tsx|css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) ? [full] : [];
