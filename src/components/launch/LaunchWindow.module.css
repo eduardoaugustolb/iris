@@ -8,7 +8,7 @@
 }
 
 .languageMenuScroll {
-	max-height: 16rem;
+	max-height: var(--language-menu-max-height, 16rem);
 	overflow-y: auto;
 	overflow-x: hidden;
 	overscroll-behavior: contain;

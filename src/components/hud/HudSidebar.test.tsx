@@ -2,6 +2,7 @@ import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
+import styles from "@/components/launch/LaunchWindow.module.css";
 import { HudSidebar, type HudSidebarProps } from "./HudSidebar";
 
 const t = ((key: string) => key) as HudSidebarProps["t"];
@@ -50,6 +51,24 @@ describe("HudSidebar", () => {
 		render(<HudSidebar {...baseProps} isLanguageMenuOpen={true} onSelectLocale={onSelect} />);
 		fireEvent.click(screen.getByText("Português"));
 		expect(onSelect).toHaveBeenCalledWith("pt-BR");
+	});
+
+	it("keeps the panel's layout box and passes the dynamic max-height to the scrolling element", () => {
+		render(
+			<HudSidebar
+				{...baseProps}
+				isLanguageMenuOpen={true}
+				languageMenuStyle={{ right: 12, top: 12, maxHeight: 240 }}
+			/>,
+		);
+		const menu = screen.getByRole("menu");
+		const panel = menu.parentElement as HTMLElement;
+		// The outer wrapper still carries `.languageMenuPanel` (width/padding/box-sizing).
+		expect(panel.className).toBe(styles.languageMenuPanel);
+		// The dynamic max-height is threaded through as a CSS custom property so it can
+		// override `.languageMenuScroll`'s hardcoded fallback on the actual scrolling node.
+		expect(panel.style.getPropertyValue("--language-menu-max-height")).toBe("240px");
+		expect(menu.className).toContain(styles.languageMenuScroll);
 	});
 
 	it("wires hide and close", () => {

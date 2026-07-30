@@ -61,7 +61,7 @@ export function HudSidebar(props: HudSidebarProps) {
 			)}
 
 			<div
-				className={`${props.trayLayout === "vertical" ? "mt-0.5 pt-1.5 border-t" : "ml-0.5 pl-1.5 border-l"} border-white/10 flex items-center gap-0.5 ${props.trayLayout === "vertical" ? "flex-col" : ""} ${styles.electronNoDrag}`}
+				className={`${props.trayLayout === "vertical" ? "mt-0.5 pt-1.5 border-t" : "ml-0.5 pl-1.5 border-l"} border-white/10 flex items-center gap-0.5 ${props.trayLayout === "vertical" ? "flex-col" : ""} ${styles.electronNoDrag} ${styles.languageMenuContainer}`}
 			>
 				<button
 					ref={props.languageTriggerRef}
@@ -87,13 +87,16 @@ export function HudSidebar(props: HudSidebarProps) {
 						<div
 							ref={props.setLanguageMenuPanelEl}
 							data-hud-interactive="true"
-							style={{
-								position: "fixed",
-								right: props.languageMenuStyle.right,
-								top: props.languageMenuStyle.top,
-								maxHeight: props.languageMenuStyle.maxHeight,
-								pointerEvents: "auto",
-							}}
+							className={styles.languageMenuPanel}
+							style={
+								{
+									position: "fixed",
+									right: props.languageMenuStyle.right,
+									top: props.languageMenuStyle.top,
+									pointerEvents: "auto",
+									"--language-menu-max-height": `${props.languageMenuStyle.maxHeight}px`,
+								} as React.CSSProperties
+							}
 							onPointerDown={(event) => event.stopPropagation()}
 							onPointerEnter={props.onLanguageMenuPointerEnter}
 							onPointerMove={props.onLanguageMenuPointerEnter}
@@ -105,7 +108,7 @@ export function HudSidebar(props: HudSidebarProps) {
 							<Glass
 								level={3}
 								role="menu"
-								className={`${styles.languageMenuScroll} ${styles.electronNoDrag} h-full w-full`}
+								className={`${styles.languageMenuScroll} ${styles.electronNoDrag} w-full`}
 							>
 								{props.availableLocales.map((loc) => (
 									<button
