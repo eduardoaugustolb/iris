@@ -39,7 +39,7 @@ export type IconName =
 	| "tray-rows"
 	| "language"
 	| "notes"
-	| "lens"
+	| "studio"
 	| "spinner";
 
 export interface IconProps {

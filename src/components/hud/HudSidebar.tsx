@@ -59,7 +59,7 @@ export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 					onClick={() => !props.saving && props.onOpenStudio()}
 					title={props.t("tooltips.openStudio")}
 				>
-					<Icon name="lens" className="text-white/60" />
+					<Icon name="studio" className="text-white/60" />
 				</button>
 			)}
 

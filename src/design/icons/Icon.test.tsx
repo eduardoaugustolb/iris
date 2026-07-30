@@ -35,7 +35,7 @@ const NAMES: IconName[] = [
 	"tray-rows",
 	"language",
 	"notes",
-	"lens",
+	"studio",
 	"spinner",
 ];
 

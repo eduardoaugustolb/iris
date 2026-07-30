@@ -47,7 +47,7 @@ function DiaphragmBlades({
 						ref={(el) => {
 							bladeRefs.current[index] = el;
 						}}
-						d="M10 10 L10 3 A7 7 0 0 1 15.5 6 Z"
+						d="M8.5 6.8L10 2 11.5 6.8A3.5 3.5 0 0 0 8.5 6.8Z"
 						transform={`rotate(${angle} 10 10)`}
 						// The static rotation above pivots on (10,10) explicitly. Once
 						// closeDiaphragm's CSS `transform` keyframes take over they pivot on
