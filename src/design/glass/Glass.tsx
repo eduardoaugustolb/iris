@@ -1,12 +1,16 @@
-import type { CSSProperties, ReactNode } from "react";
+import {
+	type ComponentPropsWithoutRef,
+	type CSSProperties,
+	forwardRef,
+	type ReactNode,
+} from "react";
 import { type ElevationLevel, elevation, type RadiusToken, radius } from "../tokens/space";
 
 export const GLASS_MARKER = "data-iris-glass";
 
-export interface GlassProps {
+export interface GlassProps extends Omit<ComponentPropsWithoutRef<"div">, "style"> {
 	level: ElevationLevel;
 	radius?: RadiusToken;
-	className?: string;
 	children?: ReactNode;
 }
 
@@ -15,7 +19,10 @@ export interface GlassProps {
  * three layers DESIGN.md section 5 requires — backdrop blur, surface tint and
  * specular border — because any one of them alone reads as flat translucency.
  */
-export function Glass({ level, radius: radiusToken = "lg", className, children }: GlassProps) {
+export const Glass = forwardRef<HTMLDivElement, GlassProps>(function Glass(
+	{ level, radius: radiusToken = "lg", className, children, ...rest },
+	ref,
+) {
 	const { backdropBlurPx, shadowBlurPx } = elevation[level];
 	const backdrop = `blur(${backdropBlurPx}px) saturate(180%)`;
 
@@ -34,8 +41,14 @@ export function Glass({ level, radius: radiusToken = "lg", className, children }
 	};
 
 	return (
-		<div className={className} style={style} {...{ [GLASS_MARKER]: String(level) }}>
+		<div
+			ref={ref}
+			className={className}
+			style={style}
+			{...{ [GLASS_MARKER]: String(level) }}
+			{...rest}
+		>
 			{children}
 		</div>
 	);
-}
+});

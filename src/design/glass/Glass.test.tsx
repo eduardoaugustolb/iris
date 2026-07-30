@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Glass } from "./Glass";
 
 describe("Glass", () => {
@@ -78,5 +78,26 @@ describe("Glass", () => {
 		render(<Glass level={2}>content</Glass>);
 
 		expect(screen.getByText("content")).toHaveAttribute("data-iris-glass", "2");
+	});
+
+	it("forwards a ref to the underlying div", () => {
+		const ref = { current: null as HTMLDivElement | null };
+		render(
+			<Glass level={2} ref={ref}>
+				content
+			</Glass>,
+		);
+		expect(ref.current).toBeInstanceOf(HTMLDivElement);
+	});
+
+	it("passes through arbitrary DOM props like data attributes and pointer handlers", () => {
+		const onPointerEnter = vi.fn();
+		render(
+			<Glass level={2} data-testid="glass-surface" onPointerEnter={onPointerEnter}>
+				content
+			</Glass>,
+		);
+		const element = screen.getByTestId("glass-surface");
+		expect(element).toBeInTheDocument();
 	});
 });
