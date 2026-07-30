@@ -1,4 +1,6 @@
 @import "./styles/fonts/annotation-fonts.css";
+@import "./design/fonts.css";
+@import "./design/tokens.generated.css";
 
 @tailwind base;
 @tailwind components;
