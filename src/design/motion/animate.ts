@@ -36,17 +36,29 @@ export function reveal(element: Element, options: Partial<RevealOptions> = {}): 
  * rotates and scales to the center simultaneously. Callers must check
  * `!prefersReducedMotion()` before calling this — the reduced-motion path is
  * `crossfade`, never a scaled-down version of this rotation.
+ *
+ * `baseAngles[i]` is blade `i`'s own resting rotation, in degrees. It MUST be
+ * passed whenever the blades are laid out as a rosette: a WAAPI `transform`
+ * keyframe is a CSS declaration, and CSS beats the SVG `transform`
+ * presentation attribute that gives each blade its distinct orientation. A
+ * shared `rotate(0deg)` first keyframe therefore snaps all six blades onto the
+ * same angle the instant the animation starts and they collapse as one stacked
+ * shape instead of converging from six directions. Folding each blade's base
+ * angle into its own keyframes is what keeps the rosette a rosette.
  */
-export function closeDiaphragm(bladeElements: Element[]): Animation[] {
-	return bladeElements.map((blade) =>
-		blade.animate(
+export const DIAPHRAGM_CLOSE_SWEEP_DEG = 35;
+
+export function closeDiaphragm(bladeElements: Element[], baseAngles: number[] = []): Animation[] {
+	return bladeElements.map((blade, index) => {
+		const base = baseAngles[index] ?? 0;
+		return blade.animate(
 			[
-				{ opacity: 1, transform: "rotate(0deg) scale(1)" },
-				{ opacity: 0, transform: "rotate(35deg) scale(0.15)" },
+				{ opacity: 1, transform: `rotate(${base}deg) scale(1)` },
+				{ opacity: 0, transform: `rotate(${base + DIAPHRAGM_CLOSE_SWEEP_DEG}deg) scale(0.15)` },
 			],
 			{ duration: duration.slow, easing: easing.spring, fill: "forwards" },
-		),
-	);
+		);
+	});
 }
 
 /**

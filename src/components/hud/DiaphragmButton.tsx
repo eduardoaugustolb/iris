@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Icon } from "@/design/icons/Icon";
 import { closeDiaphragm, crossfade, prefersReducedMotion } from "@/design/motion/animate";
 import { color } from "@/design/tokens/color";
 import { duration, easing } from "@/design/tokens/motion";
@@ -12,6 +13,8 @@ export interface DiaphragmButtonProps {
 	elapsedSeconds: number;
 	hasSelectedSource: boolean;
 	title: string;
+	/** Already-translated "Saving…" label, shown next to the spinner. */
+	savingLabel: string;
 	onClick: () => void;
 }
 
@@ -46,11 +49,34 @@ function DiaphragmBlades({
 						}}
 						d="M10 10 L10 3 A7 7 0 0 1 15.5 6 Z"
 						transform={`rotate(${angle} 10 10)`}
+						// The static rotation above pivots on (10,10) explicitly. Once
+						// closeDiaphragm's CSS `transform` keyframes take over they pivot on
+						// `transform-origin` instead, whose SVG default depends on
+						// `transform-box` (border-box in older engines, view-box in newer).
+						// Pinning both makes the animated pivot identical to the static one
+						// in every engine, so the blades rotate in place instead of swinging.
+						style={{ transformBox: "view-box", transformOrigin: "10px 10px" }}
 					/>
 				))}
 			</g>
 		</svg>
 	);
+}
+
+/**
+ * `crossfade` fills forwards, which pins the faded-in element at exactly
+ * `opacity: 1` forever — clobbering the wrapper's own dimmed
+ * (`hasSelectedSource ? 1 : 0.45`) resting state if the source is cleared after
+ * a recording stops. Cancelling once the fade has finished hands control back
+ * to the inline style, whose value already equals the animation's end value, so
+ * nothing moves at the hand-off.
+ */
+function releaseWhenFinished(animations: Animation[]) {
+	const last = animations[animations.length - 1];
+	if (!last) return;
+	last.onfinish = () => {
+		for (const animation of animations) animation.cancel();
+	};
 }
 
 export function DiaphragmButton({
@@ -60,6 +86,7 @@ export function DiaphragmButton({
 	elapsedSeconds,
 	hasSelectedSource,
 	title,
+	savingLabel,
 	onClick,
 }: DiaphragmButtonProps) {
 	const bladeRefs = useRef<(SVGPathElement | null)[]>([]);
@@ -67,6 +94,15 @@ export function DiaphragmButton({
 	const dotRef = useRef<HTMLSpanElement | null>(null);
 	const bladesWrapperRef = useRef<HTMLSpanElement | null>(null);
 	const wasRecording = useRef(recording);
+	const settleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	/**
+	 * True from the moment the close animation is scheduled until it settles.
+	 * Without it the wrapper's `opacity: 0` (which `recording` alone would
+	 * dictate) is committed in the very same React commit that schedules the
+	 * animation, so the browser's first paint already hides the subtree and the
+	 * entire 420ms blade close plays invisibly.
+	 */
+	const [closing, setClosing] = useState(false);
 
 	useEffect(() => {
 		const startedRecording = recording && !wasRecording.current;
@@ -78,14 +114,29 @@ export function DiaphragmButton({
 
 		if (startedRecording) {
 			if (prefersReducedMotion()) {
-				crossfade(bladesWrapperRef.current, dotRef.current);
+				// WAAPI keyframes outrank inline styles, so the wrapper's own fade-out
+				// here is what hides it — no `closing` gate needed on this path.
+				releaseWhenFinished(crossfade(bladesWrapperRef.current, dotRef.current));
 			} else {
-				bladeAnimationsRef.current = closeDiaphragm(blades);
+				setClosing(true);
+				const animations = closeDiaphragm(blades, BLADE_ANGLES);
+				bladeAnimationsRef.current = animations;
+				const settle = () => setClosing(false);
+				const last = animations[animations.length - 1];
+				if (last) last.onfinish = settle;
+				// Safety net: onfinish never fires for an animation the engine never
+				// starts (element detached, animations disabled), which would leave
+				// the diaphragm permanently painted over the recording dot.
+				settleTimeoutRef.current = setTimeout(settle, duration.slow);
 				dotRef.current.animate([{ opacity: 0 }, { opacity: 1 }], {
 					duration: duration.fast,
 					delay: duration.slow - duration.fast,
 					easing: easing.standard,
-					fill: "forwards",
+					// "both", not "forwards": with forwards-only fill the backwards phase
+					// is unfilled, so during the delay the dot renders at its React
+					// inline `opacity: 1` and only snaps to 0 when the delay expires —
+					// a visible flash-then-hide before the fade-in.
+					fill: "both",
 				});
 			}
 		} else if (stoppedRecording) {
@@ -97,9 +148,21 @@ export function DiaphragmButton({
 				animation.cancel();
 			}
 			bladeAnimationsRef.current = [];
-			crossfade(dotRef.current, bladesWrapperRef.current);
+			setClosing(false);
+			releaseWhenFinished(crossfade(dotRef.current, bladesWrapperRef.current));
 		}
+
+		return () => {
+			if (settleTimeoutRef.current !== null) {
+				clearTimeout(settleTimeoutRef.current);
+				settleTimeoutRef.current = null;
+			}
+		};
 	}, [recording]);
+
+	// Keep the diaphragm painted while it closes; hide it instantly once the
+	// animation has settled, and whenever the spinner owns the button.
+	const bladesHidden = saving || (recording && !closing);
 
 	return (
 		<button
@@ -115,8 +178,8 @@ export function DiaphragmButton({
 			<span
 				ref={bladesWrapperRef}
 				style={{
-					opacity: recording ? 0 : hasSelectedSource ? 1 : 0.45,
-					position: recording ? "absolute" : "static",
+					opacity: bladesHidden ? 0 : hasSelectedSource ? 1 : 0.45,
+					position: recording || saving ? "absolute" : "static",
 				}}
 			>
 				<DiaphragmBlades bladeRefs={bladeRefs} />
@@ -129,10 +192,18 @@ export function DiaphragmButton({
 					height: 10,
 					borderRadius: "50%",
 					background: color.semanticRecording,
-					opacity: recording ? 1 : 0,
-					position: recording ? "static" : "absolute",
+					opacity: recording && !saving ? 1 : 0,
+					position: recording && !saving ? "static" : "absolute",
 				}}
 			/>
+			{saving && (
+				<>
+					<span data-testid="launch-record-saving-spinner" className="flex animate-spin">
+						<Icon name="spinner" className="text-white/80" />
+					</span>
+					<span className="select-none text-xs font-semibold text-white/80">{savingLabel}</span>
+				</>
+			)}
 			{recording && <RecordingTimer elapsedSeconds={elapsedSeconds} paused={paused} />}
 		</button>
 	);

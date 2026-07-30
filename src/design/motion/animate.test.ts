@@ -108,6 +108,38 @@ describe("closeDiaphragm", () => {
 		}
 	});
 
+	it("folds each blade's own base angle into its keyframes so the rosette stays a rosette", () => {
+		mockReducedMotion(false);
+		const animate = vi.fn().mockReturnValue({} as Animation);
+		const blades = [0, 1, 2].map(() => {
+			const el = document.createElement("div");
+			el.animate = animate;
+			return el;
+		});
+
+		closeDiaphragm(blades, [0, 60, 120]);
+
+		// A WAAPI transform keyframe is a CSS declaration and outranks the SVG
+		// `transform` presentation attribute that spaces the blades apart, so a
+		// shared `rotate(0deg)` start would snap all blades onto one angle and
+		// collapse them as a single stacked shape. Each blade must start from its
+		// own resting angle and sweep the same 35 degrees from there.
+		const starts = animate.mock.calls.map(([keyframes]) => keyframes[0].transform);
+		const ends = animate.mock.calls.map(([keyframes]) => keyframes[1].transform);
+
+		expect(starts).toEqual([
+			"rotate(0deg) scale(1)",
+			"rotate(60deg) scale(1)",
+			"rotate(120deg) scale(1)",
+		]);
+		expect(ends).toEqual([
+			"rotate(35deg) scale(0.15)",
+			"rotate(95deg) scale(0.15)",
+			"rotate(155deg) scale(0.15)",
+		]);
+		expect(new Set(starts).size).toBe(3);
+	});
+
 	it("only animates opacity and transform per blade", () => {
 		mockReducedMotion(false);
 		const animate = vi.fn().mockReturnValue({} as Animation);

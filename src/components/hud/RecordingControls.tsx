@@ -39,6 +39,7 @@ export const RecordingControls = memo(function RecordingControls(props: Recordin
 				elapsedSeconds={props.elapsedSeconds}
 				hasSelectedSource={props.hasSelectedSource}
 				title={title}
+				savingLabel={props.t("recording.saving")}
 				onClick={props.onRecordButtonClick}
 			/>
 
