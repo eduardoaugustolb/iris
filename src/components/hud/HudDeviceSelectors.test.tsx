@@ -50,11 +50,16 @@ describe("HudDeviceSelectors", () => {
 				{...baseProps}
 				showMicControls={true}
 				micExpanded={true}
-				micDevices={[{ deviceId: "abc", label: "USB Mic" }]}
+				micDevices={[
+					{ deviceId: "default", label: "Default Mic" },
+					{ deviceId: "abc", label: "USB Mic" },
+				]}
 				onMicDeviceChange={onChange}
 			/>,
 		);
-		fireEvent.change(screen.getByDisplayValue("default"), { target: { value: "abc" } });
+		fireEvent.change(screen.getByDisplayValue("Default Mic"), {
+			target: { value: "abc" },
+		});
 		expect(onChange).toHaveBeenCalledWith("abc");
 	});
 
@@ -65,11 +70,17 @@ describe("HudDeviceSelectors", () => {
 				{...baseProps}
 				showWebcamControls={true}
 				webcamExpanded={true}
-				cameraDevices={[{ deviceId: "cam1", label: "FaceTime HD" }]}
+				selectedCameraId="default"
+				cameraDevices={[
+					{ deviceId: "default", label: "Default Camera" },
+					{ deviceId: "cam1", label: "FaceTime HD" },
+				]}
 				onCameraDeviceChange={onChange}
 			/>,
 		);
-		fireEvent.change(screen.getByDisplayValue(""), { target: { value: "cam1" } });
+		fireEvent.change(screen.getByDisplayValue("Default Camera"), {
+			target: { value: "cam1" },
+		});
 		expect(onChange).toHaveBeenCalledWith("cam1");
 	});
 });
