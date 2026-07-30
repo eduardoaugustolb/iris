@@ -820,6 +820,7 @@ Expected: FAIL — module doesn't exist.
 // src/components/hud/DiaphragmButton.tsx
 import { useEffect, useRef } from "react";
 import { color } from "@/design/tokens/color";
+import { duration } from "@/design/tokens/motion";
 import { closeDiaphragm, crossfade, prefersReducedMotion } from "@/design/motion/animate";
 import { RecordingTimer } from "./RecordingTimer";
 
@@ -895,8 +896,8 @@ export function DiaphragmButton({
 			} else {
 				closeDiaphragm(blades);
 				dotRef.current.animate([{ opacity: 0 }, { opacity: 1 }], {
-					duration: 150,
-					delay: 270,
+					duration: duration.fast,
+					delay: duration.slow - duration.fast,
 					fill: "forwards",
 				});
 			}
