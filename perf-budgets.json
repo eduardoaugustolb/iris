@@ -14,12 +14,12 @@
 		{ "metric": "bundle.transcribe.worker.js", "max": 4003, "unit": "bytes" },
 		{ "metric": "bundle.transformers.js", "max": 861567, "unit": "bytes" },
 		{ "metric": "bundle.video-processing.js", "max": 131666, "unit": "bytes" },
-		{ "metric": "startup.hudFirstFrame", "max": 1155, "unit": "ms" },
-		{ "metric": "memory.idle.total", "max": 615977, "unit": "count" },
-		{ "metric": "memory.idle.Browser", "max": 218350, "unit": "count" },
-		{ "metric": "memory.idle.GPU", "max": 168500, "unit": "count" },
-		{ "metric": "memory.idle.Utility", "max": 89603, "unit": "count" },
-		{ "metric": "memory.idle.Tab", "max": 139524, "unit": "count" },
+		{ "metric": "startup.hudFirstFrame", "max": 1098, "unit": "ms" },
+		{ "metric": "memory.idle.total", "max": 540557, "unit": "count" },
+		{ "metric": "memory.idle.Browser", "max": 240056, "unit": "count" },
+		{ "metric": "memory.idle.GPU", "max": 63181, "unit": "count" },
+		{ "metric": "memory.idle.Utility", "max": 93816, "unit": "count" },
+		{ "metric": "memory.idle.Tab", "max": 143506, "unit": "count" },
 		{ "metric": "export.mp4.msPerSecondOfVideo", "max": 6338, "unit": "ms" }
 	]
 }
