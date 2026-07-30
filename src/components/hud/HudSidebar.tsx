@@ -30,8 +30,10 @@ export interface HudSidebarProps {
 }
 
 const iconBtnClasses = `flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer text-white hover:bg-white/10 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none ${styles.electronNoDrag}`;
-const windowBtnClasses =
-	"flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer opacity-50 hover:opacity-90 hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none";
+// electronNoDrag is load-bearing, not cosmetic: the whole HUD tree sits inside
+// HudOverlay's `-webkit-app-region: drag` root, so without it Chromium eats
+// these clicks as native window-drag gestures and the buttons never fire.
+const windowBtnClasses = `flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer opacity-50 hover:opacity-90 hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none ${styles.electronNoDrag}`;
 
 export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 	return (
@@ -118,7 +120,7 @@ export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 										role="menuitemradio"
 										aria-checked={loc === props.locale}
 										onClick={() => props.onSelectLocale(loc)}
-										className={styles.languageMenuItem}
+										className={`${styles.languageMenuItem} ${loc === props.locale ? styles.languageMenuItemActive : ""}`}
 									>
 										<span className="truncate">{props.getLocaleName(loc)}</span>
 										{loc === props.locale ? (

@@ -80,4 +80,23 @@ describe("HudSidebar", () => {
 		expect(onHide).toHaveBeenCalledTimes(1);
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});
+
+	it("carries electronNoDrag on the hide and close buttons so the drag region can't swallow their clicks", () => {
+		render(<HudSidebar {...baseProps} />);
+		// The whole HUD tree sits inside HudOverlay's `-webkit-app-region: drag`
+		// root; without the opt-out Chromium treats these as native window-drag
+		// gestures and the click never reaches React.
+		expect(screen.getByTitle("tooltips.hideHUD").className).toContain(styles.electronNoDrag);
+		expect(screen.getByTitle("tooltips.closeApp").className).toContain(styles.electronNoDrag);
+	});
+
+	it("highlights the active locale's menu item, not just its checkmark", () => {
+		render(<HudSidebar {...baseProps} isLanguageMenuOpen={true} locale="pt-BR" />);
+
+		const active = screen.getByText("Português").closest("button") as HTMLElement;
+		const inactive = screen.getByText("English").closest("button") as HTMLElement;
+		expect(active.className).toContain(styles.languageMenuItemActive);
+		expect(inactive.className).not.toContain(styles.languageMenuItemActive);
+		expect(inactive.className).toContain(styles.languageMenuItem);
+	});
 });
