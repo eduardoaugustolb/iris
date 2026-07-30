@@ -1337,6 +1337,7 @@ import type { useScopedT } from "@/contexts/I18nContext";
 import { Glass } from "@/design/glass/Glass";
 import { Icon } from "@/design/icons/Icon";
 import { AudioLevelMeter } from "@/components/ui/audio-level-meter";
+import styles from "./hud.module.css";
 
 const HUD_DEVICE_POPUP_GAP = 28;
 const HUD_DEVICE_POPUP_HORIZONTAL_BOTTOM = 68;
@@ -1381,7 +1382,7 @@ export function HudDeviceSelectors(props: HudDeviceSelectorsProps) {
 		<div
 			ref={props.setDeviceSelectorEl}
 			data-hud-interactive="true"
-			className={`fixed left-1/2 -translate-x-1/2 flex items-center gap-2 animate-mic-panel-in ${props.trayLayout === "vertical" ? "" : "bottom-[68px]"}`}
+			className={`fixed left-1/2 -translate-x-1/2 flex items-center gap-2 animate-mic-panel-in ${styles.electronNoDrag} ${props.trayLayout === "vertical" ? "" : "bottom-[68px]"}`}
 			style={
 				props.trayLayout === "vertical"
 					? { bottom: props.hudBarHeight + HUD_DEVICE_POPUP_GAP }
@@ -1621,6 +1622,7 @@ Port `src/components/launch/LaunchWindow.tsx:966-1054` verbatim, with these mech
 import type { useScopedT } from "@/contexts/I18nContext";
 import { Icon } from "@/design/icons/Icon";
 import { color } from "@/design/tokens/color";
+import styles from "./hud.module.css";
 
 export interface SourceAudioControlsProps {
 	trayLayout: "horizontal" | "vertical";
@@ -1655,7 +1657,7 @@ export function SourceAudioControls(props: SourceAudioControlsProps) {
 		<>
 			<button
 				data-testid="launch-source-selector-button"
-				className={`${groupClasses} h-8 ${props.trayLayout === "vertical" ? "w-8 justify-center px-0" : "px-2.5"}`}
+				className={`${groupClasses} h-8 ${styles.electronNoDrag} ${props.trayLayout === "vertical" ? "w-8 justify-center px-0" : "px-2.5"}`}
 				onClick={props.onOpenSourceSelector}
 				disabled={disabled}
 				title={props.selectedSource}
@@ -1669,7 +1671,7 @@ export function SourceAudioControls(props: SourceAudioControlsProps) {
 				</span>
 			</button>
 
-			<div className={`${groupClasses} ${props.trayLayout === "vertical" ? "flex-col py-1" : ""}`}>
+			<div className={`${groupClasses} ${styles.electronNoDrag} ${props.trayLayout === "vertical" ? "flex-col py-1" : ""}`}>
 				<button
 					data-testid="launch-system-audio-button"
 					className={iconBtnClasses}
@@ -1863,6 +1865,7 @@ import type { useScopedT } from "@/contexts/I18nContext";
 import { Icon } from "@/design/icons/Icon";
 import { color } from "@/design/tokens/color";
 import { DiaphragmButton } from "./DiaphragmButton";
+import styles from "./hud.module.css";
 
 export interface RecordingControlsProps {
 	recording: boolean;
@@ -1902,7 +1905,7 @@ export function RecordingControls(props: RecordingControlsProps) {
 			/>
 
 			{props.recording && (
-				<div className="flex items-center gap-0.5">
+				<div className={`flex items-center gap-0.5 ${styles.electronNoDrag}`}>
 					{props.canPauseRecording && (
 						<button
 							className={auxIconBtnClasses}
@@ -2114,8 +2117,7 @@ export interface HudSidebarProps {
 	onCloseHud: () => void;
 }
 
-const iconBtnClasses =
-	"flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer text-white hover:bg-white/10 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none";
+const iconBtnClasses = `flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer text-white hover:bg-white/10 active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none ${styles.electronNoDrag}`;
 const windowBtnClasses =
 	"flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer opacity-50 hover:opacity-90 hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none";
 
@@ -2148,7 +2150,7 @@ export function HudSidebar(props: HudSidebarProps) {
 			)}
 
 			<div
-				className={`${props.trayLayout === "vertical" ? "mt-0.5 pt-1.5 border-t" : "ml-0.5 pl-1.5 border-l"} border-white/10 flex items-center gap-0.5 ${props.trayLayout === "vertical" ? "flex-col" : ""}`}
+				className={`${props.trayLayout === "vertical" ? "mt-0.5 pt-1.5 border-t" : "ml-0.5 pl-1.5 border-l"} border-white/10 flex items-center gap-0.5 ${props.trayLayout === "vertical" ? "flex-col" : ""} ${styles.electronNoDrag}`}
 			>
 				<button
 					ref={props.languageTriggerRef}
@@ -2159,7 +2161,7 @@ export function HudSidebar(props: HudSidebarProps) {
 					disabled={props.saving}
 					onClick={() => !props.saving && props.onToggleLanguageMenu()}
 					title={props.activeLanguageLabel}
-					className={`flex h-8 items-center rounded-lg border border-white/10 bg-white/[0.045] text-white/85 hover:bg-white/10 ${props.trayLayout === "vertical" ? "w-8 justify-center px-0" : "gap-1.5 px-2"} disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none`}
+					className={`flex h-8 items-center rounded-lg border border-white/10 bg-white/[0.045] text-white/85 hover:bg-white/10 ${props.trayLayout === "vertical" ? "w-8 justify-center px-0" : "gap-1.5 px-2"} disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none ${styles.electronNoDrag}`}
 				>
 					<Icon name="language" size={16} className="text-white/70" />
 					<span
@@ -2176,7 +2178,7 @@ export function HudSidebar(props: HudSidebarProps) {
 							ref={props.setLanguageMenuPanelEl}
 							data-hud-interactive="true"
 							role="menu"
-							className={styles.languageMenuScroll}
+							className={`${styles.languageMenuScroll} ${styles.electronNoDrag}`}
 							style={
 								{
 									position: "fixed",
@@ -2482,6 +2484,7 @@ import { HudDeviceSelectors, type HudDeviceSelectorsProps } from "./HudDeviceSel
 import { SourceAudioControls, type SourceAudioControlsProps } from "./SourceAudioControls";
 import { RecordingControls, type RecordingControlsProps } from "./RecordingControls";
 import { HudSidebar, type HudSidebarProps } from "./HudSidebar";
+import styles from "./hud.module.css";
 
 export interface HudOverlayProps {
 	trayLayout: "horizontal" | "vertical";
@@ -2508,7 +2511,7 @@ export interface HudOverlayProps {
 export function HudOverlay(props: HudOverlayProps) {
 	return (
 		<div
-			className="h-full w-full min-w-0 max-w-full overflow-x-hidden overflow-y-hidden bg-transparent"
+			className={`h-full w-full min-w-0 max-w-full overflow-x-hidden overflow-y-hidden bg-transparent ${styles.electronDrag}`}
 			onPointerMove={props.onOuterPointerMove}
 			onPointerLeave={props.onOuterPointerLeave}
 		>
@@ -2532,7 +2535,7 @@ export function HudOverlay(props: HudOverlayProps) {
 			>
 				<div
 					data-testid="hud-drag-handle"
-					className={`flex ${props.trayLayout === "vertical" ? "h-6 w-8" : "h-8 w-7"} cursor-grab items-center justify-center active:cursor-grabbing`}
+					className={`flex ${props.trayLayout === "vertical" ? "h-6 w-8" : "h-8 w-7"} cursor-grab items-center justify-center active:cursor-grabbing ${styles.electronNoDrag}`}
 					onPointerDown={props.onDragPointerDown}
 					onPointerMove={props.onDragPointerMove}
 					onPointerUp={props.onDragPointerUp}
@@ -2550,7 +2553,7 @@ export function HudOverlay(props: HudOverlayProps) {
 							: props.t("tooltips.useHorizontalTray")
 					}
 					aria-pressed={props.trayLayout === "vertical"}
-					className="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer text-white hover:bg-white/10 active:scale-95"
+					className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer text-white hover:bg-white/10 active:scale-95 ${styles.electronNoDrag}`}
 					onClick={props.onToggleTrayLayout}
 				>
 					<Icon
@@ -2568,6 +2571,16 @@ export function HudOverlay(props: HudOverlayProps) {
 }
 ```
 
+Before this, add one rule to the shared `src/components/hud/hud.module.css` (created in Task 7, currently only has `.electronNoDrag`) — append:
+
+```css
+.electronDrag {
+	-webkit-app-region: drag;
+}
+```
+
+This is the outer wrapper's native-drag-region opt-in, mirroring `LaunchWindow.tsx`'s original `styles.electronDrag` usage on its own outer wrapper (the plan's `HudOverlay` code above already references `styles.electronDrag` on that div).
+
 Now open `SourceAudioControls.tsx`, `HudSidebar.tsx`, and `RecordingControls.tsx` (Tasks 9–11) and wrap each exported function in `memo(...)`, e.g. `export const SourceAudioControls = memo(function SourceAudioControls(props: SourceAudioControlsProps) { ... });` — keep the named function expression (React DevTools display name) and re-export the same way. Re-run each of those tasks' test files afterward to confirm `memo` doesn't change observable behaviour.
 
 - [ ] **Step 4: Run test to verify it passes**
@@ -2578,7 +2591,7 @@ Expected: PASS across every file in the directory (Tasks 5–12's tests).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/components/hud/HudOverlay.tsx src/components/hud/HudOverlay.test.tsx src/components/hud/SourceAudioControls.tsx src/components/hud/HudSidebar.tsx src/components/hud/RecordingControls.tsx
+git add src/components/hud/HudOverlay.tsx src/components/hud/HudOverlay.test.tsx src/components/hud/SourceAudioControls.tsx src/components/hud/HudSidebar.tsx src/components/hud/RecordingControls.tsx src/components/hud/hud.module.css
 git commit -m "feat(hud): add HudOverlay root, memoize children to hold the render budget"
 ```
 
