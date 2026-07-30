@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { useScopedT } from "@/contexts/I18nContext";
 import { Icon } from "@/design/icons/Icon";
 import { color } from "@/design/tokens/color";
@@ -30,7 +31,9 @@ function activeStyle(active: boolean): React.CSSProperties | undefined {
 	return active ? { color: color.brandPrimary } : undefined;
 }
 
-export function SourceAudioControls(props: SourceAudioControlsProps) {
+export const SourceAudioControls = memo(function SourceAudioControls(
+	props: SourceAudioControlsProps,
+) {
 	const disabled = props.recording || props.saving;
 
 	return (
@@ -125,4 +128,4 @@ export function SourceAudioControls(props: SourceAudioControlsProps) {
 			</div>
 		</>
 	);
-}
+});

@@ -1,3 +1,7 @@
 .electronNoDrag {
 	-webkit-app-region: no-drag;
 }
+
+.electronDrag {
+	-webkit-app-region: drag;
+}

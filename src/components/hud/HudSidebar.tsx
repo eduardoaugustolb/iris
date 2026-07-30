@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { createPortal } from "react-dom";
 import styles from "@/components/launch/LaunchWindow.module.css";
 import type { useScopedT } from "@/contexts/I18nContext";
@@ -32,7 +33,7 @@ const iconBtnClasses = `flex h-8 w-8 items-center justify-center rounded-lg tran
 const windowBtnClasses =
 	"flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer opacity-50 hover:opacity-90 hover:bg-white/[0.08] disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none";
 
-export function HudSidebar(props: HudSidebarProps) {
+export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 	return (
 		<>
 			{!props.isLinuxHud && (
@@ -153,4 +154,4 @@ export function HudSidebar(props: HudSidebarProps) {
 			</div>
 		</>
 	);
-}
+});

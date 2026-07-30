@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { useScopedT } from "@/contexts/I18nContext";
 import { Icon } from "@/design/icons/Icon";
 import { color } from "@/design/tokens/color";
@@ -22,7 +23,7 @@ export interface RecordingControlsProps {
 const auxIconBtnClasses =
 	"flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-150 text-white/55 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none";
 
-export function RecordingControls(props: RecordingControlsProps) {
+export const RecordingControls = memo(function RecordingControls(props: RecordingControlsProps) {
 	const title = props.saving
 		? props.t("recording.saving")
 		: props.hasSelectedSource || props.recording
@@ -88,4 +89,4 @@ export function RecordingControls(props: RecordingControlsProps) {
 			)}
 		</>
 	);
-}
+});
