@@ -48,14 +48,16 @@ export interface IconProps {
 	/** Provide only when the icon carries meaning no nearby text already carries. */
 	label?: string;
 	className?: string;
+	style?: React.CSSProperties;
 }
 
-export function Icon({ name, size = 20, label, className }: IconProps) {
+export function Icon({ name, size = 20, label, className, style }: IconProps) {
 	return (
 		<svg
 			width={size}
 			height={size}
 			className={className}
+			style={style}
 			role={label ? "img" : undefined}
 			aria-label={label}
 			aria-hidden={label ? undefined : true}

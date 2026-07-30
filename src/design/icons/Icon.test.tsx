@@ -92,4 +92,10 @@ describe("Icon", () => {
 
 		expect(screen.getByRole("img", { name: "Iniciar gravação" })).toBeInTheDocument();
 	});
+
+	it("forwards a style prop to the svg", () => {
+		render(<Icon name="record" style={{ color: "rgb(255, 0, 0)" }} />);
+
+		expect(document.querySelector("svg")).toHaveStyle({ color: "rgb(255, 0, 0)" });
+	});
 });
