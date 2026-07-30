@@ -6,6 +6,13 @@ avoid a network fetch at app startup. Each family below lists its license and
 upstream source. Files are the `latin` subset (Latin-1 Supplement, which
 covers English and Portuguese diacritics) served by Google Fonts' CSS2 API.
 
+Google serves each of these families as one variable-weight file covering the
+whole 400–700 range, so where a family lists a single physical file below,
+both its regular and bold `@font-face` rules in
+`src/styles/fonts/annotation-fonts.css` intentionally point at that same
+file with different static `font-weight` declarations — this is not a
+missing weight, it's two CSS faces sharing one physical font file.
+
 ## Bebas Neue
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Bebas+Neue
@@ -14,17 +21,17 @@ covers English and Portuguese diacritics) served by Google Fonts' CSS2 API.
 ## Caveat
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Caveat
-- Files: `caveat-400.woff2`, `caveat-700.woff2`
+- Files: `caveat-400.woff2` (covers 400 and 700)
 
 ## DM Sans
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/DM+Sans
-- Files: `dm-sans-400.woff2`, `dm-sans-700.woff2`, `dm-sans-400-italic.woff2`, `dm-sans-700-italic.woff2`
+- Files: `dm-sans-400.woff2` (covers 400 and 700), `dm-sans-400-italic.woff2` (covers 400 and 700 italic)
 
 ## Fira Code
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Fira+Code
-- Files: `fira-code-400.woff2`, `fira-code-700.woff2`
+- Files: `fira-code-400.woff2` (covers 400 and 700)
 
 ## IBM Plex Mono
 - License: SIL Open Font License 1.1
@@ -34,32 +41,32 @@ covers English and Portuguese diacritics) served by Google Fonts' CSS2 API.
 ## IBM Plex Sans
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/IBM+Plex+Sans
-- Files: `ibm-plex-sans-400.woff2`, `ibm-plex-sans-700.woff2`, `ibm-plex-sans-400-italic.woff2`, `ibm-plex-sans-700-italic.woff2`
+- Files: `ibm-plex-sans-400.woff2` (covers 400 and 700), `ibm-plex-sans-400-italic.woff2` (covers 400 and 700 italic)
 
 ## Inter
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Inter
-- Files: `inter-400.woff2`, `inter-700.woff2`, `inter-400-italic.woff2`, `inter-700-italic.woff2`
+- Files: `iris-sans-variable.woff2` (covers 400 and 700 — the same physical file used by the UI font stack, see "UI fonts" below), `inter-400-italic.woff2` (covers 400 and 700 italic)
 
 ## Lora
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Lora
-- Files: `lora-400.woff2`, `lora-700.woff2`, `lora-400-italic.woff2`, `lora-700-italic.woff2`
+- Files: `lora-400.woff2` (covers 400 and 700), `lora-400-italic.woff2` (covers 400 and 700 italic)
 
 ## Manrope
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Manrope
-- Files: `manrope-400.woff2`, `manrope-700.woff2`
+- Files: `manrope-400.woff2` (covers 400 and 700)
 
 ## Merriweather
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Merriweather
-- Files: `merriweather-400.woff2`, `merriweather-700.woff2`, `merriweather-400-italic.woff2`, `merriweather-700-italic.woff2`
+- Files: `merriweather-400.woff2` (covers 400 and 700), `merriweather-400-italic.woff2` (covers 400 and 700 italic)
 
 ## Oswald
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Oswald
-- Files: `oswald-400.woff2`, `oswald-700.woff2`
+- Files: `oswald-400.woff2` (covers 400 and 700)
 
 ## Permanent Marker
 - License: Apache License 2.0
@@ -69,22 +76,22 @@ covers English and Portuguese diacritics) served by Google Fonts' CSS2 API.
 ## Playfair Display
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Playfair+Display
-- Files: `playfair-display-400.woff2`, `playfair-display-700.woff2`, `playfair-display-400-italic.woff2`, `playfair-display-700-italic.woff2`
+- Files: `playfair-display-400.woff2` (covers 400 and 700), `playfair-display-400-italic.woff2` (covers 400 and 700 italic)
 
 ## Plus Jakarta Sans
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Plus+Jakarta+Sans
-- Files: `plus-jakarta-sans-400.woff2`, `plus-jakarta-sans-700.woff2`, `plus-jakarta-sans-400-italic.woff2`, `plus-jakarta-sans-700-italic.woff2`
+- Files: `plus-jakarta-sans-400.woff2` (covers 400 and 700), `plus-jakarta-sans-400-italic.woff2` (covers 400 and 700 italic)
 
 ## Space Grotesk
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Space+Grotesk
-- Files: `space-grotesk-400.woff2`, `space-grotesk-700.woff2`
+- Files: `space-grotesk-400.woff2` (covers 400 and 700)
 
 ## Sora
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Sora
-- Files: `sora-400.woff2`, `sora-700.woff2`
+- Files: `sora-400.woff2` (covers 400 and 700)
 
 ## UI fonts
 
