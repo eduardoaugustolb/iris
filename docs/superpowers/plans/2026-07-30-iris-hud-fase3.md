@@ -2173,21 +2173,16 @@ export function HudSidebar(props: HudSidebarProps) {
 
 				{props.isLanguageMenuOpen &&
 					createPortal(
-						<Glass
-							level={3}
+						<div
 							ref={props.setLanguageMenuPanelEl}
 							data-hud-interactive="true"
-							role="menu"
-							className={`${styles.languageMenuScroll} ${styles.electronNoDrag}`}
-							style={
-								{
-									position: "fixed",
-									right: props.languageMenuStyle.right,
-									top: props.languageMenuStyle.top,
-									maxHeight: props.languageMenuStyle.maxHeight,
-									pointerEvents: "auto",
-								} as React.CSSProperties
-							}
+							style={{
+								position: "fixed",
+								right: props.languageMenuStyle.right,
+								top: props.languageMenuStyle.top,
+								maxHeight: props.languageMenuStyle.maxHeight,
+								pointerEvents: "auto",
+							}}
 							onPointerDown={(event) => event.stopPropagation()}
 							onPointerEnter={props.onLanguageMenuPointerEnter}
 							onPointerMove={props.onLanguageMenuPointerEnter}
@@ -2196,20 +2191,26 @@ export function HudSidebar(props: HudSidebarProps) {
 								props.onLanguageMenuWheel(event);
 							}}
 						>
-							{props.availableLocales.map((loc) => (
-								<button
-									key={loc}
-									type="button"
-									role="menuitemradio"
-									aria-checked={loc === props.locale}
-									onClick={() => props.onSelectLocale(loc)}
-									className={styles.languageMenuItem}
-								>
-									<span className="truncate">{props.getLocaleName(loc)}</span>
-									{loc === props.locale ? <Icon name="check" size={16} className="text-white/85" /> : null}
-								</button>
-							))}
-						</Glass>,
+							<Glass
+								level={3}
+								role="menu"
+								className={`${styles.languageMenuScroll} ${styles.electronNoDrag} h-full w-full`}
+							>
+								{props.availableLocales.map((loc) => (
+									<button
+										key={loc}
+										type="button"
+										role="menuitemradio"
+										aria-checked={loc === props.locale}
+										onClick={() => props.onSelectLocale(loc)}
+										className={styles.languageMenuItem}
+									>
+										<span className="truncate">{props.getLocaleName(loc)}</span>
+										{loc === props.locale ? <Icon name="check" size={16} className="text-white/85" /> : null}
+									</button>
+								))}
+							</Glass>
+						</div>,
 						document.body,
 					)}
 			</div>
