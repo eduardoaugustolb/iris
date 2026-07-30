@@ -12,16 +12,17 @@ Não existe hoje nenhum asset de "diafragma de 6 lâminas" (o sprite `src/design
 
 ## Escopo
 
+**Atualização pós-brainstorm inicial:** ao levantar o JSX real de `LaunchWindow.tsx` para escrever o plano de implementação, ficou claro que a barra do HUD não se divide em dois blocos limpos (pré-gravação vs. gravando) — é um único container compartilhando chrome (drag handle, toggle de layout, Glass do container) entre os dois estados; só botões individuais são condicionados. Extrair "apenas o estado gravando" fragmentaria essa chrome compartilhada. Escopo revisado com o usuário: `HudOverlay` passa a cobrir **a barra inteira** (chrome + controles de ambos os estados), não só o estado "gravando". `LaunchWindow` continua dona de 100% do estado/hooks/refs/effects; `HudOverlay` e seus subcomponentes são puramente apresentacionais. Ver `docs/superpowers/plans/2026-07-30-iris-hud-fase3.md` para a árvore de componentes resultante.
+
 **Dentro do escopo:**
-- Extrair um componente `HudOverlay` novo, cobrindo **apenas** o estado "gravando" de `LaunchWindow`. A seleção de fonte pré-gravação continua em `LaunchWindow` sem alteração — fica para uma fase futura.
+- Extrair um componente `HudOverlay` novo, cobrindo **a barra inteira do HUD** (chrome compartilhada + controles de seleção de fonte pré-gravação + controles do estado "gravando"). A lógica de estado permanece 100% em `LaunchWindow`.
 - Paridade funcional completa com o estado "gravando" de hoje: botão principal com animação de diafragma, timer, pausar/retomar, reiniciar, cancelar, notas, menu de idioma.
 - Migrar todos os ícones do HUD que hoje vêm de `react-icons`/`lucide-react` para o sprite próprio Íris (`Icon`/`sprite.svg`), desenhando os símbolos que faltam no mesmo estilo/grid dos existentes: `icon-resume`, `icon-restart`, `icon-cancel`, `icon-notes`, `icon-language`, `icon-studio` (verificar nomes exatos contra os usos reais em `LaunchWindow.tsx` durante a implementação).
 - A animação-assinatura do diafragma (`DESIGN.md` §8): botão de iniciar grava = próprio diafragma do logo, 6 lâminas giram e fecham até o centro em `--duration-slow`/`--ease-spring`, revelando `--semantic-recording`. `prefers-reduced-motion`: crossfade de 150ms sem rotação.
 - Um orçamento de re-render mensurável via `renderCounter` (ver "Orçamento de render" abaixo).
 
 **Fora do escopo (fases futuras, não iniciar sem novo brainstorm):**
-- Seleção de fonte pré-gravação (resto de `LaunchWindow`).
-- Qualquer outra janela/superfície (editor, seletor de fonte, countdown, notas).
+- Qualquer outra janela/superfície fora da barra do HUD (editor, seletor de fonte que abre em janela própria, countdown, notas).
 - Amostragem por percentil em `scripts/bench/runtime.ts` (já flagado como pendência da Fase 0/CI).
 
 ## Arquitetura
