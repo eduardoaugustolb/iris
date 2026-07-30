@@ -2007,7 +2007,10 @@ export default async function afterPack(context) {
 		appOutDir,
 		electronPlatformName === "darwin"
 			? `${packager.appInfo.productFilename}.app`
-			: `${packager.appInfo.productFilename}${electronPlatformName === "win32" ? ".exe" : ""}`,
+			// electron-builder lowercases productName for the Linux binary name
+			// (executableName), unlike macOS/Windows which keep productFilename's
+			// casing — using productFilename here would point at a path that never exists.
+			: `${packager.executableName}${electronPlatformName === "win32" ? ".exe" : ""}`,
 	);
 
 	await flipFuses(executable, {
