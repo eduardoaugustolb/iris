@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { duration, easing } from "../tokens/motion";
-import { prefersReducedMotion, reveal } from "./animate";
+import { closeDiaphragm, crossfade, prefersReducedMotion, reveal } from "./animate";
 
 function mockReducedMotion(matches: boolean) {
 	vi.stubGlobal(
@@ -84,5 +84,58 @@ describe("reveal", () => {
 			true,
 		);
 		expect(options.duration).toBe(duration.fast);
+	});
+});
+
+describe("closeDiaphragm", () => {
+	it("animates every blade with the spring curve and slow duration", () => {
+		mockReducedMotion(false);
+		const animate = vi.fn().mockReturnValue({} as Animation);
+		const blades = [0, 1].map(() => {
+			const el = document.createElement("div");
+			el.animate = animate;
+			return el;
+		});
+
+		closeDiaphragm(blades);
+
+		expect(animate).toHaveBeenCalledTimes(2);
+		for (const call of animate.mock.calls) {
+			const [, options] = call;
+			expect(options.duration).toBe(duration.slow);
+			expect(options.easing).toBe(easing.spring);
+			expect(options.fill).toBe("forwards");
+		}
+	});
+
+	it("only animates opacity and transform per blade", () => {
+		mockReducedMotion(false);
+		const animate = vi.fn().mockReturnValue({} as Animation);
+		const blade = document.createElement("div");
+		blade.animate = animate;
+
+		closeDiaphragm([blade]);
+
+		const [keyframes] = animate.mock.calls[0];
+		const properties = new Set(keyframes.flatMap((frame: object) => Object.keys(frame)));
+		expect(properties).toEqual(new Set(["opacity", "transform"]));
+	});
+});
+
+describe("crossfade", () => {
+	it("fades the first element out and the second in, over the fast duration by default", () => {
+		const fromAnimate = vi.fn().mockReturnValue({} as Animation);
+		const toAnimate = vi.fn().mockReturnValue({} as Animation);
+		const from = document.createElement("div");
+		const to = document.createElement("div");
+		from.animate = fromAnimate;
+		to.animate = toAnimate;
+
+		crossfade(from, to);
+
+		expect(fromAnimate.mock.calls[0][0]).toEqual([{ opacity: 1 }, { opacity: 0 }]);
+		expect(toAnimate.mock.calls[0][0]).toEqual([{ opacity: 0 }, { opacity: 1 }]);
+		expect(fromAnimate.mock.calls[0][1].duration).toBe(duration.fast);
+		expect(toAnimate.mock.calls[0][1].duration).toBe(duration.fast);
 	});
 });
