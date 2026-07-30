@@ -59,6 +59,13 @@
     ],
     "icon": "icons/icons/mac/icon.icns",
     "artifactName": "${productName}-Mac-${arch}-${version}-Installer.${ext}",
+    // onnxruntime-node ships prebuilt binaries for every platform under
+    // node_modules/onnxruntime-node/bin/napi-v*/{darwin,linux,win32}/ — only this
+    // platform's own binaries (darwin) are needed at runtime, so drop the others.
+    "files": [
+      "!**/node_modules/onnxruntime-node/bin/napi-v*/win32/**",
+      "!**/node_modules/onnxruntime-node/bin/napi-v*/linux/**"
+    ],
     "extraResources": [
       {
         "from": "electron/native/bin",
@@ -83,7 +90,13 @@
     "icon": "icons/icons/png",
     "artifactName": "${productName}-Linux-${version}.${ext}",
     "maintainer": "Eduardo Augusto Lima Bueno <eduardoaugustolimabueno@outlook.com.br>",
-    "category": "AudioVideo"
+    "category": "AudioVideo",
+    // See the "mac" block above: only linux's own onnxruntime-node binaries are
+    // needed here, so drop darwin's and win32's.
+    "files": [
+      "!**/node_modules/onnxruntime-node/bin/napi-v*/darwin/**",
+      "!**/node_modules/onnxruntime-node/bin/napi-v*/win32/**"
+    ]
   },
   "win": {
     "target": [
@@ -91,6 +104,12 @@
     ],
     "icon": "icons/icons/win/icon.ico",
     "artifactName": "${productName}.Setup.${version}.${ext}",
+    // See the "mac" block above: only win32's own onnxruntime-node binaries are
+    // needed here, so drop darwin's and linux's.
+    "files": [
+      "!**/node_modules/onnxruntime-node/bin/napi-v*/darwin/**",
+      "!**/node_modules/onnxruntime-node/bin/napi-v*/linux/**"
+    ],
     "extraResources": [
       {
         "from": "electron/native/bin",
