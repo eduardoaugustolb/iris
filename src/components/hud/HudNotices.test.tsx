@@ -67,4 +67,42 @@ describe("HudNotices", () => {
 		fireEvent.click(screen.getByText("softwareEncoderFallback.dontShowAgain"));
 		expect(onDismiss).toHaveBeenCalledWith(true);
 	});
+
+	it("system locale prompt panel carries electronNoDrag class", () => {
+		const setSystemLocalePromptEl = vi.fn();
+		render(
+			<HudNotices
+				t={t}
+				systemLocaleSuggestion="pt-BR"
+				suggestedLanguageName="Português"
+				onAcceptSystemLocale={vi.fn()}
+				onDismissSystemLocale={vi.fn()}
+				setSystemLocalePromptEl={setSystemLocalePromptEl}
+				softwareEncoderFallbackNoticeVisible={false}
+				onDismissSoftwareFallback={vi.fn()}
+				setSoftwareFallbackNoticeEl={vi.fn()}
+			/>,
+		);
+		const panelElement = setSystemLocalePromptEl.mock.calls[0][0] as HTMLElement;
+		expect(panelElement.className).toContain("electronNoDrag");
+	});
+
+	it("software encoder fallback panel carries electronNoDrag class", () => {
+		const setSoftwareFallbackNoticeEl = vi.fn();
+		render(
+			<HudNotices
+				t={t}
+				systemLocaleSuggestion={null}
+				suggestedLanguageName=""
+				onAcceptSystemLocale={vi.fn()}
+				onDismissSystemLocale={vi.fn()}
+				setSystemLocalePromptEl={vi.fn()}
+				softwareEncoderFallbackNoticeVisible={true}
+				onDismissSoftwareFallback={vi.fn()}
+				setSoftwareFallbackNoticeEl={setSoftwareFallbackNoticeEl}
+			/>,
+		);
+		const panelElement = setSoftwareFallbackNoticeEl.mock.calls[0][0] as HTMLElement;
+		expect(panelElement.className).toContain("electronNoDrag");
+	});
 });

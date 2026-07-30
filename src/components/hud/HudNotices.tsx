@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import type { useScopedT } from "@/contexts/I18nContext";
 import { Glass } from "@/design/glass/Glass";
+import styles from "./hud.module.css";
 
 export interface HudNoticesProps {
 	t: ReturnType<typeof useScopedT>;
@@ -34,7 +35,7 @@ export function HudNotices({
 					level={2}
 					ref={setSystemLocalePromptEl}
 					data-hud-interactive="true"
-					className="w-full p-3 text-white animate-in fade-in-0 zoom-in-95 duration-200"
+					className={`w-full p-3 text-white animate-in fade-in-0 zoom-in-95 duration-200 ${styles.electronNoDrag}`}
 				>
 					<div className="text-[13px] font-semibold text-white">
 						{t("systemLanguagePrompt.title")}
@@ -69,7 +70,7 @@ export function HudNotices({
 					level={2}
 					ref={setSoftwareFallbackNoticeEl}
 					data-hud-interactive="true"
-					className="w-full p-3 text-white animate-in fade-in-0 zoom-in-95 duration-200"
+					className={`w-full p-3 text-white animate-in fade-in-0 zoom-in-95 duration-200 ${styles.electronNoDrag}`}
 				>
 					<div className="text-[13px] font-semibold text-white">
 						{t("softwareEncoderFallback.title")}
