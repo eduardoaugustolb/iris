@@ -4,6 +4,7 @@ import { createRef, useRef, useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { HudOverlay, type HudOverlayProps } from "./HudOverlay";
 import { HudSidebar } from "./HudSidebar";
+import { RecordingControls } from "./RecordingControls";
 import { SourceAudioControls } from "./SourceAudioControls";
 
 const t = ((key: string) => key) as HudOverlayProps["t"];
@@ -145,6 +146,7 @@ describe("HudOverlay", () => {
 		// invocations directly, independent of commits or DOM diffing.
 		const sidebarTypeSpy = vi.spyOn(HudSidebar, "type" as never);
 		const sourceAudioTypeSpy = vi.spyOn(SourceAudioControls, "type" as never);
+		const recordingControlsTypeSpy = vi.spyOn(RecordingControls, "type" as never);
 
 		function Wrapper() {
 			const [elapsedSeconds, setElapsedSeconds] = useState(1);
@@ -177,6 +179,7 @@ describe("HudOverlay", () => {
 		render(<Wrapper />);
 		const sidebarBaseline = sidebarTypeSpy.mock.calls.length;
 		const sourceAudioBaseline = sourceAudioTypeSpy.mock.calls.length;
+		const recordingControlsBaseline = recordingControlsTypeSpy.mock.calls.length;
 
 		fireEvent.click(screen.getByText("tick"));
 		fireEvent.click(screen.getByText("tick"));
@@ -187,7 +190,10 @@ describe("HudOverlay", () => {
 		// Positive control, in the same test run: the timer's own container
 		// (RecordingControls) IS expected to re-render every tick, since its
 		// elapsedSeconds prop genuinely changes — that's the whole point of
-		// isolating it. If this were 0 too, the harness itself would be broken.
+		// isolating it. Measured the same way as the assertions above, so the two
+		// zeroes can't be passing vacuously because the harness never re-rendered
+		// anything at all.
+		expect(recordingControlsTypeSpy.mock.calls.length - recordingControlsBaseline).toBe(2);
 		expect(screen.getByTestId("launch-record-button")).toBeInTheDocument();
 	});
 });

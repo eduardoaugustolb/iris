@@ -24,7 +24,7 @@ function sourceFiles(dir: string): string[] {
 			// Skip subdirectories of components except hud, and walk components itself
 			if (relative === "components") return sourceFiles(full);
 
-			// Skip other legacy directories
+			// Every other subdirectory of components/ is still legacy — skip it.
 			if (relative.startsWith("components" + path.sep)) return [];
 
 			return LEGACY_ALLOWLIST.includes(relative) ? [] : sourceFiles(full);

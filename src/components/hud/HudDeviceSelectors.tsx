@@ -2,9 +2,16 @@ import { AudioLevelMeter } from "@/components/ui/audio-level-meter";
 import type { useScopedT } from "@/contexts/I18nContext";
 import { Glass } from "@/design/glass/Glass";
 import { Icon } from "@/design/icons/Icon";
+import { duration, easing } from "@/design/tokens/motion";
 import styles from "./hud.module.css";
 
-const HUD_DEVICE_POPUP_GAP = 28;
+/**
+ * Vertical tray gap (px) between the bar and this popup: the bar's `bottom-5`
+ * (20px) plus an 8px gap. Exported because LaunchWindow's `measureHudSize`
+ * must reproduce the exact same offset when sizing the overlay window — two
+ * private copies would silently drift and misalign the popup.
+ */
+export const HUD_DEVICE_POPUP_GAP = 28;
 
 export interface HudDeviceSelectorsProps {
 	t: ReturnType<typeof useScopedT>;
@@ -57,12 +64,12 @@ export function HudDeviceSelectors(props: HudDeviceSelectorsProps) {
 				<div
 					style={{
 						width: props.micExpanded ? "240px" : "140px",
-						transition: "width 300ms ease",
+						transition: `width ${duration.standard}ms ${easing.standard}`,
 					}}
 				>
 					<Glass
 						level={2}
-						className={`flex h-9 items-center gap-2 px-3 py-1.5 transition-all duration-300 w-full h-full ${!props.micExpanded ? "opacity-60 grayscale-[0.5]" : "opacity-100"}`}
+						className={`flex h-9 items-center gap-2 px-3 py-1.5 transition-all duration-[280ms] ease-[cubic-bezier(0.32,0.72,0,1)] w-full h-full ${!props.micExpanded ? "opacity-60 grayscale-[0.5]" : "opacity-100"}`}
 						onMouseEnter={props.onMicMouseEnter}
 						onMouseLeave={props.onMicMouseLeave}
 						onFocus={props.onMicFocus}
@@ -95,7 +102,7 @@ export function HudDeviceSelectors(props: HudDeviceSelectorsProps) {
 						</div>
 						<AudioLevelMeter
 							level={props.micLevel}
-							className={`${props.micExpanded ? "w-16" : "w-8"} h-2 transition-all duration-300`}
+							className={`${props.micExpanded ? "w-16" : "w-8"} h-2 transition-all duration-[280ms] ease-[cubic-bezier(0.32,0.72,0,1)]`}
 						/>
 					</Glass>
 				</div>
@@ -105,12 +112,12 @@ export function HudDeviceSelectors(props: HudDeviceSelectorsProps) {
 				<div
 					style={{
 						width: props.webcamExpanded ? "240px" : "140px",
-						transition: "width 300ms ease",
+						transition: `width ${duration.standard}ms ${easing.standard}`,
 					}}
 				>
 					<Glass
 						level={2}
-						className={`flex h-9 items-center gap-2 px-3 py-1.5 transition-all duration-300 w-full h-full ${!props.webcamExpanded ? "opacity-60 grayscale-[0.5]" : "opacity-100"}`}
+						className={`flex h-9 items-center gap-2 px-3 py-1.5 transition-all duration-[280ms] ease-[cubic-bezier(0.32,0.72,0,1)] w-full h-full ${!props.webcamExpanded ? "opacity-60 grayscale-[0.5]" : "opacity-100"}`}
 						onMouseEnter={props.onWebcamMouseEnter}
 						onMouseLeave={props.onWebcamMouseLeave}
 						onFocus={props.onWebcamFocus}

@@ -35,7 +35,7 @@ export function HudNotices({
 					level={2}
 					ref={setSystemLocalePromptEl}
 					data-hud-interactive="true"
-					className={`w-full p-3 text-white animate-in fade-in-0 zoom-in-95 duration-200 ${styles.electronNoDrag}`}
+					className={`w-full p-3 text-white animate-in fade-in-0 zoom-in-95 duration-[280ms] ${styles.electronNoDrag}`}
 				>
 					<div className="text-[13px] font-semibold text-white">
 						{t("systemLanguagePrompt.title")}
@@ -70,7 +70,7 @@ export function HudNotices({
 					level={2}
 					ref={setSoftwareFallbackNoticeEl}
 					data-hud-interactive="true"
-					className={`w-full p-3 text-white animate-in fade-in-0 zoom-in-95 duration-200 ${styles.electronNoDrag}`}
+					className={`w-full p-3 text-white animate-in fade-in-0 zoom-in-95 duration-[280ms] ${styles.electronNoDrag}`}
 				>
 					<div className="text-[13px] font-semibold text-white">
 						{t("softwareEncoderFallback.title")}
