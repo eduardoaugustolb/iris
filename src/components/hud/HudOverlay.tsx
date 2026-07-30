@@ -1,6 +1,8 @@
+import { ColumnsIcon } from "@phosphor-icons/react/dist/csr/Columns";
+import { DotsSixVerticalIcon } from "@phosphor-icons/react/dist/csr/DotsSixVertical";
+import { RowsIcon } from "@phosphor-icons/react/dist/csr/Rows";
 import type { useScopedT } from "@/contexts/I18nContext";
 import { Glass } from "@/design/glass/Glass";
-import { Icon } from "@/design/icons/Icon";
 import { HudDeviceSelectors, type HudDeviceSelectorsProps } from "./HudDeviceSelectors";
 import { HudNotices, type HudNoticesProps } from "./HudNotices";
 import { HudSidebar, type HudSidebarProps } from "./HudSidebar";
@@ -63,7 +65,7 @@ export function HudOverlay(props: HudOverlayProps) {
 					onPointerUp={props.onDragPointerUp}
 					onPointerCancel={props.onDragPointerCancel}
 				>
-					<Icon name="drag-handle" className="text-white/30" />
+					<DotsSixVerticalIcon size={20} weight="regular" className="text-white/30" />
 				</div>
 
 				<button
@@ -78,10 +80,11 @@ export function HudOverlay(props: HudOverlayProps) {
 					className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-150 cursor-pointer text-white hover:bg-white/10 active:scale-95 ${styles.electronNoDrag}`}
 					onClick={props.onToggleTrayLayout}
 				>
-					<Icon
-						name={props.trayLayout === "horizontal" ? "tray-columns" : "tray-rows"}
-						className="text-white/60"
-					/>
+					{props.trayLayout === "horizontal" ? (
+						<ColumnsIcon size={20} weight="regular" className="text-white/60" />
+					) : (
+						<RowsIcon size={20} weight="regular" className="text-white/60" />
+					)}
 				</button>
 
 				<SourceAudioControls {...props.sourceAudio} />

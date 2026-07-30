@@ -1,7 +1,7 @@
+import { CaretDownIcon } from "@phosphor-icons/react/dist/csr/CaretDown";
 import { AudioLevelMeter } from "@/components/ui/audio-level-meter";
 import type { useScopedT } from "@/contexts/I18nContext";
 import { Glass } from "@/design/glass/Glass";
-import { Icon } from "@/design/icons/Icon";
 import { duration, easing } from "@/design/tokens/motion";
 import styles from "./hud.module.css";
 
@@ -93,9 +93,9 @@ export function HudDeviceSelectors(props: HudDeviceSelectorsProps) {
 								))}
 							</select>
 							{props.micExpanded && (
-								<Icon
-									name="chevron-down"
+								<CaretDownIcon
 									size={16}
+									weight="regular"
 									className="absolute right-1.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none"
 								/>
 							)}
@@ -159,9 +159,9 @@ export function HudDeviceSelectors(props: HudDeviceSelectorsProps) {
 												</option>
 											))}
 										</select>
-										<Icon
-											name="chevron-down"
+										<CaretDownIcon
 											size={16}
+											weight="regular"
 											className="absolute right-1.5 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none"
 										/>
 									</>

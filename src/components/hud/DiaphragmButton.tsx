@@ -1,6 +1,6 @@
 import { ApertureIcon } from "@phosphor-icons/react/dist/csr/Aperture";
+import { CircleNotchIcon } from "@phosphor-icons/react/dist/csr/CircleNotch";
 import { useEffect, useRef } from "react";
-import { Icon } from "@/design/icons/Icon";
 import { crossfade } from "@/design/motion/animate";
 import { color } from "@/design/tokens/color";
 import { duration, easing } from "@/design/tokens/motion";
@@ -119,7 +119,7 @@ export function DiaphragmButton({
 					justifyContent: "center",
 				}}
 			>
-				<ApertureIcon size={20} weight="regular" color={color.brandPrimary} />
+				<ApertureIcon size={20} weight="regular" color={color.textPrimary} />
 			</span>
 			<span
 				ref={dotRef}
@@ -139,7 +139,7 @@ export function DiaphragmButton({
 			{saving && (
 				<>
 					<span data-testid="launch-record-saving-spinner" className="flex animate-spin">
-						<Icon name="spinner" className="text-white/80" />
+						<CircleNotchIcon size={20} weight="regular" className="text-white/80" />
 					</span>
 					<span className="select-none text-xs font-semibold text-white/80">{savingLabel}</span>
 				</>

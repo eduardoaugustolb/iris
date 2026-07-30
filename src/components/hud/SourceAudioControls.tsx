@@ -1,6 +1,13 @@
+import { CursorIcon } from "@phosphor-icons/react/dist/csr/Cursor";
+import { MicrophoneIcon } from "@phosphor-icons/react/dist/csr/Microphone";
+import { MicrophoneSlashIcon } from "@phosphor-icons/react/dist/csr/MicrophoneSlash";
+import { MonitorIcon } from "@phosphor-icons/react/dist/csr/Monitor";
+import { SpeakerHighIcon } from "@phosphor-icons/react/dist/csr/SpeakerHigh";
+import { SpeakerSlashIcon } from "@phosphor-icons/react/dist/csr/SpeakerSlash";
+import { VideoCameraIcon } from "@phosphor-icons/react/dist/csr/VideoCamera";
+import { VideoCameraSlashIcon } from "@phosphor-icons/react/dist/csr/VideoCameraSlash";
 import { memo } from "react";
 import type { useScopedT } from "@/contexts/I18nContext";
-import { Icon } from "@/design/icons/Icon";
 import { color } from "@/design/tokens/color";
 import styles from "./hud.module.css";
 
@@ -46,7 +53,7 @@ export const SourceAudioControls = memo(function SourceAudioControls(
 				title={props.selectedSource}
 				aria-label={props.selectedSource}
 			>
-				<Icon name="monitor" className="text-white/80" />
+				<MonitorIcon size={20} weight="regular" className="text-white/80" />
 				<span
 					className={`${props.trayLayout === "vertical" ? "sr-only" : "max-w-[86px]"} truncate text-[11px] font-medium text-white/75`}
 				>
@@ -68,11 +75,15 @@ export const SourceAudioControls = memo(function SourceAudioControls(
 							: props.t("audio.enableSystemAudio")
 					}
 				>
-					<Icon
-						name={props.systemAudioEnabled ? "volume-on" : "volume-off"}
-						className={props.systemAudioEnabled ? "" : "text-white/40"}
-						style={activeStyle(props.systemAudioEnabled)}
-					/>
+					{props.systemAudioEnabled ? (
+						<SpeakerHighIcon
+							size={20}
+							weight="regular"
+							style={activeStyle(props.systemAudioEnabled)}
+						/>
+					) : (
+						<SpeakerSlashIcon size={20} weight="regular" className="text-white/40" />
+					)}
 				</button>
 				<button
 					data-testid="launch-microphone-button"
@@ -85,11 +96,15 @@ export const SourceAudioControls = memo(function SourceAudioControls(
 							: props.t("audio.enableMicrophone")
 					}
 				>
-					<Icon
-						name={props.microphoneEnabled ? "microphone" : "microphone-off"}
-						className={props.microphoneEnabled ? "" : "text-white/40"}
-						style={activeStyle(props.microphoneEnabled)}
-					/>
+					{props.microphoneEnabled ? (
+						<MicrophoneIcon
+							size={20}
+							weight="regular"
+							style={activeStyle(props.microphoneEnabled)}
+						/>
+					) : (
+						<MicrophoneSlashIcon size={20} weight="regular" className="text-white/40" />
+					)}
 				</button>
 				<button
 					data-testid="launch-webcam-button"
@@ -100,11 +115,11 @@ export const SourceAudioControls = memo(function SourceAudioControls(
 						props.webcamEnabled ? props.t("webcam.disableWebcam") : props.t("webcam.enableWebcam")
 					}
 				>
-					<Icon
-						name={props.webcamEnabled ? "camera" : "camera-off"}
-						className={props.webcamEnabled ? "" : "text-white/40"}
-						style={activeStyle(props.webcamEnabled)}
-					/>
+					{props.webcamEnabled ? (
+						<VideoCameraIcon size={20} weight="regular" style={activeStyle(props.webcamEnabled)} />
+					) : (
+						<VideoCameraSlashIcon size={20} weight="regular" className="text-white/40" />
+					)}
 				</button>
 				{props.supportsCursorModeToggle && (
 					<button
@@ -118,8 +133,9 @@ export const SourceAudioControls = memo(function SourceAudioControls(
 								: props.t("cursor.useEditableCursor")
 						}
 					>
-						<Icon
-							name="cursor"
+						<CursorIcon
+							size={20}
+							weight="regular"
 							className={props.cursorCaptureMode === "editable-overlay" ? "" : "text-white/40"}
 							style={activeStyle(props.cursorCaptureMode === "editable-overlay")}
 						/>

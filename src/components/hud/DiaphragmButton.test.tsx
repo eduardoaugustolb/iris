@@ -94,7 +94,7 @@ describe("DiaphragmButton", () => {
 
 		const spinner = screen.getByTestId("launch-record-saving-spinner");
 		expect(spinner).toBeInTheDocument();
-		expect(spinner.querySelector("use")?.getAttribute("href")).toBe("#icon-spinner");
+		expect(spinner.querySelector("svg")).toBeInTheDocument();
 		expect(spinner.className).toContain("animate-spin");
 		const button = screen.getByTestId("launch-record-button");
 		expect(button.textContent).toContain("Saving…");
