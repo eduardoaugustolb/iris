@@ -208,6 +208,10 @@ export function DiaphragmButton({
 				style={{
 					opacity: bladesHidden ? 0 : hasSelectedSource ? 1 : 0.45,
 					position: recording || saving ? "absolute" : "static",
+					inset: recording || saving ? 0 : undefined,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
 				}}
 			>
 				<DiaphragmBlades bladeRefs={bladeRefs} />
@@ -222,6 +226,9 @@ export function DiaphragmButton({
 					background: color.semanticRecording,
 					opacity: recording && !saving ? 1 : 0,
 					position: recording && !saving ? "static" : "absolute",
+					top: recording && !saving ? undefined : "50%",
+					left: recording && !saving ? undefined : "50%",
+					transform: recording && !saving ? undefined : "translate(-50%, -50%)",
 				}}
 			/>
 			{saving && (

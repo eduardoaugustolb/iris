@@ -14,7 +14,7 @@
 
 **O que NÃO fazer:**
 - Não usar a expressão "liquid glass" em nenhum copy visível ao usuário.
-- Não usar ícones de câmera/filme genéricos (câmera de cinema, claquete, etc). O vocabulário visual vem do olho/óptica: abertura (aperture), diafragma, foco, lente — nunca de forma literal ou clichê.
+- Não usar ícones de câmera/filme genéricos (câmera de cinema, claquete, etc). O vocabulário visual vem do olho/óptica: abertura (aperture), diafragma, foco, lente — nunca de forma literal ou clichê. **Exceção deliberada:** o botão "abrir estúdio/editor" do HUD usa uma claquete — decisão consciente de 2026-07-30 porque as alternativas dentro do vocabulário óptico (lente, foco+seta) não comunicaram "editar" com clareza suficiente em teste real. Não usar claquete em nenhum outro lugar do produto.
 - Não usar vermelho como cor de marca. Vermelho é reservado exclusivamente ao estado semântico "gravando" (ver seção 3).
 
 ---
