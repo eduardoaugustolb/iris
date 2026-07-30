@@ -163,4 +163,95 @@ describe("DiaphragmButton", () => {
 
 		Element.prototype.animate = originalAnimate;
 	});
+
+	it("uses the standard easing token (never implicit linear) for the dot's reveal animation", () => {
+		mockReducedMotion(false);
+		const animate = vi.fn().mockReturnValue({ cancel: vi.fn() } as unknown as Animation);
+		const originalAnimate = Element.prototype.animate;
+		Element.prototype.animate = animate;
+
+		const { rerender } = render(
+			<DiaphragmButton
+				recording={false}
+				paused={false}
+				saving={false}
+				elapsedSeconds={0}
+				hasSelectedSource={true}
+				title="Start"
+				onClick={vi.fn()}
+			/>,
+		);
+		rerender(
+			<DiaphragmButton
+				recording={true}
+				paused={false}
+				saving={false}
+				elapsedSeconds={0}
+				hasSelectedSource={true}
+				title="Recording"
+				onClick={vi.fn()}
+			/>,
+		);
+
+		const dotRevealCall = animate.mock.calls.find(
+			([, options]) => options?.delay === duration.slow - duration.fast,
+		);
+		expect(dotRevealCall?.[1]).toMatchObject({
+			duration: duration.fast,
+			easing: easing.standard,
+		});
+
+		Element.prototype.animate = originalAnimate;
+	});
+
+	it("cancels the blade animations on stop so the diaphragm returns to its static appearance", () => {
+		mockReducedMotion(false);
+		const cancel = vi.fn();
+		const animate = vi.fn().mockReturnValue({ cancel } as unknown as Animation);
+		const originalAnimate = Element.prototype.animate;
+		Element.prototype.animate = animate;
+
+		const { rerender } = render(
+			<DiaphragmButton
+				recording={false}
+				paused={false}
+				saving={false}
+				elapsedSeconds={0}
+				hasSelectedSource={true}
+				title="Start"
+				onClick={vi.fn()}
+			/>,
+		);
+		rerender(
+			<DiaphragmButton
+				recording={true}
+				paused={false}
+				saving={false}
+				elapsedSeconds={0}
+				hasSelectedSource={true}
+				title="Recording"
+				onClick={vi.fn()}
+			/>,
+		);
+		expect(cancel).not.toHaveBeenCalled();
+
+		rerender(
+			<DiaphragmButton
+				recording={false}
+				paused={false}
+				saving={false}
+				elapsedSeconds={0}
+				hasSelectedSource={true}
+				title="Start"
+				onClick={vi.fn()}
+			/>,
+		);
+
+		// One cancel() per blade — the closeDiaphragm animations are `fill:
+		// "forwards"`, so without cancelling them the blades stay pinned at
+		// their closed opacity/transform even after the wrapper fades back in.
+		expect(cancel).toHaveBeenCalledTimes(6);
+
+		Element.prototype.animate = originalAnimate;
+	});
 });

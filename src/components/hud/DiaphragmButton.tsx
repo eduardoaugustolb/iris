@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { closeDiaphragm, crossfade, prefersReducedMotion } from "@/design/motion/animate";
 import { color } from "@/design/tokens/color";
-import { duration } from "@/design/tokens/motion";
+import { duration, easing } from "@/design/tokens/motion";
 import { RecordingTimer } from "./RecordingTimer";
 
 export interface DiaphragmButtonProps {
@@ -62,6 +62,7 @@ export function DiaphragmButton({
 	onClick,
 }: DiaphragmButtonProps) {
 	const bladeRefs = useRef<(SVGPathElement | null)[]>([]);
+	const bladeAnimationsRef = useRef<Animation[]>([]);
 	const dotRef = useRef<HTMLSpanElement | null>(null);
 	const bladesWrapperRef = useRef<HTMLSpanElement | null>(null);
 	const wasRecording = useRef(recording);
@@ -78,14 +79,23 @@ export function DiaphragmButton({
 			if (prefersReducedMotion()) {
 				crossfade(bladesWrapperRef.current, dotRef.current);
 			} else {
-				closeDiaphragm(blades);
+				bladeAnimationsRef.current = closeDiaphragm(blades);
 				dotRef.current.animate([{ opacity: 0 }, { opacity: 1 }], {
 					duration: duration.fast,
 					delay: duration.slow - duration.fast,
+					easing: easing.standard,
 					fill: "forwards",
 				});
 			}
 		} else if (stoppedRecording) {
+			// closeDiaphragm's blade animations are `fill: "forwards"`, so each
+			// blade is left pinned at its closed opacity/transform until its
+			// Animation is explicitly cancelled — otherwise the persisted effect
+			// outlives the wrapper's opacity and the diaphragm never comes back.
+			for (const animation of bladeAnimationsRef.current) {
+				animation.cancel();
+			}
+			bladeAnimationsRef.current = [];
 			crossfade(dotRef.current, bladesWrapperRef.current);
 		}
 	}, [recording]);
@@ -98,8 +108,8 @@ export function DiaphragmButton({
 			title={title}
 			aria-label={title}
 			onClick={onClick}
-			className="relative flex items-center justify-center gap-1.5 rounded-full p-2 transition-[min-width] duration-150"
-			style={{ minWidth: recording || saving ? 78 : 36 }}
+			className="relative flex items-center justify-center gap-1.5 rounded-full p-2 transition-[min-width]"
+			style={{ minWidth: recording || saving ? 78 : 36, transitionDuration: `${duration.fast}ms` }}
 		>
 			<span
 				ref={bladesWrapperRef}
