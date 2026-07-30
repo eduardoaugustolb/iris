@@ -24,7 +24,23 @@ export type IconName =
 	| "check"
 	| "folder"
 	| "chevron-right"
-	| "drag-handle";
+	| "drag-handle"
+	| "monitor"
+	| "volume-on"
+	| "volume-off"
+	| "microphone-off"
+	| "camera-off"
+	| "cursor"
+	| "resume"
+	| "restart"
+	| "cancel"
+	| "chevron-down"
+	| "tray-columns"
+	| "tray-rows"
+	| "language"
+	| "notes"
+	| "lens"
+	| "spinner";
 
 export interface IconProps {
 	name: IconName;

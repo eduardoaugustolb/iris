@@ -21,6 +21,22 @@ const NAMES: IconName[] = [
 	"folder",
 	"chevron-right",
 	"drag-handle",
+	"monitor",
+	"volume-on",
+	"volume-off",
+	"microphone-off",
+	"camera-off",
+	"cursor",
+	"resume",
+	"restart",
+	"cancel",
+	"chevron-down",
+	"tray-columns",
+	"tray-rows",
+	"language",
+	"notes",
+	"lens",
+	"spinner",
 ];
 
 describe("sprite", () => {
