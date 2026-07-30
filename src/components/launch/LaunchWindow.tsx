@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useI18n, useScopedT } from "@/contexts/I18nContext";
 import { getAvailableLocales, getLocaleName } from "@/i18n/loader";
 import { loadUserPreferences, saveUserPreferences } from "@/lib/userPreferences";
@@ -8,18 +8,19 @@ import { useCameraDevices } from "../../hooks/useCameraDevices";
 import { useMicrophoneDevices } from "../../hooks/useMicrophoneDevices";
 import { useScreenRecorder } from "../../hooks/useScreenRecorder";
 import { requestCameraAccess } from "../../lib/requestCameraAccess";
+import { HUD_DEVICE_POPUP_GAP } from "../hud/HudDeviceSelectors";
 import { HudOverlay } from "../hud/HudOverlay";
 import { openSourceSelectorWithPermissionRetry } from "./openSourceSelectorFlow";
 
-// Vertical tray gap (px): bar's `bottom-5` (20px) plus an 8px gap.
-const HUD_DEVICE_POPUP_GAP = 28;
 // Horizontal layout: mirrors the `bottom-[68px]` class on the popup element.
 const HUD_DEVICE_POPUP_HORIZONTAL_BOTTOM = 68;
 
 /** Launches the floating recording HUD and its recorder controls. */
 export function LaunchWindow() {
 	const t = useScopedT("launch");
-	const availableLocales = getAvailableLocales();
+	// Memoised for identity, not cost: `getAvailableLocales()` can hand back a
+	// fresh array, and this value is a prop of the memoised HudSidebar.
+	const availableLocales = useMemo(() => getAvailableLocales(), []);
 	const {
 		locale,
 		setLocale,
@@ -459,7 +460,7 @@ export function LaunchWindow() {
 		};
 	}, [applySelectedSource, recording, toggleRecording]);
 
-	const openSourceSelector = async () => {
+	const openSourceSelector = useCallback(async () => {
 		if (window.electronAPI) {
 			return await openSourceSelectorWithPermissionRetry({
 				openSourceSelector: () => window.electronAPI.openSourceSelector(),
@@ -468,9 +469,9 @@ export function LaunchWindow() {
 		}
 
 		return { opened: false, reason: "electron-api-unavailable" };
-	};
+	}, []);
 
-	const handleRecordButtonClick = () => {
+	const handleRecordButtonClick = useCallback(() => {
 		if (saving) {
 			return;
 		}
@@ -489,30 +490,30 @@ export function LaunchWindow() {
 		}
 
 		toggleRecording();
-	};
+	}, [saving, hasSelectedSource, recording, openSourceSelector, toggleRecording]);
 
-	const sendHudOverlayHide = () => {
+	const sendHudOverlayHide = useCallback(() => {
 		if (window.electronAPI && window.electronAPI.hudOverlayHide) {
 			window.electronAPI.hudOverlayHide();
 		}
-	};
-	const sendHudOverlayClose = () => {
+	}, []);
+	const sendHudOverlayClose = useCallback(() => {
 		if (window.electronAPI && window.electronAPI.hudOverlayClose) {
 			window.electronAPI.hudOverlayClose();
 		}
-	};
+	}, []);
 	/** Switches the HUD between horizontal and vertical tray layouts. */
-	const toggleTrayLayout = () => {
+	const toggleTrayLayout = useCallback(() => {
 		const nextLayout = trayLayout === "horizontal" ? "vertical" : "horizontal";
 		setTrayLayout(nextLayout);
 		saveUserPreferences({ trayLayout: nextLayout });
-	};
+	}, [trayLayout]);
 
-	const toggleMicrophone = () => {
+	const toggleMicrophone = useCallback(() => {
 		if (!recording && !saving) {
 			setMicrophoneEnabled(!microphoneEnabled);
 		}
-	};
+	}, [recording, saving, microphoneEnabled, setMicrophoneEnabled]);
 	const dragLastPositionRef = useRef<{ x: number; y: number } | null>(null);
 	const dragAnimationFrameRef = useRef<number | null>(null);
 	const pendingDragDeltaRef = useRef({ x: 0, y: 0 });
@@ -580,6 +581,276 @@ export function LaunchWindow() {
 		measureHudSize();
 	};
 
+	// Every one of these is spread into a React.memo'd child, so a fresh object
+	// literal per render (LaunchWindow re-renders once a second while the timer
+	// ticks) would hand each child brand-new props and turn its memo into a
+	// no-op. Keep the dependency lists exhaustive — a missing entry here is a
+	// stale-closure bug, which is strictly worse than the wasted render.
+	const notices = useMemo(
+		() => ({
+			t,
+			systemLocaleSuggestion,
+			suggestedLanguageName,
+			onAcceptSystemLocale: acceptSystemLocaleSuggestion,
+			onDismissSystemLocale: dismissSystemLocaleSuggestion,
+			setSystemLocalePromptEl,
+			softwareEncoderFallbackNoticeVisible,
+			onDismissSoftwareFallback: dismissSoftwareEncoderFallbackNotice,
+			setSoftwareFallbackNoticeEl,
+		}),
+		[
+			t,
+			systemLocaleSuggestion,
+			suggestedLanguageName,
+			acceptSystemLocaleSuggestion,
+			dismissSystemLocaleSuggestion,
+			setSystemLocalePromptEl,
+			softwareEncoderFallbackNoticeVisible,
+			dismissSoftwareEncoderFallbackNotice,
+			setSoftwareFallbackNoticeEl,
+		],
+	);
+
+	const onMicDeviceChange = useCallback(
+		(deviceId: string) => {
+			const selectedDevice = micDevices.find((d) => d.deviceId === deviceId);
+			setSelectedMicId(deviceId);
+			setMicrophoneDeviceId(deviceId);
+			setMicrophoneDeviceName(selectedDevice?.label);
+		},
+		[micDevices, setSelectedMicId, setMicrophoneDeviceId, setMicrophoneDeviceName],
+	);
+	const onCameraDeviceChange = useCallback(
+		(deviceId: string) => {
+			const device = cameraDevices.find((item) => item.deviceId === deviceId);
+			setSelectedCameraId(deviceId);
+			setWebcamDeviceId(deviceId);
+			setWebcamDeviceName(device?.label);
+		},
+		[cameraDevices, setSelectedCameraId, setWebcamDeviceId, setWebcamDeviceName],
+	);
+	const onMicMouseEnter = useCallback(() => setIsMicHovered(true), []);
+	const onMicMouseLeave = useCallback(() => setIsMicHovered(false), []);
+	const onMicFocus = useCallback(() => setIsMicFocused(true), []);
+	const onMicBlur = useCallback(() => setIsMicFocused(false), []);
+	const onWebcamMouseEnter = useCallback(() => setIsWebcamHovered(true), []);
+	const onWebcamMouseLeave = useCallback(() => setIsWebcamHovered(false), []);
+	const onWebcamFocus = useCallback(() => setIsWebcamFocused(true), []);
+	const onWebcamBlur = useCallback(() => setIsWebcamFocused(false), []);
+
+	const deviceSelectors = useMemo(
+		() => ({
+			t,
+			trayLayout,
+			hudBarHeight,
+			setDeviceSelectorEl,
+			showMicControls,
+			micExpanded,
+			onMicMouseEnter,
+			onMicMouseLeave,
+			onMicFocus,
+			onMicBlur,
+			selectedMicLabel,
+			microphoneDeviceId,
+			selectedMicId,
+			micDevices,
+			onMicDeviceChange,
+			micLevel: level,
+			showWebcamControls,
+			webcamExpanded,
+			onWebcamMouseEnter,
+			onWebcamMouseLeave,
+			onWebcamFocus,
+			onWebcamBlur,
+			selectedCameraLabel,
+			webcamDeviceId,
+			selectedCameraId,
+			cameraDevices,
+			isCameraDevicesLoading,
+			cameraDevicesError,
+			onCameraDeviceChange,
+		}),
+		[
+			t,
+			trayLayout,
+			hudBarHeight,
+			setDeviceSelectorEl,
+			showMicControls,
+			micExpanded,
+			onMicMouseEnter,
+			onMicMouseLeave,
+			onMicFocus,
+			onMicBlur,
+			selectedMicLabel,
+			microphoneDeviceId,
+			selectedMicId,
+			micDevices,
+			onMicDeviceChange,
+			level,
+			showWebcamControls,
+			webcamExpanded,
+			onWebcamMouseEnter,
+			onWebcamMouseLeave,
+			onWebcamFocus,
+			onWebcamBlur,
+			selectedCameraLabel,
+			webcamDeviceId,
+			selectedCameraId,
+			cameraDevices,
+			isCameraDevicesLoading,
+			cameraDevicesError,
+			onCameraDeviceChange,
+		],
+	);
+
+	const onToggleSystemAudio = useCallback(
+		() => setSystemAudioEnabled(!systemAudioEnabled),
+		[systemAudioEnabled, setSystemAudioEnabled],
+	);
+	const onToggleWebcam = useCallback(
+		() => void setWebcamEnabled(!webcamEnabled),
+		[webcamEnabled, setWebcamEnabled],
+	);
+	const onToggleCursorMode = useCallback(
+		() =>
+			setCursorCaptureMode(
+				cursorCaptureMode === "editable-overlay" ? "system" : "editable-overlay",
+			),
+		[cursorCaptureMode, setCursorCaptureMode],
+	);
+
+	const sourceAudio = useMemo(
+		() => ({
+			trayLayout,
+			selectedSource,
+			onOpenSourceSelector: openSourceSelector,
+			recording,
+			saving,
+			systemAudioEnabled,
+			onToggleSystemAudio,
+			microphoneEnabled,
+			onToggleMicrophone: toggleMicrophone,
+			webcamEnabled,
+			onToggleWebcam,
+			supportsCursorModeToggle,
+			cursorCaptureMode,
+			onToggleCursorMode,
+			t,
+		}),
+		[
+			trayLayout,
+			selectedSource,
+			openSourceSelector,
+			recording,
+			saving,
+			systemAudioEnabled,
+			onToggleSystemAudio,
+			microphoneEnabled,
+			toggleMicrophone,
+			webcamEnabled,
+			onToggleWebcam,
+			supportsCursorModeToggle,
+			cursorCaptureMode,
+			onToggleCursorMode,
+			t,
+		],
+	);
+
+	const recordingControls = useMemo(
+		() => ({
+			recording,
+			paused,
+			saving,
+			elapsedSeconds,
+			hasSelectedSource,
+			selectedSource,
+			t,
+			onRecordButtonClick: handleRecordButtonClick,
+			canPauseRecording,
+			onTogglePaused: togglePaused,
+			onRestart: restartRecording,
+			onCancel: cancelRecording,
+		}),
+		[
+			recording,
+			paused,
+			saving,
+			elapsedSeconds,
+			hasSelectedSource,
+			selectedSource,
+			t,
+			handleRecordButtonClick,
+			canPauseRecording,
+			togglePaused,
+			restartRecording,
+			cancelRecording,
+		],
+	);
+
+	const onOpenNotes = useCallback(() => window.electronAPI.openNotes(), []);
+	const onOpenStudio = useCallback(() => window.electronAPI.switchToEditor(), []);
+	const onToggleLanguageMenu = useCallback(() => setIsLanguageMenuOpen((open) => !open), []);
+	const onSelectLocale = useCallback(
+		(loc: string) => {
+			setLocale(loc as Parameters<typeof setLocale>[0]);
+			resolveSystemLocaleSuggestion();
+			setIsLanguageMenuOpen(false);
+		},
+		[setLocale, resolveSystemLocaleSuggestion],
+	);
+	const onLanguageMenuPointerEnter = useCallback(
+		() => setHudMouseEventsEnabled(true),
+		[setHudMouseEventsEnabled],
+	);
+	const onLanguageMenuWheel = useCallback((event: React.WheelEvent) => event.stopPropagation(), []);
+
+	const sidebar = useMemo(
+		() => ({
+			t,
+			trayLayout,
+			saving,
+			recording,
+			isLinuxHud,
+			onOpenNotes,
+			onOpenStudio,
+			languageTriggerRef,
+			activeLanguageLabel,
+			isLanguageMenuOpen,
+			onToggleLanguageMenu,
+			setLanguageMenuPanelEl,
+			languageMenuStyle,
+			availableLocales,
+			locale,
+			getLocaleName,
+			onSelectLocale,
+			onLanguageMenuPointerEnter,
+			onLanguageMenuWheel,
+			onHideHud: sendHudOverlayHide,
+			onCloseHud: sendHudOverlayClose,
+		}),
+		[
+			t,
+			trayLayout,
+			saving,
+			recording,
+			isLinuxHud,
+			onOpenNotes,
+			onOpenStudio,
+			activeLanguageLabel,
+			isLanguageMenuOpen,
+			onToggleLanguageMenu,
+			setLanguageMenuPanelEl,
+			languageMenuStyle,
+			availableLocales,
+			locale,
+			onSelectLocale,
+			onLanguageMenuPointerEnter,
+			onLanguageMenuWheel,
+			sendHudOverlayHide,
+			sendHudOverlayClose,
+		],
+	);
+
 	return (
 		<HudOverlay
 			trayLayout={trayLayout}
@@ -605,119 +876,11 @@ export function LaunchWindow() {
 			onDragPointerMove={handleHudDragPointerMove}
 			onDragPointerUp={handleHudDragPointerEnd}
 			onDragPointerCancel={handleHudDragPointerEnd}
-			notices={{
-				t,
-				systemLocaleSuggestion,
-				suggestedLanguageName,
-				onAcceptSystemLocale: acceptSystemLocaleSuggestion,
-				onDismissSystemLocale: dismissSystemLocaleSuggestion,
-				setSystemLocalePromptEl,
-				softwareEncoderFallbackNoticeVisible,
-				onDismissSoftwareFallback: dismissSoftwareEncoderFallbackNotice,
-				setSoftwareFallbackNoticeEl,
-			}}
-			deviceSelectors={{
-				t,
-				trayLayout,
-				hudBarHeight,
-				setDeviceSelectorEl,
-				showMicControls,
-				micExpanded,
-				onMicMouseEnter: () => setIsMicHovered(true),
-				onMicMouseLeave: () => setIsMicHovered(false),
-				onMicFocus: () => setIsMicFocused(true),
-				onMicBlur: () => setIsMicFocused(false),
-				selectedMicLabel,
-				microphoneDeviceId,
-				selectedMicId,
-				micDevices,
-				onMicDeviceChange: (deviceId) => {
-					const selectedDevice = micDevices.find((d) => d.deviceId === deviceId);
-					setSelectedMicId(deviceId);
-					setMicrophoneDeviceId(deviceId);
-					setMicrophoneDeviceName(selectedDevice?.label);
-				},
-				micLevel: level,
-				showWebcamControls,
-				webcamExpanded,
-				onWebcamMouseEnter: () => setIsWebcamHovered(true),
-				onWebcamMouseLeave: () => setIsWebcamHovered(false),
-				onWebcamFocus: () => setIsWebcamFocused(true),
-				onWebcamBlur: () => setIsWebcamFocused(false),
-				selectedCameraLabel,
-				webcamDeviceId,
-				selectedCameraId,
-				cameraDevices,
-				isCameraDevicesLoading,
-				cameraDevicesError,
-				onCameraDeviceChange: (deviceId) => {
-					const device = cameraDevices.find((item) => item.deviceId === deviceId);
-					setSelectedCameraId(deviceId);
-					setWebcamDeviceId(deviceId);
-					setWebcamDeviceName(device?.label);
-				},
-			}}
-			sourceAudio={{
-				trayLayout,
-				selectedSource,
-				onOpenSourceSelector: openSourceSelector,
-				recording,
-				saving,
-				systemAudioEnabled,
-				onToggleSystemAudio: () => setSystemAudioEnabled(!systemAudioEnabled),
-				microphoneEnabled,
-				onToggleMicrophone: toggleMicrophone,
-				webcamEnabled,
-				onToggleWebcam: () => void setWebcamEnabled(!webcamEnabled),
-				supportsCursorModeToggle,
-				cursorCaptureMode,
-				onToggleCursorMode: () =>
-					setCursorCaptureMode(
-						cursorCaptureMode === "editable-overlay" ? "system" : "editable-overlay",
-					),
-				t,
-			}}
-			recordingControls={{
-				recording,
-				paused,
-				saving,
-				elapsedSeconds,
-				hasSelectedSource,
-				selectedSource,
-				t,
-				onRecordButtonClick: handleRecordButtonClick,
-				canPauseRecording,
-				onTogglePaused: togglePaused,
-				onRestart: restartRecording,
-				onCancel: cancelRecording,
-			}}
-			sidebar={{
-				t,
-				trayLayout,
-				saving,
-				recording,
-				isLinuxHud,
-				onOpenNotes: () => window.electronAPI.openNotes(),
-				onOpenStudio: () => window.electronAPI.switchToEditor(),
-				languageTriggerRef,
-				activeLanguageLabel,
-				isLanguageMenuOpen,
-				onToggleLanguageMenu: () => setIsLanguageMenuOpen((open) => !open),
-				setLanguageMenuPanelEl,
-				languageMenuStyle,
-				availableLocales,
-				locale,
-				getLocaleName,
-				onSelectLocale: (loc) => {
-					setLocale(loc);
-					resolveSystemLocaleSuggestion();
-					setIsLanguageMenuOpen(false);
-				},
-				onLanguageMenuPointerEnter: () => setHudMouseEventsEnabled(true),
-				onLanguageMenuWheel: (event) => event.stopPropagation(),
-				onHideHud: sendHudOverlayHide,
-				onCloseHud: sendHudOverlayClose,
-			}}
+			notices={notices}
+			deviceSelectors={deviceSelectors}
+			sourceAudio={sourceAudio}
+			recordingControls={recordingControls}
+			sidebar={sidebar}
 		/>
 	);
 }

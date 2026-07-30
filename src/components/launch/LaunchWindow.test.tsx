@@ -1,6 +1,8 @@
 import "@testing-library/jest-dom";
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { HudSidebar } from "../hud/HudSidebar";
+import { SourceAudioControls } from "../hud/SourceAudioControls";
 import { TooltipProvider } from "../ui/tooltip";
 import { LaunchWindow } from "./LaunchWindow";
 
@@ -63,9 +65,34 @@ const recorderState = vi.hoisted(() => ({
 let selectedSourceChangedListeners: SelectedSourceChangedListener[] = [];
 let sourceSelectorClosedListeners: Array<() => void> = [];
 
-vi.mock("../../hooks/useScreenRecorder", () => ({
-	useScreenRecorder: () => recorderState.value,
-}));
+const recorderSubscribers = vi.hoisted(() => new Set<() => void>());
+
+// A real subscribable mock, not a constant: the render-budget test needs to
+// change one recorder field (elapsedSeconds) and have LaunchWindow re-render
+// exactly the way the real hook's state update would, without touching any
+// other prop.
+vi.mock("../../hooks/useScreenRecorder", async () => {
+	const { useEffect, useReducer } = await vi.importActual<typeof import("react")>("react");
+	return {
+		useScreenRecorder: () => {
+			const [, forceRender] = useReducer((n: number) => n + 1, 0);
+			useEffect(() => {
+				recorderSubscribers.add(forceRender);
+				return () => {
+					recorderSubscribers.delete(forceRender);
+				};
+			}, []);
+			return recorderState.value;
+		},
+	};
+});
+
+function setRecorderState(patch: Partial<(typeof recorderState)["value"]>) {
+	recorderState.value = { ...recorderState.value, ...patch };
+	act(() => {
+		for (const notify of recorderSubscribers) notify();
+	});
+}
 
 vi.mock("../../hooks/useMicrophoneDevices", () => ({
 	useMicrophoneDevices: () => ({
@@ -117,9 +144,11 @@ vi.mock("@/i18n/loader", () => ({
 	getLocaleName: () => "English",
 }));
 
-vi.mock("@/contexts/I18nContext", () => ({
-	useI18n: () => i18nState.value,
-	useScopedT: () => (key: string) => {
+vi.mock("@/contexts/I18nContext", () => {
+	// The real useScopedT is a useCallback, i.e. referentially stable for a given
+	// locale. The mock must be too, or `t` alone invalidates every memoised
+	// child on every render and the render-budget test measures nothing.
+	const scopedT = (key: string) => {
 		const translations: Record<string, string> = {
 			"sourceSelector.defaultSourceName": "Screen",
 			"recording.selectSource": "Please select a source to record",
@@ -154,8 +183,12 @@ vi.mock("@/contexts/I18nContext", () => ({
 			"softwareEncoderFallback.dontShowAgain": "Don't show again",
 		};
 		return translations[key] ?? key;
-	},
-}));
+	};
+	return {
+		useI18n: () => i18nState.value,
+		useScopedT: () => scopedT,
+	};
+});
 
 function renderLaunchWindow() {
 	return render(
@@ -229,6 +262,9 @@ function emitSourceSelectorClosed() {
 
 function resetLaunchMocks() {
 	vi.stubGlobal("ResizeObserver", StubResizeObserver);
+	// setRecorderState() swaps the whole object, so restore the fields it may have changed.
+	recorderState.value.recording = false;
+	recorderState.value.elapsedSeconds = 0;
 	recorderState.value.toggleRecording.mockClear();
 	recorderState.value.softwareEncoderFallbackNoticeVisible = false;
 	recorderState.value.dismissSoftwareEncoderFallbackNotice.mockClear();
@@ -575,5 +611,52 @@ describe("LaunchWindow software encoder fallback notice", () => {
 
 		expect(recorderState.value.dismissSoftwareEncoderFallbackNotice).toHaveBeenCalledTimes(1);
 		expect(recorderState.value.dismissSoftwareEncoderFallbackNotice).toHaveBeenCalledWith(true);
+	});
+});
+
+describe("LaunchWindow render budget", () => {
+	beforeEach(() => {
+		platformState.value = "darwin";
+		resetLaunchMocks();
+	});
+
+	afterEach(() => {
+		cleanup();
+		vi.unstubAllGlobals();
+		vi.restoreAllMocks();
+	});
+
+	it("does not re-render the memoized SourceAudioControls/HudSidebar subtrees on a timer tick", async () => {
+		// The equivalent HudOverlay test hand-freezes its prop objects with a
+		// useRef, so it only proves a property of a hypothetical caller. This one
+		// renders the real LaunchWindow → HudOverlay path, which is where the
+		// memoization actually has to hold: LaunchWindow re-renders once a second
+		// while recording, and a fresh prop-object literal per render would make
+		// every React.memo below it a no-op.
+		// `memo(Component)` stores the unwrapped render function on `.type`;
+		// spying on it observes real invocations, independent of commits or DOM
+		// diffing (see the note in HudOverlay.test.tsx). It must be installed
+		// BEFORE the first render: React resolves a simple-memo fiber's inner
+		// type once at mount and reuses it, so a later spy is never called.
+		const sidebarTypeSpy = vi.spyOn(HudSidebar, "type" as never);
+		const sourceAudioTypeSpy = vi.spyOn(SourceAudioControls, "type" as never);
+
+		recorderState.value = { ...recorderState.value, recording: true, elapsedSeconds: 1 };
+		renderLaunchWindow();
+		await screen.findByTestId("launch-record-button");
+
+		const sidebarBaseline = sidebarTypeSpy.mock.calls.length;
+		const sourceAudioBaseline = sourceAudioTypeSpy.mock.calls.length;
+		expect(sidebarBaseline).toBeGreaterThan(0);
+		expect(sourceAudioBaseline).toBeGreaterThan(0);
+
+		setRecorderState({ elapsedSeconds: 2 });
+		setRecorderState({ elapsedSeconds: 3 });
+		setRecorderState({ elapsedSeconds: 4 });
+
+		// Positive control: the ticks really did reach the DOM.
+		expect(screen.getByText("00:04")).toBeInTheDocument();
+		expect(sidebarTypeSpy.mock.calls.length - sidebarBaseline).toBe(0);
+		expect(sourceAudioTypeSpy.mock.calls.length - sourceAudioBaseline).toBe(0);
 	});
 });
