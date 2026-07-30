@@ -85,3 +85,22 @@ covers English and Portuguese diacritics) served by Google Fonts' CSS2 API.
 - License: SIL Open Font License 1.1
 - Source: https://fonts.google.com/specimen/Sora
 - Files: `sora-400.woff2`, `sora-700.woff2`
+
+## UI fonts
+
+The two families below are the interface typefaces (see `src/design/fonts.css`),
+aliased locally to `Iris Sans` and `Iris Mono` via `@font-face` so the rest of
+the codebase never references the upstream family name directly. Both are
+variable-weight files (single file covers weight 400 through 700), downloaded
+from Google Fonts' CSS2 API (`fonts.googleapis.com` / `fonts.gstatic.com`),
+`latin` subset.
+
+### Iris Sans (Inter Variable)
+- License: SIL Open Font License 1.1
+- Source: https://fonts.google.com/specimen/Inter
+- Files: `iris-sans-variable.woff2`
+
+### Iris Mono (JetBrains Mono Variable)
+- License: SIL Open Font License 1.1
+- Source: https://fonts.google.com/specimen/JetBrains+Mono
+- Files: `iris-mono-variable.woff2`

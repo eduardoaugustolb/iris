@@ -1,0 +1,20 @@
+/*
+ * The UI families are embedded so the interface renders identically on macOS,
+ * Windows and Linux. They are aliased to product names so swapping the
+ * underlying face later is a file change, not a codebase-wide rename.
+ */
+@font-face {
+	font-family: "Iris Sans";
+	font-style: normal;
+	font-weight: 400 700;
+	font-display: block;
+	src: url("/fonts/iris-sans-variable.woff2") format("woff2-variations");
+}
+
+@font-face {
+	font-family: "Iris Mono";
+	font-style: normal;
+	font-weight: 400 700;
+	font-display: block;
+	src: url("/fonts/iris-mono-variable.woff2") format("woff2-variations");
+}
