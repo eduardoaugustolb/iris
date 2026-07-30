@@ -18,6 +18,8 @@ OpenScreen is a free, open-source screen recorder and video editor (Electron + R
 ## Project layout
 
 - `src/` — React app: UI, editor components, timeline, i18n, captioning/cursor/exporter libs
+- `src/design/` — camada de design: tokens (fonte única em TS, geram CSS), fontes embarcadas, ícones, primitiva `Glass` e helpers de motion. Toda UI nova é construída sobre ela; os guardrails em `src/design/guardrails/` quebram o build fora dessas regras.
+- `src/lib/perf/` — instrumentação de performance. Orçamentos em `perf-budgets.json`, comandos `npm run bench:*`.
 - `electron/` — main process, IPC, recording orchestration
 - `electron/native/` — **native** capture helpers: `screencapturekit/` (Swift, macOS) and `wgc-capture/` (C++/Win32, Windows). These are built and shipped with the app, not loaded from npm
 - `docs/` — architecture, engineering roadmaps, testing guides
