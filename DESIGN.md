@@ -155,6 +155,8 @@ Janela principal do app: largura mínima 720px, altura mínima 480px. HUD de gra
 
 **Uso proibido:** nunca desenhar o diafragma totalmente fechado (viraria um ponto sem forma) nem totalmente aberto (viraria um círculo genérico) — o ângulo de referência oficial é 35% aberto, é o ponto em que a forma hexagonal do vazio central é mais legível.
 
+**Exceção deliberada (2026-07-30):** o botão de iniciar gravação no HUD usa o ícone `Aperture` de `@phosphor-icons/react` (dependência real, não path desenhado à mão) em vez de lâminas próprias animadas — duas tentativas de desenhar as 6 lâminas à mão renderizaram quebradas em produção. A transição de estado (ícone → ponto vermelho de gravação) é um crossfade simples, não a coreografia de lâminas fechando descrita acima. Ver `docs/superpowers/plans/2026-07-30-iris-hud-fase3.md` para o histórico completo da decisão.
+
 ---
 
 ## 8. Motion

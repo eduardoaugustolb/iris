@@ -32,41 +32,12 @@ export function reveal(element: Element, options: Partial<RevealOptions> = {}): 
 }
 
 /**
- * The diaphragm's signature animation (DESIGN.md section 8): every blade
- * rotates and scales to the center simultaneously. Callers must check
- * `!prefersReducedMotion()` before calling this — the reduced-motion path is
- * `crossfade`, never a scaled-down version of this rotation.
- *
- * `baseAngles[i]` is blade `i`'s own resting rotation, in degrees. It MUST be
- * passed whenever the blades are laid out as a rosette: a WAAPI `transform`
- * keyframe is a CSS declaration, and CSS beats the SVG `transform`
- * presentation attribute that gives each blade its distinct orientation. A
- * shared `rotate(0deg)` first keyframe therefore snaps all six blades onto the
- * same angle the instant the animation starts and they collapse as one stacked
- * shape instead of converging from six directions. Folding each blade's base
- * angle into its own keyframes is what keeps the rosette a rosette.
- */
-export const DIAPHRAGM_CLOSE_SWEEP_DEG = 35;
-
-export function closeDiaphragm(bladeElements: Element[], baseAngles: number[] = []): Animation[] {
-	return bladeElements.map((blade, index) => {
-		const base = baseAngles[index] ?? 0;
-		return blade.animate(
-			[
-				{ opacity: 1, transform: `rotate(${base}deg) scale(1)` },
-				{ opacity: 0, transform: `rotate(${base + DIAPHRAGM_CLOSE_SWEEP_DEG}deg) scale(0.15)` },
-			],
-			{ duration: duration.slow, easing: easing.spring, fill: "forwards" },
-		);
-	});
-}
-
-/**
  * Plain opacity crossfade between two elements occupying the same spot — used
- * for the reduced-motion diaphragm transition (both directions) and for the
- * "stop recording" transition (DESIGN.md section 8 only specifies the start
- * transition; this project's design spec, 2026-07-30-iris-hud-fase3-design.md,
- * decided stop never reverses the blade rotation).
+ * for the diaphragm's start/stop transitions (both directions). DESIGN.md
+ * section 8's original spec called for an elaborate per-blade rotation on
+ * start; that was replaced by a static Aperture glyph from `@phosphor-icons/react`
+ * plus this crossfade (2026-07-30, `docs/superpowers/plans/2026-07-30-iris-hud-fase3.md`)
+ * after repeated hand-drawn blade geometry shipped visibly broken.
  */
 export function crossfade(fromElement: Element, toElement: Element): Animation[] {
 	const options = { duration: duration.fast, easing: easing.standard, fill: "forwards" as const };
