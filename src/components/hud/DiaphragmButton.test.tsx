@@ -462,4 +462,85 @@ describe("DiaphragmButton", () => {
 
 		Element.prototype.animate = originalAnimate;
 	});
+
+	it("never fades the blades back in when the stop lands together with saving", () => {
+		mockReducedMotion(false);
+		const created: Array<{
+			element: Element;
+			keyframes: unknown;
+			cancel: ReturnType<typeof vi.fn>;
+			onfinish: null | (() => void);
+		}> = [];
+		const originalAnimate = Element.prototype.animate;
+		const animate = vi.fn(function (this: Element, keyframes: unknown) {
+			const animation = { element: this, keyframes, cancel: vi.fn(), onfinish: null };
+			created.push(animation);
+			return animation as unknown as Animation;
+		});
+		Element.prototype.animate = animate as unknown as typeof Element.prototype.animate;
+
+		const { rerender } = render(
+			<DiaphragmButton
+				recording={false}
+				paused={false}
+				saving={false}
+				elapsedSeconds={0}
+				hasSelectedSource={true}
+				savingLabel="Saving…"
+				title="Start"
+				onClick={vi.fn()}
+			/>,
+		);
+		const blades = screen.getByTestId("launch-record-button").querySelector("svg")
+			?.parentElement as HTMLElement;
+
+		rerender(
+			<DiaphragmButton
+				recording={true}
+				paused={false}
+				saving={false}
+				elapsedSeconds={0}
+				hasSelectedSource={true}
+				savingLabel="Saving…"
+				title="Recording"
+				onClick={vi.fn()}
+			/>,
+		);
+		const beforeStop = created.length;
+
+		// The real flow: `useScreenRecorder` sets recording=false and saving=true in
+		// one batched update, so the stop transition is detected in the same commit
+		// that hands the button to the spinner.
+		rerender(
+			<DiaphragmButton
+				recording={false}
+				paused={false}
+				saving={true}
+				elapsedSeconds={0}
+				hasSelectedSource={true}
+				savingLabel="Saving…"
+				title="Saving…"
+				onClick={vi.fn()}
+			/>,
+		);
+
+		const stopAnimations = created.slice(beforeStop);
+		// Nothing may animate the blades wrapper: WAAPI keyframes outrank the
+		// inline `opacity: 0`, so even a 150ms fade-in flashes the blades over the
+		// spinner.
+		expect(stopAnimations.some((a) => a.element === blades)).toBe(false);
+		// The dot still fades out — recording really did stop.
+		const dotFade = stopAnimations.find((a) => a.element !== blades);
+		expect(dotFade).toBeDefined();
+		expect(dotFade?.keyframes).toEqual([{ opacity: 1 }, { opacity: 0 }]);
+		expect(blades).toHaveStyle({ opacity: "0" });
+
+		// …and it stays hidden after that fade settles and releases its fill.
+		act(() => {
+			dotFade?.onfinish?.();
+		});
+		expect(blades).toHaveStyle({ opacity: "0" });
+
+		Element.prototype.animate = originalAnimate;
+	});
 });

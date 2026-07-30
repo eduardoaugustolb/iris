@@ -103,6 +103,17 @@ export function DiaphragmButton({
 	 * entire 420ms blade close plays invisibly.
 	 */
 	const [closing, setClosing] = useState(false);
+	const savingRef = useRef(saving);
+
+	// Declared before the transition effect on purpose: effects run in
+	// declaration order, so this mirrors `saving` for the very commit in which
+	// the stop transition is detected (the app flips `recording` off and
+	// `saving` on together). Keeping it a ref also keeps the transition effect
+	// keyed on `recording` alone — re-running it whenever `saving` toggles would
+	// clear the close animation's settle timeout mid-flight.
+	useEffect(() => {
+		savingRef.current = saving;
+	}, [saving]);
 
 	useEffect(() => {
 		const startedRecording = recording && !wasRecording.current;
@@ -149,7 +160,24 @@ export function DiaphragmButton({
 			}
 			bladeAnimationsRef.current = [];
 			setClosing(false);
-			releaseWhenFinished(crossfade(dotRef.current, bladesWrapperRef.current));
+			if (savingRef.current) {
+				// Stop-and-save: `useScreenRecorder` flips `recording` off and `saving`
+				// on in the same commit, so `bladesHidden` already pins the wrapper at
+				// opacity 0 to leave the button to the spinner. A `crossfade` here
+				// would fade the wrapper back to 1 with WAAPI keyframes, which outrank
+				// that inline style — the blades would flash over the spinner for the
+				// whole ~150ms fade. Fade only the dot out and let `bladesHidden` keep
+				// owning the wrapper.
+				releaseWhenFinished([
+					dotRef.current.animate([{ opacity: 1 }, { opacity: 0 }], {
+						duration: duration.fast,
+						easing: easing.standard,
+						fill: "forwards",
+					}),
+				]);
+			} else {
+				releaseWhenFinished(crossfade(dotRef.current, bladesWrapperRef.current));
+			}
 		}
 
 		return () => {
