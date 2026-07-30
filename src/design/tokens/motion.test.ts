@@ -27,7 +27,7 @@ describe("isWithinResponseBudget", () => {
 		expect(isWithinResponseBudget(1000)).toBe(false);
 	});
 
-	it("accepts the documented slow exception, the HUD entering and leaving", () => {
+	it("confirms the documented slow exception (HUD entering/leaving) genuinely exceeds the budget", () => {
 		expect(isWithinResponseBudget(duration.slow)).toBe(false);
 	});
 });
