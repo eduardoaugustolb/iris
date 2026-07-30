@@ -3148,7 +3148,7 @@ git commit -m "feat: add the glass surface primitive"
 - Consumes: `easing`, `duration` (Task 22).
 - Produces:
   - `function prefersReducedMotion(): boolean`
-  - `interface RevealOptions { from: { opacity: number; scale: number }; durationMs: number; easing: string }`
+  - `interface RevealOptions { durationMs: number; easing: string }`
   - `function reveal(element: Element, options?: Partial<RevealOptions>): Animation`
 
 `reveal` é o fade + micro-scale 0.98→1 que §8 define como o motion utilitário padrão. Anima só `opacity` e `transform`, que o compositor resolve sem layout nem paint.
