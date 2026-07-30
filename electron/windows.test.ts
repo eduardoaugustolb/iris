@@ -20,9 +20,11 @@ describe("window creation", () => {
 	it("creates every window with context isolation and no node integration", () => {
 		const isolation = source.match(/contextIsolation: true/g) ?? [];
 		const nodeIntegration = source.match(/nodeIntegration: false/g) ?? [];
+		const sandbox = source.match(/sandbox: true/g) ?? [];
 		const windows = source.match(/new BrowserWindow\(/g) ?? [];
 
 		expect(isolation).toHaveLength(windows.length);
 		expect(nodeIntegration).toHaveLength(windows.length);
+		expect(sandbox).toHaveLength(windows.length);
 	});
 });
