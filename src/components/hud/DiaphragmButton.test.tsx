@@ -254,4 +254,19 @@ describe("DiaphragmButton", () => {
 
 		Element.prototype.animate = originalAnimate;
 	});
+
+	it("carries the electronNoDrag class so clicking it doesn't drag the HUD window", () => {
+		render(
+			<DiaphragmButton
+				recording={false}
+				paused={false}
+				saving={false}
+				elapsedSeconds={0}
+				hasSelectedSource={true}
+				title="Start"
+				onClick={vi.fn()}
+			/>,
+		);
+		expect(screen.getByTestId("launch-record-button").className).toContain("electronNoDrag");
+	});
 });

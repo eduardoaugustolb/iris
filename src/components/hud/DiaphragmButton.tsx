@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { closeDiaphragm, crossfade, prefersReducedMotion } from "@/design/motion/animate";
 import { color } from "@/design/tokens/color";
 import { duration, easing } from "@/design/tokens/motion";
+import styles from "./hud.module.css";
 import { RecordingTimer } from "./RecordingTimer";
 
 export interface DiaphragmButtonProps {
@@ -108,7 +109,7 @@ export function DiaphragmButton({
 			title={title}
 			aria-label={title}
 			onClick={onClick}
-			className="relative flex items-center justify-center gap-1.5 rounded-full p-2 transition-[min-width]"
+			className={`relative flex items-center justify-center gap-1.5 rounded-full p-2 transition-[min-width] ${styles.electronNoDrag}`}
 			style={{ minWidth: recording || saving ? 78 : 36, transitionDuration: `${duration.fast}ms` }}
 		>
 			<span
