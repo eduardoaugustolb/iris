@@ -1,6 +1,11 @@
+import { ArrowsOutIcon } from "@phosphor-icons/react/dist/csr/ArrowsOut";
+import { ChatCircleTextIcon } from "@phosphor-icons/react/dist/csr/ChatCircleText";
+import { CursorClickIcon } from "@phosphor-icons/react/dist/csr/CursorClick";
+import { GaugeIcon } from "@phosphor-icons/react/dist/csr/Gauge";
+import { MagnifyingGlassPlusIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlassPlus";
+import { ScissorsIcon } from "@phosphor-icons/react/dist/csr/Scissors";
 import type { Span } from "dnd-timeline";
 import { useItem } from "dnd-timeline";
-import { Gauge, Maximize, MessageSquare, MousePointer2, Scissors, ZoomIn } from "lucide-react";
 import { useMemo } from "react";
 import { useScopedT } from "@/contexts/I18nContext";
 import { cn } from "@/lib/utils";
@@ -76,7 +81,7 @@ export default function Item({
 					: glassStyles.glassYellow;
 
 	const endCapColor = isZoom
-		? "#21916A"
+		? "#5E5CE6"
 		: isCameraFullscreen
 			? "#0ea5e9"
 			: isTrim
@@ -144,43 +149,44 @@ export default function Item({
 						<div className="flex items-center gap-1.5">
 							{isZoom ? (
 								<>
-									<ZoomIn className="w-3.5 h-3.5 shrink-0" />
+									<MagnifyingGlassPlusIcon size={14} className="shrink-0" />
 									<span className="text-[11px] font-semibold whitespace-nowrap">
 										{zoomCustomScale != null
 											? `${zoomCustomScale.toFixed(2)}×`
 											: ZOOM_LABELS[zoomDepth] || `${zoomDepth}×`}
 									</span>
 									{isAutoFocus && (
-										<MousePointer2
-											className="w-3 h-3 shrink-0 opacity-90"
+										<CursorClickIcon
+											size={12}
+											className="shrink-0 opacity-90"
 											aria-label="Cursor-follow"
 										/>
 									)}
 								</>
 							) : isCameraFullscreen ? (
 								<>
-									<Maximize className="w-3.5 h-3.5 shrink-0" />
+									<ArrowsOutIcon size={14} className="shrink-0" />
 									<span className="text-[11px] font-semibold whitespace-nowrap">
 										{t("labels.cameraFullscreen")}
 									</span>
 								</>
 							) : isTrim ? (
 								<>
-									<Scissors className="w-3.5 h-3.5 shrink-0" />
+									<ScissorsIcon size={14} className="shrink-0" />
 									<span className="text-[11px] font-semibold whitespace-nowrap">
 										{t("labels.trim")}
 									</span>
 								</>
 							) : isSpeed ? (
 								<>
-									<Gauge className="w-3.5 h-3.5 shrink-0" />
+									<GaugeIcon size={14} className="shrink-0" />
 									<span className="text-[11px] font-semibold whitespace-nowrap">
 										{speedValue !== undefined ? `${speedValue}×` : t("labels.speed")}
 									</span>
 								</>
 							) : (
 								<>
-									<MessageSquare className="w-3.5 h-3.5 shrink-0" />
+									<ChatCircleTextIcon size={14} className="shrink-0" />
 									<span className="text-[11px] font-semibold truncate whitespace-nowrap">
 										{children}
 									</span>
