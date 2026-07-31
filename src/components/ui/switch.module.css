@@ -1,0 +1,7 @@
+.track {
+	transition: background-color 150ms var(--ease-spring);
+}
+
+.thumb {
+	transition: transform 150ms var(--ease-spring);
+}
