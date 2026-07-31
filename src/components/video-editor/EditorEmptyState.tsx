@@ -111,7 +111,7 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 
 	return (
 		<div
-			className="flex h-full w-full flex-col items-center justify-center bg-[#09090b]"
+			className="flex h-full w-full flex-col items-center justify-center bg-[#0A0A0C]"
 			onDragOver={handleDragOver}
 			onDragLeave={handleDragLeave}
 			onDrop={handleDrop}
@@ -145,7 +145,7 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 								aria-hidden="true"
 								className="w-9 h-9 rounded-xl flex-shrink-0"
 							/>
-							<DialogTitle className="text-base font-semibold text-slate-200 leading-tight">
+							<DialogTitle className="text-base font-semibold text-[#F5F5F7] leading-tight">
 								{lastDropErrorRef.current === "unsupported-format"
 									? te("emptyState.dropErrors.unsupportedFormatTitle")
 									: te("emptyState.dropErrors.couldNotOpenTitle")}
@@ -158,10 +158,10 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 							<WarningCircleIcon
 								size={20}
 								weight="regular"
-								className="text-slate-400 flex-shrink-0"
+								className="text-[var(--text-secondary)] flex-shrink-0"
 							/>
 						</div>
-						<p className="text-sm text-slate-400 leading-relaxed">
+						<p className="text-sm text-[var(--text-secondary)] leading-relaxed">
 							{lastDropErrorRef.current === "unsupported-format"
 								? te("emptyState.dropErrors.unsupportedFormatMessage")
 								: te("emptyState.dropErrors.couldNotOpenMessage")}
@@ -171,7 +171,7 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 					<button
 						type="button"
 						onClick={() => setDropError(null)}
-						className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b]"
+						className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[var(--text-secondary)] font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0C]"
 					>
 						<XIcon size={16} weight="regular" />
 						{tc("actions.close")}
@@ -189,8 +189,8 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 				/>
 
 				<div className="flex flex-col gap-2">
-					<h2 className="text-xl font-semibold text-slate-200">{te("emptyState.title")}</h2>
-					<p className="max-w-sm text-sm leading-relaxed text-slate-500">
+					<h2 className="text-xl font-semibold text-[#F5F5F7]">{te("emptyState.title")}</h2>
+					<p className="max-w-sm text-sm leading-relaxed text-[var(--text-secondary)]">
 						{te("emptyState.description")}
 					</p>
 				</div>
@@ -200,7 +200,7 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 					<button
 						type="button"
 						onClick={handleImportVideo}
-						className="flex items-center justify-center gap-2.5 w-full px-4 py-3 rounded-xl text-white font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b] bg-[#5E5CE6] hover:bg-[#8886F0] active:bg-[#5E5CE6] focus-visible:ring-[#5E5CE6]"
+						className="flex items-center justify-center gap-2.5 w-full px-4 py-3 rounded-xl text-white font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0C] bg-[#5E5CE6] hover:bg-[#8886F0] active:bg-[#5E5CE6] focus-visible:ring-[#5E5CE6]"
 					>
 						<ArrowSquareInIcon size={16} weight="regular" />
 						{te("emptyState.importVideoButton")}
@@ -208,7 +208,7 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 					<button
 						type="button"
 						onClick={handleLoadProject}
-						className="flex items-center justify-center gap-2.5 w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b]"
+						className="flex items-center justify-center gap-2.5 w-full px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-[var(--text-secondary)] font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0C]"
 					>
 						<FolderOpenIcon size={16} weight="regular" />
 						{te("emptyState.loadProjectButton")}
@@ -216,8 +216,8 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 				</div>
 
 				<div className="flex flex-col items-center gap-2">
-					<p className="text-xs text-slate-600">{te("emptyState.supportedFormats")}</p>
-					<div className="flex items-center gap-1.5 text-xs text-slate-700 mt-4">
+					<p className="text-xs text-[var(--text-tertiary)]">{te("emptyState.supportedFormats")}</p>
+					<div className="flex items-center gap-1.5 text-xs text-[var(--text-tertiary)] mt-4">
 						<UploadIcon size={12} weight="regular" />
 						<span>{te("emptyState.dragDropHint")}</span>
 					</div>
