@@ -69,35 +69,10 @@ function sourceFiles(dir: string): string[] {
 			if (!MIGRATED_UI_PRIMITIVES.includes(entry.name)) return [];
 		}
 
-		// Inside components/video-editor specifically, only the migrated editor dialogs
-		// and configuration panels are checked — the rest of that directory is still
-		// legacy Tailwind/shadcn.
-		const inVideoEditor = relative.startsWith(path.join("components", "video-editor") + path.sep);
-		if (inVideoEditor) {
-			const MIGRATED_EDITOR_DIALOGS = [
-				"ExportDialog.tsx",
-				"ShortcutsConfigDialog.tsx",
-				"UnsavedChangesDialog.tsx",
-				"AddCustomFontDialog.tsx",
-			];
-			const MIGRATED_EDITOR_PANELS = [
-				"SettingsPanel.tsx",
-				"AnnotationSettingsPanel.tsx",
-				"BlurSettingsPanel.tsx",
-				"GifOptionsPanel.tsx",
-				"CropControl.tsx",
-				"FormatSelector.tsx",
-				"PlaybackControls.tsx",
-				"TutorialHelp.tsx",
-				"KeyboardShortcutsHelp.tsx",
-			];
-			const MIGRATED_EDITOR_SHELL = ["VideoEditor.tsx", "VideoPlayback.tsx"];
-			if (
-				!MIGRATED_EDITOR_DIALOGS.includes(entry.name) &&
-				!MIGRATED_EDITOR_PANELS.includes(entry.name) &&
-				!MIGRATED_EDITOR_SHELL.includes(entry.name)
-			)
-				return [];
+		// components/video-editor is fully rebuilt on the design layer (Íris Fase 5)
+		// except the timeline subdirectory (Íris Fase 6) — skip timeline only.
+		if (relative.startsWith(path.join("components", "video-editor", "timeline") + path.sep)) {
+			return [];
 		}
 
 		return /\.(ts|tsx|css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) ? [full] : [];
@@ -187,8 +162,16 @@ describe("glass guardrail", () => {
 		}
 	});
 
-	it("walks the editor shell surfaces migrated in the Fase 5.4 batch", () => {
-		const expected = ["VideoEditor.tsx", "VideoPlayback.tsx"];
+	it("walks every editor shell surface, now that the whole editor is migrated", () => {
+		const expected = [
+			"VideoEditor.tsx",
+			"VideoPlayback.tsx",
+			"AnnotationOverlay.tsx",
+			"EditorEmptyState.tsx",
+			"EditorMenuBar.tsx",
+			"ArrowSvgs.tsx",
+			"types.ts",
+		];
 		for (const name of expected) {
 			expect(
 				files.some((file) => file.endsWith(path.join("components", "video-editor", name))),
@@ -197,9 +180,17 @@ describe("glass guardrail", () => {
 		}
 	});
 
+	it("still skips the timeline subdirectory until Fase 6", () => {
+		const timelineFiles = files.filter((file) =>
+			file.includes(path.join("components", "video-editor", "timeline")),
+		);
+		expect(timelineFiles).toEqual([]);
+	});
+
 	it("never builds the glass material outside the Glass primitive", () => {
 		const offenders = files.filter((file) => {
 			if (file.includes(path.join("design", "glass"))) return false;
+			if (file.includes(path.join("design", "effects"))) return false;
 
 			const source = fs.readFileSync(file, "utf8");
 
