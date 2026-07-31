@@ -14,11 +14,10 @@ const Toaster = ({ className, ...props }: ToasterProps) => {
 			duration={3000}
 			toastOptions={{
 				classNames: {
-					toast:
-						"group toast border border-white/10 bg-[#09090b] text-slate-200 shadow-lg backdrop-blur-xl",
-					description: "group-[.toast]:text-slate-400",
-					actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-					cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+					toast: "group toast border border-white/10 bg-[#141416] text-[#F5F5F7] shadow-lg",
+					description: "group-[.toast]:text-[var(--text-secondary)]",
+					actionButton: "group-[.toast]:bg-[#5E5CE6] group-[.toast]:text-[#FFFFFF]",
+					cancelButton: "group-[.toast]:bg-white/10 group-[.toast]:text-[#F5F5F7]",
 				},
 			}}
 			{...props}

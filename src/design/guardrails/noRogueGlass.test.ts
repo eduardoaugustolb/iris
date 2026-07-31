@@ -41,7 +41,25 @@ function sourceFiles(dir: string): string[] {
 		// checked — the rest of that directory is still legacy Tailwind/shadcn.
 		const inComponentsUi = relative.startsWith(path.join("components", "ui") + path.sep);
 		if (inComponentsUi) {
-			const MIGRATED_UI_PRIMITIVES = ["dialog.tsx", "dropdown-menu.tsx"];
+			const MIGRATED_UI_PRIMITIVES = [
+				"dialog.tsx",
+				"dropdown-menu.tsx",
+				"button.tsx",
+				"switch.tsx",
+				"switch.module.css",
+				"slider.tsx",
+				"select.tsx",
+				"popover.tsx",
+				"tabs.tsx",
+				"tooltip.tsx",
+				"accordion.tsx",
+				"input.tsx",
+				"label.tsx",
+				"toggle.tsx",
+				"toggle-group.tsx",
+				"card.tsx",
+				"sonner.tsx",
+			];
 			if (!MIGRATED_UI_PRIMITIVES.includes(entry.name)) return [];
 		}
 
@@ -69,6 +87,32 @@ describe("glass guardrail", () => {
 				file.endsWith(path.join("components", "launch", "NotesToolbar.tsx")),
 			),
 		).toBe(true);
+	});
+
+	it("walks every ui primitive migrated in the Fase 5.1 batch", () => {
+		const expected = [
+			"button.tsx",
+			"switch.tsx",
+			"switch.module.css",
+			"slider.tsx",
+			"select.tsx",
+			"popover.tsx",
+			"tabs.tsx",
+			"tooltip.tsx",
+			"accordion.tsx",
+			"input.tsx",
+			"label.tsx",
+			"toggle.tsx",
+			"toggle-group.tsx",
+			"card.tsx",
+			"sonner.tsx",
+		];
+		for (const name of expected) {
+			expect(
+				files.some((file) => file.endsWith(path.join("components", "ui", name))),
+				`expected ${name} to be walked by the glass guardrail`,
+			).toBe(true);
+		}
 	});
 
 	it("never builds the glass material outside the Glass primitive", () => {

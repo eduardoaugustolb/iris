@@ -3,6 +3,7 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import * as React from "react";
 
+import { Glass } from "@/design/glass/Glass";
 import { cn } from "@/lib/utils";
 
 function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
@@ -18,6 +19,7 @@ function PopoverContent({
 	align = "center",
 	sideOffset = 4,
 	animated = true,
+	children,
 	...props
 }: React.ComponentProps<typeof PopoverPrimitive.Content> & {
 	animated?: boolean;
@@ -29,13 +31,17 @@ function PopoverContent({
 				align={align}
 				sideOffset={sideOffset}
 				className={cn(
-					"bg-popover text-popover-foreground z-50 w-72 rounded-md border p-4 shadow-md outline-hidden",
+					"z-50 w-72 duration-standard ease-standard outline-hidden",
 					animated &&
 						"data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 origin-(--radix-popover-content-transform-origin)",
 					className,
 				)}
 				{...props}
-			/>
+			>
+				<Glass level={3} className="h-full w-full p-4">
+					{children}
+				</Glass>
+			</PopoverPrimitive.Content>
 		</PopoverPrimitive.Portal>
 	);
 }
@@ -51,7 +57,7 @@ function PopoverArrow({
 	return (
 		<PopoverPrimitive.Arrow
 			data-slot="popover-arrow"
-			className={cn("fill-popover", className)}
+			className={cn("fill-white/10", className)}
 			{...props}
 		/>
 	);
