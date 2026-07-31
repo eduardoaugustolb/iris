@@ -1,8 +1,15 @@
+import { CodeIcon } from "@phosphor-icons/react/dist/csr/Code";
+import { ListBulletsIcon } from "@phosphor-icons/react/dist/csr/ListBullets";
+import { ListNumbersIcon } from "@phosphor-icons/react/dist/csr/ListNumbers";
+import { QuotesIcon } from "@phosphor-icons/react/dist/csr/Quotes";
+import { TextBIcon } from "@phosphor-icons/react/dist/csr/TextB";
+import { TextItalicIcon } from "@phosphor-icons/react/dist/csr/TextItalic";
+import { TextStrikethroughIcon } from "@phosphor-icons/react/dist/csr/TextStrikethrough";
 import type { Editor } from "@tiptap/react";
-import { Bold, Code, Italic, List, ListOrdered, Quote, Strikethrough } from "lucide-react";
 import { type ReactNode, useEffect, useReducer } from "react";
 import { Tooltip } from "@/components/ui/tooltip";
 import { useScopedT } from "@/contexts/I18nContext";
+import { Glass } from "@/design/glass/Glass";
 import { cn } from "@/lib/utils";
 
 type NotesToolbarProps = {
@@ -35,8 +42,8 @@ function ToolbarButton({
 				disabled={disabled}
 				onClick={onClick}
 				className={cn(
-					"shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md border-0 bg-transparent text-gray-700 transition-colors hover:bg-gray-200 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-35",
-					active && "bg-gray-900 text-white hover:bg-gray-800 hover:text-white",
+					"shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-[8px] border-0 bg-transparent text-white/60 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:opacity-35",
+					active && "bg-white/15 text-white hover:bg-white/15 hover:text-white",
 				)}
 			>
 				{children}
@@ -72,7 +79,11 @@ export function NotesToolbar({ editor }: NotesToolbarProps) {
 	const t = useScopedT("launch");
 
 	return (
-		<div className="flex items-center gap-1 rounded-[0.625rem] max-w-fit border border-gray-200 bg-gray-50 p-1.5 overflow-scroll no-scrollbar">
+		<Glass
+			level={2}
+			radius="md"
+			className="flex items-center gap-1 max-w-fit p-2 overflow-scroll no-scrollbar"
+		>
 			<div className="flex items-center justify-between flex-1 shrink-0 gap-1">
 				<ToolbarButton
 					aria-label={t("tooltips.notesToolbar.bold")}
@@ -81,7 +92,7 @@ export function NotesToolbar({ editor }: NotesToolbarProps) {
 					disabled={!editor?.can().chain().focus().toggleBold().run()}
 					onClick={() => editor?.chain().focus().toggleBold().run()}
 				>
-					<Bold size={16} />
+					<TextBIcon size={16} weight="regular" />
 				</ToolbarButton>
 				<ToolbarButton
 					aria-label={t("tooltips.notesToolbar.italic")}
@@ -90,7 +101,7 @@ export function NotesToolbar({ editor }: NotesToolbarProps) {
 					disabled={!editor?.can().chain().focus().toggleItalic().run()}
 					onClick={() => editor?.chain().focus().toggleItalic().run()}
 				>
-					<Italic size={16} />
+					<TextItalicIcon size={16} weight="regular" />
 				</ToolbarButton>
 				<ToolbarButton
 					aria-label={t("tooltips.notesToolbar.strikethrough")}
@@ -99,12 +110,12 @@ export function NotesToolbar({ editor }: NotesToolbarProps) {
 					disabled={!editor?.can().chain().focus().toggleStrike().run()}
 					onClick={() => editor?.chain().focus().toggleStrike().run()}
 				>
-					<Strikethrough size={16} />
+					<TextStrikethroughIcon size={16} weight="regular" />
 				</ToolbarButton>
 			</div>
 			<div className="flex items-center justify-between flex-1 shrink-0 gap-1">
 				<div className="h-8 w-5 grid place-content-center">
-					<span className="mx-0.5 h-5 w-px bg-gray-300" aria-hidden="true" />
+					<span className="mx-0.5 h-5 w-px bg-white/15" aria-hidden="true" />
 				</div>
 				<ToolbarButton
 					aria-label={t("tooltips.notesToolbar.bulletList")}
@@ -113,7 +124,7 @@ export function NotesToolbar({ editor }: NotesToolbarProps) {
 					disabled={!editor?.can().chain().focus().toggleBulletList().run()}
 					onClick={() => editor?.chain().focus().toggleBulletList().run()}
 				>
-					<List size={16} />
+					<ListBulletsIcon size={16} weight="regular" />
 				</ToolbarButton>
 				<ToolbarButton
 					aria-label={t("tooltips.notesToolbar.numberedList")}
@@ -122,12 +133,12 @@ export function NotesToolbar({ editor }: NotesToolbarProps) {
 					disabled={!editor?.can().chain().focus().toggleOrderedList().run()}
 					onClick={() => editor?.chain().focus().toggleOrderedList().run()}
 				>
-					<ListOrdered size={16} />
+					<ListNumbersIcon size={16} weight="regular" />
 				</ToolbarButton>
 			</div>
 			<div className="flex items-center justify-between flex-1 shrink-0 gap-1">
 				<div className="h-8 w-5 grid place-content-center">
-					<span className="mx-0.5 h-5 w-px bg-gray-300" aria-hidden="true" />
+					<span className="mx-0.5 h-5 w-px bg-white/15" aria-hidden="true" />
 				</div>
 				<ToolbarButton
 					aria-label={t("tooltips.notesToolbar.blockquote")}
@@ -136,7 +147,7 @@ export function NotesToolbar({ editor }: NotesToolbarProps) {
 					disabled={!editor?.can().chain().focus().toggleBlockquote().run()}
 					onClick={() => editor?.chain().focus().toggleBlockquote().run()}
 				>
-					<Quote size={16} />
+					<QuotesIcon size={16} weight="regular" />
 				</ToolbarButton>
 				<ToolbarButton
 					aria-label={t("tooltips.notesToolbar.codeBlock")}
@@ -145,9 +156,9 @@ export function NotesToolbar({ editor }: NotesToolbarProps) {
 					disabled={!editor?.can().chain().focus().toggleCodeBlock().run()}
 					onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
 				>
-					<Code size={16} />
+					<CodeIcon size={16} weight="regular" />
 				</ToolbarButton>
 			</div>
-		</div>
+		</Glass>
 	);
 }
