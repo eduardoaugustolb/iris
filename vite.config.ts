@@ -59,6 +59,10 @@ export default defineConfig({
 				manualChunks(id) {
 					if (id.includes("pixi.js") || id.includes("pixi-filters") || id.includes("@pixi/"))
 						return "pixi";
+					// Phosphor icons previously landed in react-vendor because the package
+					// path contains "/react/". Give them their own chunk so react-vendor
+					// stays a meaningful budget for React itself.
+					if (id.includes("@phosphor-icons")) return "phosphor-icons";
 					if (id.includes("react-dom") || id.includes("/react/")) return "react-vendor";
 					if (id.includes("mediabunny") || id.includes("fix-webm-duration"))
 						return "video-processing";

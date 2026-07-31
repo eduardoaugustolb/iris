@@ -1,4 +1,7 @@
-import { Maximize, Minimize, Pause, Play } from "lucide-react";
+import { ArrowsInIcon } from "@phosphor-icons/react/dist/csr/ArrowsIn";
+import { ArrowsOutIcon } from "@phosphor-icons/react/dist/csr/ArrowsOut";
+import { PauseIcon } from "@phosphor-icons/react/dist/csr/Pause";
+import { PlayIcon } from "@phosphor-icons/react/dist/csr/Play";
 import { useScopedT } from "@/contexts/I18nContext";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -38,7 +41,7 @@ export default function PlaybackControls({
 	const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
 	return (
-		<div className="flex items-center gap-2 px-1 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 shadow-xl transition-all duration-300 hover:bg-black/70 hover:border-white/20">
+		<div className="flex items-center gap-2 px-1 py-0.5 rounded-full bg-[#141416] border border-white/10 shadow-xl transition-all duration-300 hover:border-white/20">
 			<Button
 				onClick={onTogglePlayPause}
 				size="icon"
@@ -51,20 +54,20 @@ export default function PlaybackControls({
 				aria-label={isPlaying ? t("playback.pause") : t("playback.play")}
 			>
 				{isPlaying ? (
-					<Pause className="w-3.5 h-3.5 fill-current" />
+					<PauseIcon size={14} weight="fill" />
 				) : (
-					<Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+					<PlayIcon size={14} weight="fill" className="ml-0.5" />
 				)}
 			</Button>
 
-			<span className="text-[9px] font-medium text-slate-300 tabular-nums w-[30px] text-right">
+			<span className="text-[9px] font-medium text-[#F5F5F7] tabular-nums w-[30px] text-right">
 				{formatTime(currentTime)}
 			</span>
 
 			<div className="flex-1 relative h-6 flex items-center group">
 				{/* Custom Track Background */}
 				<div className="absolute left-0 right-0 h-0.5 bg-white/10 rounded-full overflow-hidden">
-					<div className="h-full bg-[#34B27B] rounded-full" style={{ width: `${progress}%` }} />
+					<div className="h-full bg-[#5E5CE6] rounded-full" style={{ width: `${progress}%` }} />
 				</div>
 
 				{/* Interactive Input */}
@@ -88,7 +91,7 @@ export default function PlaybackControls({
 				/>
 			</div>
 
-			<span className="text-[9px] font-medium text-slate-500 tabular-nums w-[30px]">
+			<span className="text-[9px] font-medium text-[var(--text-secondary)] tabular-nums w-[30px]">
 				{formatTime(duration)}
 			</span>
 
@@ -101,9 +104,9 @@ export default function PlaybackControls({
 					aria-label={isFullscreen ? t("playback.exitFullscreen") : t("playback.fullscreen")}
 				>
 					{isFullscreen ? (
-						<Minimize className="w-3.5 h-3.5" />
+						<ArrowsInIcon size={14} weight="regular" />
 					) : (
-						<Maximize className="w-3.5 h-3.5" />
+						<ArrowsOutIcon size={14} weight="regular" />
 					)}
 				</Button>
 			)}

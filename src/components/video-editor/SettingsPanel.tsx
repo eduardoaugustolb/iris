@@ -1,26 +1,25 @@
+import { BracketsSquareIcon } from "@phosphor-icons/react/dist/csr/BracketsSquare";
+import { BugIcon } from "@phosphor-icons/react/dist/csr/Bug";
+import { CropIcon } from "@phosphor-icons/react/dist/csr/Crop";
+import { CursorClickIcon } from "@phosphor-icons/react/dist/csr/CursorClick";
+import { DownloadIcon } from "@phosphor-icons/react/dist/csr/Download";
+import { FileArrowDownIcon } from "@phosphor-icons/react/dist/csr/FileArrowDown";
+import { FilmStripIcon } from "@phosphor-icons/react/dist/csr/FilmStrip";
+import { ImageIcon } from "@phosphor-icons/react/dist/csr/Image";
+import { InfoIcon } from "@phosphor-icons/react/dist/csr/Info";
+import { LockIcon } from "@phosphor-icons/react/dist/csr/Lock";
+import { LockOpenIcon } from "@phosphor-icons/react/dist/csr/LockOpen";
+import { PaletteIcon } from "@phosphor-icons/react/dist/csr/Palette";
+import { RowsIcon } from "@phosphor-icons/react/dist/csr/Rows";
+import { SlidersIcon } from "@phosphor-icons/react/dist/csr/Sliders";
+import { SparkleIcon } from "@phosphor-icons/react/dist/csr/Sparkle";
+import { StarIcon } from "@phosphor-icons/react/dist/csr/Star";
+import { TrashIcon } from "@phosphor-icons/react/dist/csr/Trash";
+import { UploadIcon } from "@phosphor-icons/react/dist/csr/Upload";
+import { XIcon } from "@phosphor-icons/react/dist/csr/X";
+import type { Icon } from "@phosphor-icons/react/dist/lib/types";
 import * as SliderPrimitive from "@radix-ui/react-slider";
-import {
-	Brackets,
-	Bug,
-	Crop,
-	Download,
-	FileDown,
-	Film,
-	Image,
-	Info,
-	LayoutPanelTop,
-	Lock,
-	MousePointerClick,
-	Palette,
-	SlidersHorizontal,
-	Sparkles,
-	Star,
-	Trash2,
-	Unlock,
-	Upload,
-	X,
-} from "lucide-react";
-import { type ComponentType, useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import defaultCursorPreviewUrl from "@/assets/cursors/Cursor=Default.svg";
 import {
@@ -160,7 +159,7 @@ function CustomSpeedInput({
 				onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()}
 				className="w-12 bg-white/5 border border-white/10 rounded-md px-1 py-0.5 text-[11px] font-semibold text-[#d97706] text-center focus:outline-none focus:border-[#d97706]/40"
 			/>
-			<span className="text-[11px] font-semibold text-slate-500">×</span>
+			<span className="text-[11px] font-semibold text-[var(--text-secondary)]">×</span>
 		</div>
 	);
 }
@@ -210,7 +209,7 @@ function ZoomFocusCoordInput({
 			onKeyDown={(e) => {
 				if (e.key === "Enter") (e.target as HTMLInputElement).blur();
 			}}
-			className="h-7 w-full rounded-md border border-white/10 bg-white/5 px-2 text-[11px] text-slate-200 outline-none focus:border-[#34B27B]/50 focus:ring-1 focus:ring-[#34B27B]/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
+			className="h-7 w-full rounded-md border border-white/10 bg-white/5 px-2 text-[11px] text-[#F5F5F7] outline-none focus:border-[#5E5CE6]/50 focus:ring-1 focus:ring-[#5E5CE6]/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
 		/>
 	);
 }
@@ -530,7 +529,7 @@ export function SettingsPanel({
 		"#FF5722",
 		"#8BC34A",
 		"#FFC107",
-		"#34B27B",
+		"#5E5CE6",
 		"#000000",
 		"#607D8B",
 		"#795548",
@@ -648,19 +647,19 @@ export function SettingsPanel({
 	const panelModes: Array<{
 		id: SettingsPanelMode;
 		label: string;
-		icon: ComponentType<{ className?: string }>;
+		icon: Icon;
 		disabled?: boolean;
 	}> = [
-		{ id: "background", label: t("background.title"), icon: Palette },
-		{ id: "effects", label: t("effects.title"), icon: SlidersHorizontal },
-		{ id: "layout", label: t("layout.title"), icon: LayoutPanelTop, disabled: !hasWebcam },
-		{ id: "timeline", label: t("timeline.title"), icon: Brackets },
+		{ id: "background", label: t("background.title"), icon: PaletteIcon },
+		{ id: "effects", label: t("effects.title"), icon: SlidersIcon },
+		{ id: "layout", label: t("layout.title"), icon: RowsIcon, disabled: !hasWebcam },
+		{ id: "timeline", label: t("timeline.title"), icon: BracketsSquareIcon },
 		...(hasCursorPanel
 			? [
 					{
 						id: "cursor" as const,
 						label: t("effects.title"),
-						icon: MousePointerClick,
+						icon: CursorClickIcon,
 					},
 				]
 			: []),
@@ -668,7 +667,7 @@ export function SettingsPanel({
 	const exportPanelMode = {
 		id: "export" as const,
 		label: exportFormat === "gif" ? t("export.gifButton") : t("export.videoButton"),
-		icon: Download,
+		icon: DownloadIcon,
 	};
 	const activeModeLabel = hasTimelineSelection
 		? selectedZoomId
@@ -753,18 +752,18 @@ export function SettingsPanel({
 						"https://github.com/eduardoaugustolb/iris/issues/new/choose",
 					);
 				}}
-				className="flex-1 flex items-center justify-center gap-1.5 text-[10px] text-slate-500 hover:text-slate-300 py-1.5 transition-colors"
+				className="flex-1 flex items-center justify-center gap-1.5 text-[10px] text-[var(--text-tertiary)] hover:text-[#F5F5F7] py-1.5 transition-colors"
 			>
-				<Bug className="w-3 h-3 text-[#34B27B]" />
+				<BugIcon size={12} weight="regular" className="text-[#5E5CE6]" />
 				{t("support.reportBug")}
 			</button>
 			{onSaveDiagnostic && (
 				<button
 					type="button"
 					onClick={onSaveDiagnostic}
-					className="flex-1 flex items-center justify-center gap-1.5 text-[10px] text-slate-500 hover:text-slate-300 py-1.5 transition-colors"
+					className="flex-1 flex items-center justify-center gap-1.5 text-[10px] text-[var(--text-tertiary)] hover:text-[#F5F5F7] py-1.5 transition-colors"
 				>
-					<FileDown className="w-3 h-3 text-slate-400" />
+					<FileArrowDownIcon size={12} weight="regular" className="text-[var(--text-secondary)]" />
 					{t("support.saveDiagnostics")}
 				</button>
 			)}
@@ -773,9 +772,9 @@ export function SettingsPanel({
 				onClick={() => {
 					window.electronAPI?.openExternalUrl("https://github.com/eduardoaugustolb/iris");
 				}}
-				className="flex-1 flex items-center justify-center gap-1.5 text-[10px] text-slate-500 hover:text-slate-300 py-1.5 transition-colors"
+				className="flex-1 flex items-center justify-center gap-1.5 text-[10px] text-[var(--text-tertiary)] hover:text-[#F5F5F7] py-1.5 transition-colors"
 			>
-				<Star className="w-3 h-3 text-yellow-400" />
+				<StarIcon size={12} weight="regular" className="text-yellow-400" />
 				{t("support.starOnGithub")}
 			</button>
 		</div>
@@ -853,13 +852,13 @@ export function SettingsPanel({
 								className={cn(
 									"flex h-8 w-8 items-center justify-center rounded-lg border transition-all",
 									mode.disabled
-										? "cursor-not-allowed border-transparent text-slate-700"
+										? "cursor-not-allowed border-transparent text-[var(--text-tertiary)]"
 										: isActive
-											? "border-[#34B27B]/50 bg-[#34B27B]/15 text-[#34B27B] shadow-[0_0_0_1px_rgba(52,178,123,0.12)]"
-											: "border-transparent text-slate-500 hover:border-white/10 hover:bg-white/[0.06] hover:text-slate-200",
+											? "border-[#5E5CE6]/50 bg-[#5E5CE6]/15 text-[#5E5CE6] shadow-[0_0_0_1px_rgba(94,92,230,0.12)]"
+											: "border-transparent text-[var(--text-secondary)] hover:border-white/10 hover:bg-white/[0.06] hover:text-[#F5F5F7]",
 								)}
 							>
-								<Icon className="h-4 w-4" />
+								<Icon size={16} weight="regular" />
 							</button>
 						);
 					})}
@@ -867,9 +866,9 @@ export function SettingsPanel({
 						type="button"
 						title={t("crop.cropVideo")}
 						onClick={handleCropToggle}
-						className="mt-1 flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-slate-500 transition-all hover:border-white/10 hover:bg-white/[0.06] hover:text-slate-200"
+						className="mt-1 flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-[var(--text-secondary)] transition-all hover:border-white/10 hover:bg-white/[0.06] hover:text-[#F5F5F7]"
 					>
-						<Crop className="h-4 w-4" />
+						<CropIcon size={16} weight="regular" />
 					</button>
 					<button
 						data-testid={getTestId("export-panel-button")}
@@ -882,25 +881,25 @@ export function SettingsPanel({
 						className={cn(
 							"mt-auto flex h-8 w-8 items-center justify-center rounded-lg border transition-all",
 							activePanelMode === "export" && !hasTimelineSelection
-								? "border-[#34B27B]/50 bg-[#34B27B]/15 text-[#34B27B] shadow-[0_0_0_1px_rgba(52,178,123,0.12)]"
-								: "border-transparent text-slate-500 hover:border-white/10 hover:bg-white/[0.06] hover:text-slate-200",
+								? "border-[#5E5CE6]/50 bg-[#5E5CE6]/15 text-[#5E5CE6] shadow-[0_0_0_1px_rgba(94,92,230,0.12)]"
+								: "border-transparent text-[var(--text-secondary)] hover:border-white/10 hover:bg-white/[0.06] hover:text-[#F5F5F7]",
 						)}
 					>
-						<Download className="h-4 w-4" />
+						<DownloadIcon size={16} weight="regular" />
 					</button>
 				</div>
 				<div className="flex-1 overflow-y-auto custom-scrollbar p-3 pb-0">
 					<div className="mb-3 flex items-center justify-between px-1">
-						<span className="text-sm font-semibold text-slate-100">{activeModeLabel}</span>
+						<span className="text-sm font-semibold text-[#F5F5F7]">{activeModeLabel}</span>
 						<KeyboardShortcutsHelp />
 					</div>
 					{zoomEnabled && (
 						<div className="editor-panel-section mb-3 space-y-3 px-1">
 							<div className="flex items-center justify-between">
-								<span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+								<span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-tertiary)]">
 									{t("zoom.level")}
 								</span>
-								<span className="rounded-full border border-[#34B27B]/25 bg-[#34B27B]/10 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-[#34B27B]">
+								<span className="rounded-full border border-[#5E5CE6]/25 bg-[#5E5CE6]/10 px-2 py-0.5 text-[11px] font-semibold tabular-nums text-[#5E5CE6]">
 									{(
 										selectedZoomCustomScale ??
 										(selectedZoomDepth != null
@@ -928,8 +927,8 @@ export function SettingsPanel({
 													? "opacity-100 cursor-pointer"
 													: "opacity-40 cursor-not-allowed",
 												isActive
-													? "border-[#34B27B]/70 bg-[#34B27B] text-white shadow-[0_8px_20px_rgba(52,178,123,0.18)]"
-													: "border-white/[0.06] bg-white/[0.035] text-slate-400 hover:bg-white/[0.075] hover:border-white/15 hover:text-slate-200",
+													? "border-[#5E5CE6]/70 bg-[#5E5CE6] text-white shadow-[0_8px_20px_rgba(94,92,230,0.18)]"
+													: "border-white/[0.06] bg-white/[0.035] text-[var(--text-secondary)] hover:bg-white/[0.075] hover:border-white/15 hover:text-[#F5F5F7]",
 											)}
 										>
 											<span className="text-[11px] font-semibold">{option.label}</span>
@@ -958,22 +957,22 @@ export function SettingsPanel({
 											<SliderPrimitive.Range
 												className={cn(
 													"absolute h-full transition-colors duration-150",
-													selectedZoomCustomScale != null ? "bg-[#34B27B]" : "bg-white/20",
+													selectedZoomCustomScale != null ? "bg-[#5E5CE6]" : "bg-white/20",
 												)}
 											/>
 										</SliderPrimitive.Track>
 										<SliderPrimitive.Thumb
 											className={cn(
 												"block h-3.5 w-3.5 rounded-full border-2 shadow transition-all duration-150",
-												"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#34B27B]/50",
+												"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5E5CE6]/50",
 												"disabled:pointer-events-none disabled:opacity-50 cursor-grab active:cursor-grabbing",
 												selectedZoomCustomScale != null
-													? "border-[#34B27B] bg-[#34B27B] shadow-[0_0_6px_rgba(52,178,123,0.4)]"
+													? "border-[#5E5CE6] bg-[#5E5CE6] shadow-[0_0_6px_rgba(94,92,230,0.4)]"
 													: "border-white/20 bg-[#2a2a30] hover:border-white/40",
 											)}
 										/>
 									</SliderPrimitive.Root>
-									<div className="flex justify-between text-[10px] text-slate-600 mt-1">
+									<div className="flex justify-between text-[10px] text-[var(--text-tertiary)] mt-1">
 										<span>{MIN_ZOOM_SCALE.toFixed(1)}×</span>
 										<span>{MAX_ZOOM_SCALE.toFixed(1)}×</span>
 									</div>
@@ -982,7 +981,7 @@ export function SettingsPanel({
 							{zoomEnabled && hasCursorTelemetry && (
 								<div className="space-y-1.5">
 									<div className="flex items-center justify-between gap-3">
-										<span className="text-[11px] font-medium text-slate-400">
+										<span className="text-[11px] font-medium text-[var(--text-secondary)]">
 											{t("zoom.focusMode.title")}
 										</span>
 										<div className="grid w-32 grid-cols-2 gap-0.5 rounded-lg border border-white/[0.06] bg-white/[0.035] p-0.5">
@@ -997,8 +996,8 @@ export function SettingsPanel({
 														className={cn(
 															"h-6 w-full rounded-md border px-1 text-center transition-all duration-150 ease-out",
 															isActive
-																? "border-[#34B27B]/50 bg-[#34B27B] text-white"
-																: "border-transparent bg-transparent text-slate-400 hover:bg-white/[0.06] hover:text-slate-200",
+																? "border-[#5E5CE6]/50 bg-[#5E5CE6] text-white"
+																: "border-transparent bg-transparent text-[var(--text-secondary)] hover:bg-white/[0.06] hover:text-[#F5F5F7]",
 															focusModeLocked ? "cursor-not-allowed opacity-50" : "cursor-pointer",
 														)}
 													>
@@ -1011,8 +1010,8 @@ export function SettingsPanel({
 										</div>
 									</div>
 									{focusModeLocked && (
-										<div className="flex items-start gap-1 text-[10px] leading-snug text-slate-500">
-											<Info size={11} className="mt-px shrink-0" />
+										<div className="flex items-start gap-1 text-[10px] leading-snug text-[var(--text-tertiary)]">
+											<InfoIcon size={11} weight="regular" className="mt-px shrink-0" />
 											<span>{t("zoom.focusMode.lockedDisclaimer")}</span>
 										</div>
 									)}
@@ -1038,7 +1037,7 @@ export function SettingsPanel({
 										}
 									}}
 									onBlur={() => onZoomPreviewEnd()}
-									className="h-7 w-full select-none rounded-md border border-white/[0.08] bg-white/[0.04] text-[10px] font-semibold text-slate-300 transition-all duration-150 ease-out hover:bg-white/[0.08] hover:text-slate-100 active:border-[#34B27B]/50 active:bg-[#34B27B] active:text-white cursor-pointer"
+									className="h-7 w-full select-none rounded-md border border-white/[0.08] bg-white/[0.04] text-[10px] font-semibold text-[#F5F5F7] transition-all duration-150 ease-out hover:bg-white/[0.08] hover:text-[#F5F5F7] active:border-[#5E5CE6]/50 active:bg-[#5E5CE6] active:text-white cursor-pointer"
 								>
 									{t("zoom.previewHold")}
 								</Button>
@@ -1070,12 +1069,12 @@ export function SettingsPanel({
 										yRange <= 0 ? bounds.minY : bounds.minY + (p / 100) * yRange;
 									return (
 										<div>
-											<span className="text-[11px] font-medium text-slate-400 mb-1.5 block">
+											<span className="text-[11px] font-medium text-[var(--text-secondary)] mb-1.5 block">
 												{t("zoom.position.title")}
 											</span>
 											<div className="grid grid-cols-2 gap-2">
 												<div className="flex flex-col gap-1">
-													<label className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+													<label className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">
 														{t("zoom.position.x")}
 													</label>
 													<ZoomFocusCoordInput
@@ -1091,7 +1090,7 @@ export function SettingsPanel({
 													/>
 												</div>
 												<div className="flex flex-col gap-1">
-													<label className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+													<label className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">
 														{t("zoom.position.y")}
 													</label>
 													<ZoomFocusCoordInput
@@ -1112,7 +1111,7 @@ export function SettingsPanel({
 								})()}
 							{zoomEnabled && (
 								<div>
-									<span className="text-[11px] font-medium text-slate-400 mb-1.5 block">
+									<span className="text-[11px] font-medium text-[var(--text-secondary)] mb-1.5 block">
 										{t("zoom.threeD.title")}
 									</span>
 									<div className="grid grid-cols-3 gap-1.5">
@@ -1126,8 +1125,8 @@ export function SettingsPanel({
 													className={cn(
 														"h-8 w-full rounded-lg border px-1 text-center transition-all duration-150 ease-out cursor-pointer",
 														isActive
-															? "border-[#34B27B]/60 bg-[#34B27B] text-white"
-															: "border-white/[0.06] bg-white/[0.035] text-slate-400 hover:bg-white/[0.075] hover:border-white/15 hover:text-slate-200",
+															? "border-[#5E5CE6]/60 bg-[#5E5CE6] text-white"
+															: "border-white/[0.06] bg-white/[0.035] text-[var(--text-secondary)] hover:bg-white/[0.075] hover:border-white/15 hover:text-[#F5F5F7]",
 													)}
 												>
 													<span className="text-xs font-semibold capitalize">
@@ -1145,9 +1144,9 @@ export function SettingsPanel({
 									onClick={handleDeleteClick}
 									variant="destructive"
 									size="sm"
-									className="mt-1 w-full gap-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 transition-all h-8 text-xs"
+									className="mt-1 w-full gap-2 transition-all h-8 text-xs"
 								>
-									<Trash2 className="w-3 h-3" />
+									<TrashIcon size={12} weight="regular" />
 									{t("zoom.deleteZoom")}
 								</Button>
 							)}
@@ -1160,9 +1159,9 @@ export function SettingsPanel({
 								onClick={handleTrimDeleteClick}
 								variant="destructive"
 								size="sm"
-								className="w-full gap-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 transition-all h-8 text-xs"
+								className="w-full gap-2 transition-all h-8 text-xs"
 							>
-								<Trash2 className="w-3 h-3" />
+								<TrashIcon size={12} weight="regular" />
 								{t("trim.deleteRegion")}
 							</Button>
 						</div>
@@ -1171,7 +1170,7 @@ export function SettingsPanel({
 					{selectedSpeedId && (
 						<div className="editor-panel-section mb-3 space-y-3 px-1">
 							<div className="flex items-center justify-between">
-								<span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+								<span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[var(--text-tertiary)]">
 									{t("speed.playbackSpeed")}
 								</span>
 								{selectedSpeedId && selectedSpeedValue && (
@@ -1197,7 +1196,7 @@ export function SettingsPanel({
 													: "opacity-40 cursor-not-allowed",
 												isActive
 													? "border-[#d97706]/70 bg-[#d97706] text-white shadow-[0_8px_20px_rgba(217,119,6,0.16)]"
-													: "border-white/[0.06] bg-white/[0.035] text-slate-400 hover:bg-white/[0.075] hover:border-white/15 hover:text-slate-200",
+													: "border-white/[0.06] bg-white/[0.035] text-[var(--text-secondary)] hover:bg-white/[0.075] hover:border-white/15 hover:text-[#F5F5F7]",
 											)}
 										>
 											<span className="text-[11px] font-semibold">{option.label}</span>
@@ -1209,7 +1208,9 @@ export function SettingsPanel({
 								<span
 									className={cn(
 										"text-[11px]",
-										selectedSpeedId ? "text-slate-500" : "text-slate-600",
+										selectedSpeedId
+											? "text-[var(--text-secondary)]"
+											: "text-[var(--text-tertiary)]",
 									)}
 								>
 									{t("speed.customPlaybackSpeed")}
@@ -1224,17 +1225,17 @@ export function SettingsPanel({
 									/>
 								) : (
 									<div className="flex items-center gap-1 opacity-40">
-										<div className="w-12 bg-white/5 border border-white/10 rounded-md px-1 py-0.5 text-[11px] font-semibold text-slate-600 text-center">
+										<div className="w-12 bg-white/5 border border-white/10 rounded-md px-1 py-0.5 text-[11px] font-semibold text-[var(--text-tertiary)] text-center">
 											--
 										</div>
-										<span className="text-[11px] font-semibold text-slate-600">×</span>
+										<span className="text-[11px] font-semibold text-[var(--text-tertiary)]">×</span>
 									</div>
 								)}
 							</div>
 							{selectedSpeedId &&
 								selectedSpeedValue != null &&
 								selectedSpeedValue > MAX_NATIVE_PLAYBACK_RATE && (
-									<p className="px-1 text-[10px] leading-snug text-slate-500">
+									<p className="px-1 text-[10px] leading-snug text-[var(--text-tertiary)]">
 										{t("speed.previewFrameSteppingHint", { native: MAX_NATIVE_PLAYBACK_RATE })}
 									</p>
 								)}
@@ -1243,9 +1244,9 @@ export function SettingsPanel({
 									onClick={() => selectedSpeedId && onSpeedDelete?.(selectedSpeedId)}
 									variant="destructive"
 									size="sm"
-									className="w-full gap-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 transition-all h-8 text-xs"
+									className="w-full gap-2 transition-all h-8 text-xs"
 								>
-									<Trash2 className="w-3 h-3" />
+									<TrashIcon size={12} weight="regular" />
 									{t("speed.deleteRegion")}
 								</Button>
 							)}
@@ -1258,13 +1259,13 @@ export function SettingsPanel({
 								<AccordionItem value="layout" className="editor-panel-section px-3">
 									<AccordionTrigger className="py-2.5 hover:no-underline">
 										<div className="flex items-center gap-2">
-											<Sparkles className="w-4 h-4 text-[#34B27B]" />
+											<SparkleIcon size={16} weight="regular" className="text-[#5E5CE6]" />
 											<span className="text-xs font-medium">{t("layout.title")}</span>
 										</div>
 									</AccordionTrigger>
 									<AccordionContent className="pb-3">
 										<div className="p-2 rounded-lg editor-control-surface">
-											<div className="text-[10px] font-medium text-slate-300 mb-1.5">
+											<div className="text-[10px] font-medium text-[#F5F5F7] mb-1.5">
 												{t("layout.preset")}
 											</div>
 											<Select
@@ -1273,7 +1274,7 @@ export function SettingsPanel({
 													onWebcamLayoutPresetChange?.(value)
 												}
 											>
-												<SelectTrigger className="h-8 bg-black/20 border-white/10 text-xs">
+												<SelectTrigger className="h-8 text-xs">
 													<SelectValue placeholder={t("layout.selectPreset")} />
 												</SelectTrigger>
 												<SelectContent>
@@ -1298,20 +1299,20 @@ export function SettingsPanel({
 										</div>
 										{webcamLayoutPreset !== "no-webcam" && (
 											<div className="mt-2 flex items-center justify-between p-2 rounded-lg editor-control-surface">
-												<div className="text-[10px] font-medium text-slate-300">
+												<div className="text-[10px] font-medium text-[#F5F5F7]">
 													{t("layout.mirrorWebcam")}
 												</div>
 												<Switch
 													checked={webcamMirrored}
 													onCheckedChange={onWebcamMirroredChange}
-													className="data-[state=checked]:bg-[#34B27B] scale-90"
+													className="scale-90"
 													aria-label={t("layout.mirrorWebcam")}
 												/>
 											</div>
 										)}
 										{webcamLayoutPreset === "picture-in-picture" && (
 											<div className="mt-2 flex items-center justify-between p-2 rounded-lg editor-control-surface">
-												<div className="flex items-center gap-1 text-[10px] font-medium text-slate-300">
+												<div className="flex items-center gap-1 text-[10px] font-medium text-[#F5F5F7]">
 													<span>{t("layout.reactiveWebcam")}</span>
 													<Tooltip
 														content={t("layout.reactiveWebcamDescription")}
@@ -1319,24 +1320,24 @@ export function SettingsPanel({
 													>
 														<button
 															type="button"
-															className="text-slate-400 transition-colors hover:text-slate-200"
+															className="text-[var(--text-secondary)] transition-colors hover:text-[#F5F5F7]"
 															aria-label={t("layout.reactiveWebcamDescription")}
 														>
-															<Info size={11} />
+															<InfoIcon size={11} weight="regular" />
 														</button>
 													</Tooltip>
 												</div>
 												<Switch
 													checked={webcamReactiveZoom}
 													onCheckedChange={onWebcamReactiveZoomChange}
-													className="data-[state=checked]:bg-[#34B27B] scale-90"
+													className="scale-90"
 													aria-label={t("layout.reactiveWebcam")}
 												/>
 											</div>
 										)}
 										{webcamLayoutPreset === "picture-in-picture" && (
 											<div className="mt-2 p-2 rounded-lg editor-control-surface">
-												<div className="text-[10px] font-medium text-slate-300 mb-1.5">
+												<div className="text-[10px] font-medium text-[#F5F5F7] mb-1.5">
 													{t("layout.webcamShape")}
 												</div>
 												<div className="grid grid-cols-4 gap-1.5">
@@ -1355,8 +1356,8 @@ export function SettingsPanel({
 															className={cn(
 																"h-10 rounded-lg border flex flex-col items-center justify-center gap-0.5 transition-all",
 																webcamMaskShape === shape.value
-																	? "bg-[#34B27B] border-[#34B27B] text-white"
-																	: "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-slate-400",
+																	? "bg-[#5E5CE6] border-[#5E5CE6] text-white"
+																	: "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-[var(--text-secondary)]",
 															)}
 														>
 															<svg
@@ -1418,10 +1419,10 @@ export function SettingsPanel({
 										{webcamLayoutPreset === "picture-in-picture" && (
 											<div className="p-2 rounded-lg editor-control-surface mt-2">
 												<div className="flex items-center justify-between mb-1.5">
-													<div className="text-[10px] font-medium text-slate-300">
+													<div className="text-[10px] font-medium text-[#F5F5F7]">
 														{t("layout.webcamSize")}
 													</div>
-													<div className="text-[10px] font-medium text-slate-400">
+													<div className="text-[10px] font-medium text-[var(--text-secondary)]">
 														{webcamSizePreset}%
 													</div>
 												</div>
@@ -1445,9 +1446,9 @@ export function SettingsPanel({
 									<AccordionTrigger className="py-2.5 hover:no-underline">
 										<div className="flex items-center gap-2">
 											{activePanelMode === "cursor" ? (
-												<MousePointerClick className="w-4 h-4 text-[#34B27B]" />
+												<CursorClickIcon size={16} weight="regular" className="text-[#5E5CE6]" />
 											) : (
-												<SlidersHorizontal className="w-4 h-4 text-[#34B27B]" />
+												<SlidersIcon size={16} weight="regular" className="text-[#5E5CE6]" />
 											)}
 											<span className="text-xs font-medium">{t("effects.title")}</span>
 										</div>
@@ -1457,13 +1458,13 @@ export function SettingsPanel({
 											<>
 												<div className="grid grid-cols-2 gap-2 mb-3">
 													<div className="flex items-center justify-between p-2 rounded-lg editor-control-surface">
-														<div className="text-[10px] font-medium text-slate-300">
+														<div className="text-[10px] font-medium text-[#F5F5F7]">
 															{t("effects.blurBg")}
 														</div>
 														<Switch
 															checked={showBlur}
 															onCheckedChange={onBlurChange}
-															className="data-[state=checked]:bg-[#34B27B] scale-90"
+															className="scale-90"
 														/>
 													</div>
 												</div>
@@ -1471,10 +1472,10 @@ export function SettingsPanel({
 												<div className="grid grid-cols-2 gap-2">
 													<div className="p-2 rounded-lg editor-control-surface">
 														<div className="flex items-center justify-between mb-1">
-															<div className="text-[10px] font-medium text-slate-300">
+															<div className="text-[10px] font-medium text-[#F5F5F7]">
 																{t("effects.motionBlur")}
 															</div>
-															<span className="text-[10px] text-slate-500 font-mono">
+															<span className="text-[10px] text-[var(--text-tertiary)] font-mono">
 																{motionBlurAmount === 0
 																	? t("effects.off")
 																	: motionBlurAmount.toFixed(2)}
@@ -1487,15 +1488,15 @@ export function SettingsPanel({
 															min={0}
 															max={1}
 															step={0.01}
-															className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+															className="w-full [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 														/>
 													</div>
 													<div className="p-2 rounded-lg editor-control-surface">
 														<div className="flex items-center justify-between mb-1">
-															<div className="text-[10px] font-medium text-slate-300">
+															<div className="text-[10px] font-medium text-[#F5F5F7]">
 																{t("effects.shadow")}
 															</div>
-															<span className="text-[10px] text-slate-500 font-mono">
+															<span className="text-[10px] text-[var(--text-tertiary)] font-mono">
 																{Math.round(shadowIntensity * 100)}%
 															</span>
 														</div>
@@ -1506,15 +1507,15 @@ export function SettingsPanel({
 															min={0}
 															max={1}
 															step={0.01}
-															className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+															className="w-full [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 														/>
 													</div>
 													<div className="p-2 rounded-lg editor-control-surface">
 														<div className="flex items-center justify-between mb-1">
-															<div className="text-[10px] font-medium text-slate-300">
+															<div className="text-[10px] font-medium text-[#F5F5F7]">
 																{t("effects.roundness")}
 															</div>
-															<span className="text-[10px] text-slate-500 font-mono">
+															<span className="text-[10px] text-[var(--text-tertiary)] font-mono">
 																{borderRadius}px
 															</span>
 														</div>
@@ -1525,17 +1526,17 @@ export function SettingsPanel({
 															min={0}
 															max={64}
 															step={0.5}
-															className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+															className="w-full [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 														/>
 													</div>
 													<div
 														className={`p-2 rounded-lg editor-control-surface ${webcamLayoutPreset === "vertical-stack" ? "opacity-40 pointer-events-none" : ""}`}
 													>
 														<div className="flex items-center justify-between mb-1">
-															<div className="text-[10px] font-medium text-slate-300">
+															<div className="text-[10px] font-medium text-[#F5F5F7]">
 																{t("effects.padding")}
 															</div>
-															<span className="text-[10px] text-slate-500 font-mono">
+															<span className="text-[10px] text-[var(--text-tertiary)] font-mono">
 																{webcamLayoutPreset === "vertical-stack" ? "—" : `${padding}%`}
 															</span>
 														</div>
@@ -1547,7 +1548,7 @@ export function SettingsPanel({
 															max={100}
 															step={1}
 															disabled={webcamLayoutPreset === "vertical-stack"}
-															className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+															className="w-full [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 														/>
 													</div>
 												</div>
@@ -1557,19 +1558,19 @@ export function SettingsPanel({
 										{activePanelMode === "cursor" && showCursorSettings && hasCursorData && (
 											<div className="p-2 rounded-lg editor-control-surface mt-2 space-y-3">
 												<div className="flex items-center justify-between">
-													<div className="text-[10px] font-medium text-slate-300">
+													<div className="text-[10px] font-medium text-[#F5F5F7]">
 														{t("cursor.show")}
 													</div>
 													<Switch
 														checked={showCursor}
 														onCheckedChange={onShowCursorChange}
-														className="data-[state=checked]:bg-[#34B27B] scale-90"
+														className="scale-90"
 													/>
 												</div>
 												{showCursor && (
 													<>
 														<div className="flex items-center justify-between">
-															<div className="flex items-center gap-1 text-[10px] font-medium text-slate-300">
+															<div className="flex items-center gap-1 text-[10px] font-medium text-[#F5F5F7]">
 																<span>{t("cursor.clipToBounds")}</span>
 																<Tooltip
 																	content={t("cursor.clipToBoundsDescription")}
@@ -1577,23 +1578,23 @@ export function SettingsPanel({
 																>
 																	<button
 																		type="button"
-																		className="text-slate-400 transition-colors hover:text-slate-200"
+																		className="text-[var(--text-secondary)] transition-colors hover:text-[#F5F5F7]"
 																		aria-label={t("cursor.clipToBoundsDescription")}
 																	>
-																		<Info size={11} />
+																		<InfoIcon size={11} weight="regular" />
 																	</button>
 																</Tooltip>
 															</div>
 															<Switch
 																checked={cursorClipToBounds}
 																onCheckedChange={onCursorClipToBoundsChange}
-																className="data-[state=checked]:bg-[#34B27B] scale-90"
+																className="scale-90"
 																aria-label={t("cursor.clipToBounds")}
 															/>
 														</div>
 														{cursorThemeOptions.length > 1 && (
 															<div className="space-y-1.5">
-																<div className="text-[10px] font-medium text-slate-300">
+																<div className="text-[10px] font-medium text-[#F5F5F7]">
 																	{t("cursor.theme")}
 																</div>
 																<div className="flex flex-wrap gap-1.5">
@@ -1610,8 +1611,8 @@ export function SettingsPanel({
 																				className={cn(
 																					"flex items-center justify-center w-8 h-8 rounded-lg border overflow-hidden transition-all duration-150 shadow-sm bg-white/5",
 																					isSelected
-																						? "border-[#34B27B] ring-1 ring-[#34B27B]/30"
-																						: "border-white/10 hover:border-[#34B27B]/40 opacity-80 hover:opacity-100",
+																						? "border-[#5E5CE6] ring-1 ring-[#5E5CE6]/30"
+																						: "border-white/10 hover:border-[#5E5CE6]/40 opacity-80 hover:opacity-100",
 																				)}
 																			>
 																				<img
@@ -1629,10 +1630,10 @@ export function SettingsPanel({
 														<div className="grid grid-cols-2 gap-2">
 															<div className="p-2 rounded-lg bg-white/5 border border-white/5">
 																<div className="flex items-center justify-between mb-1">
-																	<div className="text-[10px] font-medium text-slate-300">
+																	<div className="text-[10px] font-medium text-[#F5F5F7]">
 																		{t("cursor.size")}
 																	</div>
-																	<span className="text-[10px] text-slate-500 font-mono">
+																	<span className="text-[10px] text-[var(--text-tertiary)] font-mono">
 																		{cursorSize.toFixed(1)}
 																	</span>
 																</div>
@@ -1642,15 +1643,15 @@ export function SettingsPanel({
 																	min={0.5}
 																	max={10}
 																	step={0.1}
-																	className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+																	className="w-full [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 																/>
 															</div>
 															<div className="p-2 rounded-lg bg-white/5 border border-white/5">
 																<div className="flex items-center justify-between mb-1">
-																	<div className="text-[10px] font-medium text-slate-300">
+																	<div className="text-[10px] font-medium text-[#F5F5F7]">
 																		{t("cursor.smoothing")}
 																	</div>
-																	<span className="text-[10px] text-slate-500 font-mono">
+																	<span className="text-[10px] text-[var(--text-tertiary)] font-mono">
 																		{Math.round(cursorSmoothing * 100)}%
 																	</span>
 																</div>
@@ -1660,15 +1661,15 @@ export function SettingsPanel({
 																	min={0}
 																	max={1}
 																	step={0.01}
-																	className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+																	className="w-full [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 																/>
 															</div>
 															<div className="p-2 rounded-lg bg-white/5 border border-white/5">
 																<div className="flex items-center justify-between mb-1">
-																	<div className="text-[10px] font-medium text-slate-300">
+																	<div className="text-[10px] font-medium text-[#F5F5F7]">
 																		{t("cursor.motionBlur")}
 																	</div>
-																	<span className="text-[10px] text-slate-500 font-mono">
+																	<span className="text-[10px] text-[var(--text-tertiary)] font-mono">
 																		{Math.round(cursorMotionBlur * 100)}%
 																	</span>
 																</div>
@@ -1678,15 +1679,15 @@ export function SettingsPanel({
 																	min={0}
 																	max={1}
 																	step={0.01}
-																	className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+																	className="w-full [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 																/>
 															</div>
 															<div className="p-2 rounded-lg bg-white/5 border border-white/5">
 																<div className="flex items-center justify-between mb-1">
-																	<div className="text-[10px] font-medium text-slate-300">
+																	<div className="text-[10px] font-medium text-[#F5F5F7]">
 																		{t("cursor.clickBounce")}
 																	</div>
-																	<span className="text-[10px] text-slate-500 font-mono">
+																	<span className="text-[10px] text-[var(--text-tertiary)] font-mono">
 																		{cursorClickBounce.toFixed(1)}
 																	</span>
 																</div>
@@ -1696,7 +1697,7 @@ export function SettingsPanel({
 																	min={0}
 																	max={5}
 																	step={0.1}
-																	className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+																	className="w-full [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 																/>
 															</div>
 														</div>
@@ -1712,28 +1713,28 @@ export function SettingsPanel({
 								<AccordionItem value="background" className="editor-panel-section px-3">
 									<AccordionTrigger className="py-2.5 hover:no-underline">
 										<div className="flex items-center gap-2">
-											<Palette className="w-4 h-4 text-[#34B27B]" />
+											<PaletteIcon size={16} weight="regular" className="text-[#5E5CE6]" />
 											<span className="text-xs font-medium">{t("background.title")}</span>
 										</div>
 									</AccordionTrigger>
 									<AccordionContent className="pb-3">
 										<Tabs defaultValue="image" className="w-full">
-											<TabsList className="mb-2 grid h-7 w-full grid-cols-3 rounded-lg border border-white/5 bg-white/5 p-0.5">
+											<TabsList className="mb-2 grid h-7 w-full grid-cols-3 rounded-lg p-0.5">
 												<TabsTrigger
 													value="image"
-													className="h-full min-w-0 rounded-md px-1 py-0 text-[10px] leading-none text-slate-400 transition-colors data-[state=active]:bg-[#34B27B] data-[state=active]:text-white data-[state=active]:shadow-none"
+													className="h-full min-w-0 rounded-md px-1 py-0 text-[10px] leading-none transition-colors"
 												>
 													{t("background.image")}
 												</TabsTrigger>
 												<TabsTrigger
 													value="color"
-													className="h-full min-w-0 rounded-md px-1 py-0 text-[10px] leading-none text-slate-400 transition-colors data-[state=active]:bg-[#34B27B] data-[state=active]:text-white data-[state=active]:shadow-none"
+													className="h-full min-w-0 rounded-md px-1 py-0 text-[10px] leading-none transition-colors"
 												>
 													{t("background.color")}
 												</TabsTrigger>
 												<TabsTrigger
 													value="gradient"
-													className="h-full min-w-0 rounded-md px-1 py-0 text-[10px] leading-none text-slate-400 transition-colors data-[state=active]:bg-[#34B27B] data-[state=active]:text-white data-[state=active]:shadow-none"
+													className="h-full min-w-0 rounded-md px-1 py-0 text-[10px] leading-none transition-colors"
 												>
 													{t("background.gradient")}
 												</TabsTrigger>
@@ -1751,9 +1752,9 @@ export function SettingsPanel({
 													<Button
 														onClick={() => fileInputRef.current?.click()}
 														variant="outline"
-														className="w-full gap-2 bg-white/5 text-slate-200 border-white/10 hover:bg-[#34B27B] hover:text-white hover:border-[#34B27B] transition-all h-7 text-[10px]"
+														className="w-full gap-2 transition-all h-7 text-[10px]"
 													>
-														<Upload className="w-3 h-3" />
+														<UploadIcon size={12} weight="regular" />
 														{t("background.uploadCustom")}
 													</Button>
 
@@ -1766,8 +1767,8 @@ export function SettingsPanel({
 																	className={cn(
 																		"aspect-square w-8 h-8 rounded-lg border overflow-hidden cursor-pointer transition-all duration-150 relative group shadow-sm",
 																		isSelected
-																			? "border-[#34B27B] ring-1 ring-[#34B27B]/30"
-																			: "border-white/10 hover:border-[#34B27B]/40 opacity-80 hover:opacity-100 bg-white/5",
+																			? "border-[#5E5CE6] ring-1 ring-[#5E5CE6]/30"
+																			: "border-white/10 hover:border-[#5E5CE6]/40 opacity-80 hover:opacity-100 bg-white/5",
 																	)}
 																	style={{
 																		backgroundImage: `url(${imageUrl})`,
@@ -1779,9 +1780,9 @@ export function SettingsPanel({
 																>
 																	<button
 																		onClick={(e) => handleRemoveCustomImage(imageUrl, e)}
-																		className="absolute top-0.5 right-0.5 w-3 h-3 bg-red-500/90 hover:bg-red-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+																		className="absolute top-0.5 right-0.5 w-3 h-3 bg-[#FF453A]/90 hover:bg-[#FF453A] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
 																	>
-																		<X className="w-2 h-2 text-white" />
+																		<XIcon size={8} weight="regular" className="text-white" />
 																	</button>
 																</div>
 															);
@@ -1796,8 +1797,8 @@ export function SettingsPanel({
 																	className={cn(
 																		"aspect-square w-8 h-8 rounded-lg border overflow-hidden cursor-pointer transition-all duration-150 shadow-sm",
 																		isSelected
-																			? "border-[#34B27B] ring-1 ring-[#34B27B]/30"
-																			: "border-white/10 hover:border-[#34B27B]/40 opacity-80 hover:opacity-100 bg-white/5",
+																			? "border-[#5E5CE6] ring-1 ring-[#5E5CE6]/30"
+																			: "border-white/10 hover:border-[#5E5CE6]/40 opacity-80 hover:opacity-100 bg-white/5",
 																	)}
 																	style={{
 																		backgroundImage: `url(${previewUrl})`,
@@ -1829,7 +1830,7 @@ export function SettingsPanel({
 
 												<TabsContent value="gradient" className="mt-0 space-y-3">
 													<div className="space-y-1">
-														<div className="text-[10px] font-medium uppercase tracking-wider text-slate-400 px-1">
+														<div className="text-[10px] font-medium uppercase tracking-wider text-[var(--text-secondary)] px-1">
 															{t("background.presets")}
 														</div>
 														<div className="grid grid-cols-6 gap-2">
@@ -1839,8 +1840,8 @@ export function SettingsPanel({
 																	className={cn(
 																		"aspect-square w-8 h-8 rounded-lg border overflow-hidden cursor-pointer transition-all duration-150 shadow-sm",
 																		gradient === g
-																			? "border-[#34B27B] ring-1 ring-[#34B27B]/30"
-																			: "border-white/10 hover:border-[#34B27B]/40 opacity-80 hover:opacity-100 bg-white/5",
+																			? "border-[#5E5CE6] ring-1 ring-[#5E5CE6]/30"
+																			: "border-white/10 hover:border-[#5E5CE6]/40 opacity-80 hover:opacity-100 bg-white/5",
 																	)}
 																	style={{ background: g }}
 																	aria-label={t("background.gradientLabel", {
@@ -1856,7 +1857,7 @@ export function SettingsPanel({
 														</div>
 													</div>
 													<div className="space-y-1">
-														<div className="text-[10px] font-medium uppercase tracking-wider text-slate-400 px-1">
+														<div className="text-[10px] font-medium uppercase tracking-wider text-[var(--text-secondary)] px-1">
 															{t("background.custom")}
 														</div>
 														<GradientEditor
@@ -1877,19 +1878,19 @@ export function SettingsPanel({
 								<AccordionItem value="timeline" className="editor-panel-section px-3">
 									<AccordionTrigger className="py-2.5 hover:no-underline">
 										<div className="flex items-center gap-2">
-											<Brackets className="w-4 h-4 text-[#34B27B]" />
+											<BracketsSquareIcon size={16} weight="regular" className="text-[#5E5CE6]" />
 											<span className="text-xs font-medium">{t("timeline.title")}</span>
 										</div>
 									</AccordionTrigger>
 									<AccordionContent className="pb-3">
 										<div className="flex items-center justify-between p-2 rounded-lg editor-control-surface">
-											<div className="text-[10px] font-medium text-slate-300">
+											<div className="text-[10px] font-medium text-[#F5F5F7]">
 												{t("timeline.waveform")}
 											</div>
 											<Switch
 												checked={showTrimWaveform}
 												onCheckedChange={onTrimWaveformChange}
-												className="data-[state=checked]:bg-[#34B27B] scale-90 ml-2 shrink-0"
+												className="scale-90 ml-2 shrink-0"
 											/>
 										</div>
 									</AccordionContent>
@@ -1903,22 +1904,19 @@ export function SettingsPanel({
 			{showCropDropdown && cropRegion && onCropChange && (
 				<>
 					<div
-						className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+						className="fixed inset-0 bg-black/80 z-50 animate-in fade-in duration-200"
 						onClick={() => setShowCropDropdown(false)}
 					/>
-					<div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] bg-[#09090b] rounded-2xl shadow-2xl border border-white/10 p-8 w-[90vw] max-w-5xl max-h-[90vh] overflow-auto animate-in zoom-in-95 duration-200">
+					<div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[60] bg-[#0A0A0C] rounded-2xl shadow-2xl border border-white/10 p-8 w-[90vw] max-w-5xl max-h-[90vh] overflow-auto animate-in zoom-in-95 duration-200">
 						<div className="flex items-center justify-between mb-6">
 							<div>
-								<span className="text-xl font-bold text-slate-200">{t("crop.cropVideo")}</span>
-								<p className="text-sm text-slate-400 mt-2">{t("crop.dragInstruction")}</p>
+								<span className="text-xl font-bold text-[#F5F5F7]">{t("crop.cropVideo")}</span>
+								<p className="text-sm text-[var(--text-secondary)] mt-2">
+									{t("crop.dragInstruction")}
+								</p>
 							</div>
-							<Button
-								variant="ghost"
-								size="icon"
-								onClick={() => setShowCropDropdown(false)}
-								className="hover:bg-white/10 text-slate-400 hover:text-white"
-							>
-								<X className="w-5 h-5" />
+							<Button variant="ghost" size="icon" onClick={() => setShowCropDropdown(false)}>
+								<XIcon size={20} weight="regular" />
 							</Button>
 						</div>
 						<CropControl
@@ -1936,7 +1934,7 @@ export function SettingsPanel({
 									{ label: "H", field: "height" as const, max: videoHeight },
 								].map(({ label, field, max }) => (
 									<div key={field} className="flex flex-col gap-1">
-										<label className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+										<label className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">
 											{label}
 										</label>
 										<input
@@ -1945,40 +1943,40 @@ export function SettingsPanel({
 											max={max}
 											value={getCropPixelValue(field)}
 											onChange={(e) => handleCropNumericChange(field, Number(e.target.value))}
-											className="w-[90px] h-8 rounded-md border border-white/10 bg-white/5 px-2 text-xs text-slate-200 outline-none focus:border-[#34B27B]/50 focus:ring-1 focus:ring-[#34B27B]/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+											className="w-[90px] h-8 rounded-md border border-white/10 bg-white/5 px-2 text-xs text-[#F5F5F7] outline-none focus:border-[#5E5CE6]/50 focus:ring-1 focus:ring-[#5E5CE6]/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 										/>
 									</div>
 								))}
 
 								<div className="flex flex-col gap-1">
-									<label className="text-[10px] font-medium text-slate-400 uppercase tracking-wider">
+									<label className="text-[10px] font-medium text-[var(--text-secondary)] uppercase tracking-wider">
 										{t("crop.ratio")}
 									</label>
 									<div className="flex items-center gap-1.5">
 										<select
 											value={cropAspectRatio}
 											onChange={(e) => applyCropAspectPreset(e.target.value)}
-											className="h-8 rounded-md border border-white/10 bg-[#1a1a1f] px-2 text-xs text-slate-200 outline-none focus:border-[#34B27B]/50 cursor-pointer"
+											className="h-8 rounded-md border border-white/10 bg-[#141416] px-2 text-xs text-[#F5F5F7] outline-none focus:border-[#5E5CE6]/50 cursor-pointer"
 										>
-											<option value="" className="bg-[#1a1a1f] text-slate-200">
+											<option value="" className="bg-[#141416] text-[#F5F5F7]">
 												{t("crop.free")}
 											</option>
-											<option value="16:9" className="bg-[#1a1a1f] text-slate-200">
+											<option value="16:9" className="bg-[#141416] text-[#F5F5F7]">
 												16:9
 											</option>
-											<option value="9:16" className="bg-[#1a1a1f] text-slate-200">
+											<option value="9:16" className="bg-[#141416] text-[#F5F5F7]">
 												9:16
 											</option>
-											<option value="4:3" className="bg-[#1a1a1f] text-slate-200">
+											<option value="4:3" className="bg-[#141416] text-[#F5F5F7]">
 												4:3
 											</option>
-											<option value="3:4" className="bg-[#1a1a1f] text-slate-200">
+											<option value="3:4" className="bg-[#141416] text-[#F5F5F7]">
 												3:4
 											</option>
-											<option value="1:1" className="bg-[#1a1a1f] text-slate-200">
+											<option value="1:1" className="bg-[#141416] text-[#F5F5F7]">
 												1:1
 											</option>
-											<option value="21:9" className="bg-[#1a1a1f] text-slate-200">
+											<option value="21:9" className="bg-[#141416] text-[#F5F5F7]">
 												21:9
 											</option>
 										</select>
@@ -1988,33 +1986,29 @@ export function SettingsPanel({
 											className={cn(
 												"h-8 w-8 flex items-center justify-center rounded-md border transition-all",
 												cropAspectLocked
-													? "border-[#34B27B]/50 bg-[#34B27B]/10 text-[#34B27B]"
-													: "border-white/10 bg-white/5 text-slate-400 hover:text-slate-200",
+													? "border-[#5E5CE6]/50 bg-[#5E5CE6]/10 text-[#5E5CE6]"
+													: "border-white/10 bg-white/5 text-[var(--text-secondary)] hover:text-[#F5F5F7]",
 											)}
 											title={
 												cropAspectLocked ? t("crop.unlockAspectRatio") : t("crop.lockAspectRatio")
 											}
 										>
 											{cropAspectLocked ? (
-												<Lock className="w-3.5 h-3.5" />
+												<LockIcon size={14} weight="regular" />
 											) : (
-												<Unlock className="w-3.5 h-3.5" />
+												<LockOpenIcon size={14} weight="regular" />
 											)}
 										</button>
 									</div>
 								</div>
 
-								<p className="text-[10px] text-slate-500 self-center ml-2">
+								<p className="text-[10px] text-[var(--text-tertiary)] self-center ml-2">
 									{videoWidth} × {videoHeight}px
 								</p>
 							</div>
 
 							<div className="flex justify-end">
-								<Button
-									onClick={() => setShowCropDropdown(false)}
-									size="lg"
-									className="bg-[#34B27B] hover:bg-[#34B27B]/90 text-white"
-								>
+								<Button onClick={() => setShowCropDropdown(false)} size="lg">
 									{t("crop.done")}
 								</Button>
 							</div>
@@ -2033,11 +2027,11 @@ export function SettingsPanel({
 								className={cn(
 									"flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border transition-all text-xs font-medium",
 									exportFormat === "mp4"
-										? "bg-[#34B27B]/10 border-[#34B27B]/50 text-white"
-										: "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-slate-200",
+										? "bg-[#5E5CE6]/10 border-[#5E5CE6]/50 text-white"
+										: "bg-white/5 border-white/10 text-[var(--text-secondary)] hover:bg-white/10 hover:text-[#F5F5F7]",
 								)}
 							>
-								<Film className="w-3.5 h-3.5" />
+								<FilmStripIcon size={14} weight="regular" />
 								{t("exportFormat.mp4")}
 							</button>
 							<button
@@ -2046,11 +2040,11 @@ export function SettingsPanel({
 								className={cn(
 									"flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border transition-all text-xs font-medium",
 									exportFormat === "gif"
-										? "bg-[#34B27B]/10 border-[#34B27B]/50 text-white"
-										: "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-slate-200",
+										? "bg-[#5E5CE6]/10 border-[#5E5CE6]/50 text-white"
+										: "bg-white/5 border-white/10 text-[var(--text-secondary)] hover:bg-white/10 hover:text-[#F5F5F7]",
 								)}
 							>
-								<Image className="w-3.5 h-3.5" />
+								<ImageIcon size={14} weight="regular" />
 								{t("exportFormat.gif")}
 							</button>
 						</div>
@@ -2058,7 +2052,7 @@ export function SettingsPanel({
 						{exportFormat === "mp4" && (
 							<div className="mb-3 space-y-1.5">
 								{sourceDimensions && (
-									<div className="flex items-center justify-between px-0.5 text-[10px] leading-none text-slate-500">
+									<div className="flex items-center justify-between px-0.5 text-[10px] leading-none text-[var(--text-tertiary)]">
 										<span>{t("exportQuality.title")}</span>
 										<span>
 											Source {sourceDimensions.width}x{sourceDimensions.height}
@@ -2072,7 +2066,7 @@ export function SettingsPanel({
 											"rounded-md transition-all text-[10px] font-medium flex flex-col items-center justify-center leading-none gap-0.5",
 											exportQuality === "medium"
 												? "bg-white text-black"
-												: "text-slate-400 hover:text-slate-200",
+												: "text-[var(--text-secondary)] hover:text-[#F5F5F7]",
 										)}
 									>
 										<span>{t("exportQuality.low")}</span>
@@ -2094,7 +2088,7 @@ export function SettingsPanel({
 											"rounded-md transition-all text-[10px] font-medium flex flex-col items-center justify-center leading-none gap-0.5",
 											exportQuality === "good"
 												? "bg-white text-black"
-												: "text-slate-400 hover:text-slate-200",
+												: "text-[var(--text-secondary)] hover:text-[#F5F5F7]",
 										)}
 									>
 										<span>{t("exportQuality.medium")}</span>
@@ -2116,7 +2110,7 @@ export function SettingsPanel({
 											"rounded-md transition-all text-[10px] font-medium flex flex-col items-center justify-center leading-none gap-0.5",
 											exportQuality === "source"
 												? "bg-white text-black"
-												: "text-slate-400 hover:text-slate-200",
+												: "text-[var(--text-secondary)] hover:text-[#F5F5F7]",
 										)}
 									>
 										<span>{t("exportQuality.high")}</span>
@@ -2124,7 +2118,9 @@ export function SettingsPanel({
 											<span
 												className={cn(
 													"text-[8px] font-medium",
-													exportQuality === "source" ? "text-black/55" : "text-slate-500",
+													exportQuality === "source"
+														? "text-black/55"
+														: "text-[var(--text-tertiary)]",
 												)}
 											>
 												{sourceDimensions.shortSide}p
@@ -2147,7 +2143,7 @@ export function SettingsPanel({
 													"rounded-md transition-all text-[10px] font-medium",
 													gifFrameRate === rate.value
 														? "bg-white text-black"
-														: "text-slate-400 hover:text-slate-200",
+														: "text-[var(--text-secondary)] hover:text-[#F5F5F7]",
 												)}
 											>
 												{rate.value}
@@ -2164,7 +2160,7 @@ export function SettingsPanel({
 													"rounded-md transition-all text-[10px] font-medium",
 													gifSizePreset === key
 														? "bg-white text-black"
-														: "text-slate-400 hover:text-slate-200",
+														: "text-[var(--text-secondary)] hover:text-[#F5F5F7]",
 												)}
 											>
 												{key === "original"
@@ -2175,15 +2171,17 @@ export function SettingsPanel({
 									</div>
 								</div>
 								<div className="flex items-center justify-between">
-									<span className="text-[10px] text-slate-500">
+									<span className="text-[10px] text-[var(--text-tertiary)]">
 										{gifOutputDimensions.width} × {gifOutputDimensions.height}px
 									</span>
 									<div className="flex items-center gap-2">
-										<span className="text-[10px] text-slate-400">{t("gifSettings.loop")}</span>
+										<span className="text-[10px] text-[var(--text-secondary)]">
+											{t("gifSettings.loop")}
+										</span>
 										<Switch
 											checked={gifLoop}
 											onCheckedChange={onGifLoopChange}
-											className="data-[state=checked]:bg-[#34B27B] scale-75"
+											className="scale-75"
 										/>
 									</div>
 								</div>
@@ -2195,9 +2193,9 @@ export function SettingsPanel({
 								type="button"
 								size="lg"
 								onClick={onSaveUnsavedExport}
-								className="w-full mb-2 py-5 text-sm font-semibold flex items-center justify-center gap-2 bg-indigo-500 text-white rounded-xl shadow-lg shadow-indigo-500/20 hover:bg-indigo-500/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+								className="w-full mb-2 py-5 text-sm font-semibold flex items-center justify-center gap-2 bg-[#5E5CE6] text-white rounded-xl shadow-lg shadow-[#5E5CE6]/20 hover:bg-[#8886F0] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
 							>
-								<Download className="w-4 h-4" />
+								<DownloadIcon size={16} weight="regular" />
 								{t("export.chooseSaveLocation")}
 							</Button>
 						)}
@@ -2206,9 +2204,9 @@ export function SettingsPanel({
 							type="button"
 							size="lg"
 							onClick={onExport}
-							className="w-full py-5 text-sm font-semibold flex items-center justify-center gap-2 bg-[#34B27B] text-white rounded-xl shadow-lg shadow-[#34B27B]/20 hover:bg-[#3fc98d] hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
+							className="w-full py-5 text-sm font-semibold flex items-center justify-center gap-2 bg-[#5E5CE6] text-white rounded-xl shadow-lg shadow-[#5E5CE6]/20 hover:bg-[#8886F0] hover:scale-[1.01] active:scale-[0.99] transition-all duration-200"
 						>
-							<Download className="w-4 h-4" />
+							<DownloadIcon size={16} weight="regular" />
 							{exportFormat === "gif" ? t("export.gifButton") : t("export.videoButton")}
 						</Button>
 					</>

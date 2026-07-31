@@ -70,7 +70,8 @@ function sourceFiles(dir: string): string[] {
 		}
 
 		// Inside components/video-editor specifically, only the migrated editor dialogs
-		// are checked — the rest of that directory is still legacy Tailwind/shadcn.
+		// and configuration panels are checked — the rest of that directory is still
+		// legacy Tailwind/shadcn.
 		const inVideoEditor = relative.startsWith(path.join("components", "video-editor") + path.sep);
 		if (inVideoEditor) {
 			const MIGRATED_EDITOR_DIALOGS = [
@@ -79,7 +80,22 @@ function sourceFiles(dir: string): string[] {
 				"UnsavedChangesDialog.tsx",
 				"AddCustomFontDialog.tsx",
 			];
-			if (!MIGRATED_EDITOR_DIALOGS.includes(entry.name)) return [];
+			const MIGRATED_EDITOR_PANELS = [
+				"SettingsPanel.tsx",
+				"AnnotationSettingsPanel.tsx",
+				"BlurSettingsPanel.tsx",
+				"GifOptionsPanel.tsx",
+				"CropControl.tsx",
+				"FormatSelector.tsx",
+				"PlaybackControls.tsx",
+				"TutorialHelp.tsx",
+				"KeyboardShortcutsHelp.tsx",
+			];
+			if (
+				!MIGRATED_EDITOR_DIALOGS.includes(entry.name) &&
+				!MIGRATED_EDITOR_PANELS.includes(entry.name)
+			)
+				return [];
 		}
 
 		return /\.(ts|tsx|css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) ? [full] : [];
@@ -140,6 +156,26 @@ describe("glass guardrail", () => {
 			"ShortcutsConfigDialog.tsx",
 			"UnsavedChangesDialog.tsx",
 			"AddCustomFontDialog.tsx",
+		];
+		for (const name of expected) {
+			expect(
+				files.some((file) => file.endsWith(path.join("components", "video-editor", name))),
+				`expected ${name} to be walked by the glass guardrail`,
+			).toBe(true);
+		}
+	});
+
+	it("walks every editor panel migrated in the Fase 5.3 batch", () => {
+		const expected = [
+			"SettingsPanel.tsx",
+			"AnnotationSettingsPanel.tsx",
+			"BlurSettingsPanel.tsx",
+			"GifOptionsPanel.tsx",
+			"CropControl.tsx",
+			"FormatSelector.tsx",
+			"PlaybackControls.tsx",
+			"TutorialHelp.tsx",
+			"KeyboardShortcutsHelp.tsx",
 		];
 		for (const name of expected) {
 			expect(
