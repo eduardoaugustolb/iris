@@ -1,4 +1,6 @@
-import { Save, Trash2 } from "lucide-react";
+import { FloppyDiskIcon } from "@phosphor-icons/react/dist/csr/FloppyDisk";
+import { TrashIcon } from "@phosphor-icons/react/dist/csr/Trash";
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -56,39 +58,38 @@ export function UnsavedChangesDialog({
 							aria-hidden="true"
 							className="w-9 h-9 rounded-xl flex-shrink-0"
 						/>
-						<DialogTitle className="text-base font-semibold text-slate-200 leading-tight">
+						<DialogTitle className="text-base font-semibold text-[#F5F5F7] leading-tight">
 							{td("unsavedChanges.title")}
 						</DialogTitle>
 					</div>
 				</DialogHeader>
 
-				<p className="text-sm text-slate-300 mb-1">{td("unsavedChanges.message")}</p>
-				<DialogDescription className="text-sm text-slate-500 mb-6">{detail}</DialogDescription>
+				<p className="text-sm text-[#F5F5F7] mb-1">{td("unsavedChanges.message")}</p>
+				<DialogDescription className="text-sm text-[var(--text-secondary)] mb-6">
+					{detail}
+				</DialogDescription>
 
 				<div className="flex flex-col gap-2">
-					<button
-						type="button"
-						onClick={onSaveAndClose}
-						className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-[#34B27B] hover:bg-[#2d9e6c] active:bg-[#27885c] text-white font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-[#34B27B] focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b]"
-					>
-						<Save className="w-4 h-4" />
+					<Button type="button" onClick={onSaveAndClose} className="w-full">
+						<FloppyDiskIcon />
 						{saveLabel}
-					</button>
-					<button
+					</Button>
+					<Button
 						type="button"
 						onClick={onDiscardAndClose}
-						className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-white/5 hover:bg-red-500/15 border border-white/10 hover:border-red-500/30 text-slate-300 hover:text-red-400 font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b]"
+						className="w-full bg-[#FF453A]/10 text-[#FF453A] border border-[#FF453A]/20 hover:bg-[#FF453A]/20"
 					>
-						<Trash2 className="w-4 h-4" />
+						<TrashIcon />
 						{discardLabel}
-					</button>
-					<button
+					</Button>
+					<Button
 						type="button"
 						onClick={onCancel}
-						className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg hover:bg-white/5 text-slate-500 hover:text-slate-300 font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-white/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b]"
+						variant="ghost"
+						className="w-full text-[var(--text-secondary)] hover:text-[#F5F5F7]"
 					>
 						{tc("actions.cancel")}
-					</button>
+					</Button>
 				</div>
 			</DialogContent>
 		</Dialog>

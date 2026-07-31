@@ -28,7 +28,13 @@ function sourceFiles(dir: string): string[] {
 			// though most of its siblings are still legacy.
 			if (relative === path.join("components", "ui")) return sourceFiles(full);
 
-			// Skip subdirectories of components except hud/launch/ui, and walk components itself.
+			// components/video-editor hosts dialog surfaces rebuilt on the design layer one
+			// at a time (Íris Editor sub-fase 3) — walk it, and let the file filter below
+			// pick out only the migrated dialogs.
+			if (relative === path.join("components", "video-editor")) return sourceFiles(full);
+
+			// Skip subdirectories of components except hud/launch/ui/video-editor, and walk
+			// components itself.
 			if (relative === "components") return sourceFiles(full);
 
 			// Every other subdirectory of components/ is still legacy — skip it.
@@ -61,6 +67,19 @@ function sourceFiles(dir: string): string[] {
 				"sonner.tsx",
 			];
 			if (!MIGRATED_UI_PRIMITIVES.includes(entry.name)) return [];
+		}
+
+		// Inside components/video-editor specifically, only the migrated editor dialogs
+		// are checked — the rest of that directory is still legacy Tailwind/shadcn.
+		const inVideoEditor = relative.startsWith(path.join("components", "video-editor") + path.sep);
+		if (inVideoEditor) {
+			const MIGRATED_EDITOR_DIALOGS = [
+				"ExportDialog.tsx",
+				"ShortcutsConfigDialog.tsx",
+				"UnsavedChangesDialog.tsx",
+				"AddCustomFontDialog.tsx",
+			];
+			if (!MIGRATED_EDITOR_DIALOGS.includes(entry.name)) return [];
 		}
 
 		return /\.(ts|tsx|css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) ? [full] : [];
@@ -110,6 +129,21 @@ describe("glass guardrail", () => {
 		for (const name of expected) {
 			expect(
 				files.some((file) => file.endsWith(path.join("components", "ui", name))),
+				`expected ${name} to be walked by the glass guardrail`,
+			).toBe(true);
+		}
+	});
+
+	it("walks every editor dialog migrated in the Fase 5.2 batch", () => {
+		const expected = [
+			"ExportDialog.tsx",
+			"ShortcutsConfigDialog.tsx",
+			"UnsavedChangesDialog.tsx",
+			"AddCustomFontDialog.tsx",
+		];
+		for (const name of expected) {
+			expect(
+				files.some((file) => file.endsWith(path.join("components", "video-editor", name))),
 				`expected ${name} to be walked by the glass guardrail`,
 			).toBe(true);
 		}
