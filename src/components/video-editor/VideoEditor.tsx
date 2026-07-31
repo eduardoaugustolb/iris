@@ -1,5 +1,9 @@
+import { CaretDownIcon } from "@phosphor-icons/react/dist/csr/CaretDown";
+import { FloppyDiskIcon } from "@phosphor-icons/react/dist/csr/FloppyDisk";
+import { FolderOpenIcon } from "@phosphor-icons/react/dist/csr/FolderOpen";
+import { TranslateIcon } from "@phosphor-icons/react/dist/csr/Translate";
+import { VideoCameraIcon } from "@phosphor-icons/react/dist/csr/VideoCamera";
 import type { Span } from "dnd-timeline";
-import { ChevronDown, FolderOpen, Languages, Save, Video } from "lucide-react";
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { toast } from "sonner";
@@ -22,6 +26,7 @@ import {
 } from "@/components/ui/select";
 import { useI18n, useScopedT } from "@/contexts/I18nContext";
 import { useShortcuts } from "@/contexts/ShortcutsContext";
+import { Glass } from "@/design/glass/Glass";
 import { INITIAL_EDITOR_STATE, useEditorHistory } from "@/hooks/useEditorHistory";
 import { type Locale } from "@/i18n/config";
 import { getAvailableLocales, getLocaleName } from "@/i18n/loader";
@@ -2718,20 +2723,20 @@ export default function VideoEditor() {
 
 	if (loading) {
 		return (
-			<div className="flex items-center justify-center h-screen bg-background">
-				<div className="text-foreground">{t("loadingVideo")}</div>
+			<div className="flex items-center justify-center h-screen bg-[#0A0A0C]">
+				<div className="text-[#F5F5F7]">{t("loadingVideo")}</div>
 			</div>
 		);
 	}
 	if (error) {
 		return (
-			<div className="flex items-center justify-center h-screen bg-background">
+			<div className="flex items-center justify-center h-screen bg-[#0A0A0C]">
 				<div className="flex flex-col items-center gap-3">
-					<div className="text-destructive">{error}</div>
+					<div className="text-[#FF453A]">{error}</div>
 					<button
 						type="button"
 						onClick={handleLoadProject}
-						className="px-3 py-1.5 rounded-md bg-[#34B27B] text-white text-sm hover:bg-[#34B27B]/90"
+						className="px-3 py-1.5 rounded-md bg-[#5E5CE6] text-white text-sm hover:bg-[#8886F0]"
 					>
 						{ts("project.load")}
 					</button>
@@ -2741,7 +2746,7 @@ export default function VideoEditor() {
 	}
 
 	return (
-		<div className="flex flex-col h-screen bg-[#09090b] text-slate-200 overflow-hidden selection:bg-[#34B27B]/30">
+		<div className="flex flex-col h-screen bg-[#0A0A0C] text-[#F5F5F7] overflow-hidden selection:bg-[#5E5CE6]/30">
 			<Dialog open={showNewRecordingDialog} onOpenChange={setShowNewRecordingDialog}>
 				<DialogContent
 					className="sm:max-w-[425px]"
@@ -2762,7 +2767,7 @@ export default function VideoEditor() {
 						<button
 							type="button"
 							onClick={handleNewRecordingConfirm}
-							className="px-4 py-2 rounded-md bg-[#34B27B] text-white hover:bg-[#34B27B]/90 text-sm font-medium transition-colors"
+							className="px-4 py-2 rounded-md bg-[#5E5CE6] text-white hover:bg-[#8886F0] text-sm font-medium transition-colors"
 						>
 							{t("newRecording.confirm")}
 						</button>
@@ -2841,7 +2846,7 @@ export default function VideoEditor() {
 								setShowAutoCaptionsDialog(false);
 								void generateAutoCaptions(captionWordsMin, captionWordsMax);
 							}}
-							className="bg-[#34B27B] text-white hover:bg-[#34B27B]/90"
+							className="bg-[#5E5CE6] text-white hover:bg-[#8886F0]"
 						>
 							{t("autoCaptions.generate")}
 						</Button>
@@ -2850,11 +2855,12 @@ export default function VideoEditor() {
 			</Dialog>
 
 			<div
-				className="h-11 flex-shrink-0 bg-[#070809]/85 backdrop-blur-xl border-b border-white/[0.07] flex items-center justify-between px-5 z-50 shadow-[0_1px_0_rgba(255,255,255,0.03)]"
+				className="relative h-11 flex-shrink-0 z-50 overflow-hidden"
 				style={{ WebkitAppRegion: "drag" } as CSSProperties}
 			>
+				<Glass level={2} className="absolute -inset-6" />
 				<div
-					className="flex-1 flex items-center gap-1.5"
+					className="relative flex-1 flex items-center gap-1.5 px-5"
 					style={{ WebkitAppRegion: "no-drag" } as CSSProperties}
 				>
 					{/* Custom in-app menu bar. Replaces the native OS menu bar that is
@@ -2874,8 +2880,8 @@ export default function VideoEditor() {
 						canRedo={canRedo}
 					/>
 
-					<div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/[0.08] transition-all duration-150 ml-1">
-						<Languages size={15} />
+					<div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[#F5F5F7] hover:bg-white/[0.08] transition-all duration-150 ml-1">
+						<TranslateIcon size={16} weight="regular" />
 						<select
 							aria-label={ts("language.title")}
 							value={locale}
@@ -2884,35 +2890,35 @@ export default function VideoEditor() {
 							style={{ color: "inherit" }}
 						>
 							{availableLocales.map((loc) => (
-								<option key={loc} value={loc} className="bg-[#09090b] text-white">
+								<option key={loc} value={loc} className="bg-[#0A0A0C] text-white">
 									{getLocaleName(loc)}
 								</option>
 							))}
 						</select>
-						<ChevronDown size={12} className="opacity-70 ml-0.5 flex-shrink-0" />
+						<CaretDownIcon size={12} weight="regular" className="opacity-70 ml-0.5 flex-shrink-0" />
 					</div>
 					<button
 						type="button"
 						onClick={() => setShowNewRecordingDialog(true)}
-						className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/[0.08] transition-all duration-150 text-[13px] font-medium"
+						className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[#F5F5F7] hover:bg-white/[0.08] transition-all duration-150 text-[13px] font-medium"
 					>
-						<Video size={15} />
+						<VideoCameraIcon size={16} weight="regular" />
 						{t("newRecording.title")}
 					</button>
 					<button
 						type="button"
 						onClick={handleLoadProject}
-						className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/[0.08] transition-all duration-150 text-[13px] font-medium"
+						className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[#F5F5F7] hover:bg-white/[0.08] transition-all duration-150 text-[13px] font-medium"
 					>
-						<FolderOpen size={15} />
+						<FolderOpenIcon size={16} weight="regular" />
 						{ts("project.load")}
 					</button>
 					<button
 						type="button"
 						onClick={handleSaveProject}
-						className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/[0.08] transition-all duration-150 text-[13px] font-medium"
+						className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[#F5F5F7] hover:bg-white/[0.08] transition-all duration-150 text-[13px] font-medium"
 					>
-						<Save size={15} />
+						<FloppyDiskIcon size={16} weight="regular" />
 						{ts("project.save")}
 					</button>
 				</div>
@@ -2949,7 +2955,7 @@ export default function VideoEditor() {
 										ref={playerContainerRef}
 										className={
 											isFullscreen
-												? "fixed inset-0 z-[99999] w-full h-full flex flex-col items-center justify-center bg-[#09090b]"
+												? "fixed inset-0 z-[99999] w-full h-full flex flex-col items-center justify-center bg-[#0A0A0C]"
 												: "editor-preview-panel w-full h-full flex flex-col items-center justify-center overflow-hidden relative"
 										}
 									>
@@ -3228,7 +3234,7 @@ export default function VideoEditor() {
 						</Panel>
 
 						<PanelResizeHandle className="editor-resize-handle group">
-							<div className="w-10 h-1 bg-white/20 rounded-full transition-colors group-hover:bg-[#34B27B]/70"></div>
+							<div className="w-10 h-1 bg-white/20 rounded-full transition-colors group-hover:bg-[#5E5CE6]/70"></div>
 						</PanelResizeHandle>
 
 						{/* Full-width timeline */}
