@@ -1,6 +1,6 @@
 {
 	"budgets": [
-		{ "metric": "bundle.total", "max": 3600941, "unit": "bytes" },
+		{ "metric": "bundle.total", "max": 3604000, "unit": "bytes" },
 		{ "metric": "bundle.ShortcutsConfigDialog.js", "max": 5895, "unit": "bytes" },
 		{ "metric": "bundle.VideoEditor.css", "max": 4034, "unit": "bytes" },
 		{ "metric": "bundle.VideoEditor.js", "max": 773173, "unit": "bytes" },
