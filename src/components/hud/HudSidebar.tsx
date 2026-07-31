@@ -1,9 +1,14 @@
+import { CheckIcon } from "@phosphor-icons/react/dist/csr/Check";
+import { FilmSlateIcon } from "@phosphor-icons/react/dist/csr/FilmSlate";
+import { GlobeIcon } from "@phosphor-icons/react/dist/csr/Globe";
+import { MinusIcon } from "@phosphor-icons/react/dist/csr/Minus";
+import { NotePencilIcon } from "@phosphor-icons/react/dist/csr/NotePencil";
+import { XIcon } from "@phosphor-icons/react/dist/csr/X";
 import { memo } from "react";
 import { createPortal } from "react-dom";
 import styles from "@/components/launch/LaunchWindow.module.css";
 import type { useScopedT } from "@/contexts/I18nContext";
 import { Glass } from "@/design/glass/Glass";
-import { Icon } from "@/design/icons/Icon";
 
 export interface HudSidebarProps {
 	t: ReturnType<typeof useScopedT>;
@@ -47,7 +52,7 @@ export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 					className={iconBtnClasses}
 					onClick={() => !props.saving && props.onOpenNotes()}
 				>
-					<Icon name="notes" className="text-white/60" />
+					<NotePencilIcon size={20} weight="regular" className="text-white/60" />
 				</button>
 			)}
 
@@ -59,7 +64,7 @@ export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 					onClick={() => !props.saving && props.onOpenStudio()}
 					title={props.t("tooltips.openStudio")}
 				>
-					<Icon name="lens" className="text-white/60" />
+					<FilmSlateIcon size={20} weight="regular" className="text-white/60" />
 				</button>
 			)}
 
@@ -77,7 +82,7 @@ export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 					title={props.activeLanguageLabel}
 					className={`flex h-8 items-center rounded-lg border border-white/10 bg-white/[0.045] text-white/85 hover:bg-white/10 ${props.trayLayout === "vertical" ? "w-8 justify-center px-0" : "gap-1.5 px-2"} disabled:opacity-30 disabled:cursor-not-allowed disabled:pointer-events-none ${styles.electronNoDrag}`}
 				>
-					<Icon name="language" size={16} className="text-white/70" />
+					<GlobeIcon size={16} weight="regular" className="text-white/70" />
 					<span
 						className={`${props.trayLayout === "vertical" ? "sr-only" : "max-w-[54px]"} truncate text-[10px] font-semibold text-white/75`}
 					>
@@ -124,7 +129,7 @@ export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 									>
 										<span className="truncate">{props.getLocaleName(loc)}</span>
 										{loc === props.locale ? (
-											<Icon name="check" size={16} className="text-white/85" />
+											<CheckIcon size={16} weight="regular" className="text-white/85" />
 										) : null}
 									</button>
 								))}
@@ -143,7 +148,7 @@ export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 					onClick={props.onHideHud}
 					disabled={props.saving}
 				>
-					<Icon name="minimize" className="text-white" />
+					<MinusIcon size={20} weight="regular" className="text-white" />
 				</button>
 				<button
 					className={windowBtnClasses}
@@ -151,7 +156,7 @@ export const HudSidebar = memo(function HudSidebar(props: HudSidebarProps) {
 					onClick={props.onCloseHud}
 					disabled={props.saving}
 				>
-					<Icon name="close" className="text-white" />
+					<XIcon size={20} weight="regular" className="text-white" />
 				</button>
 			</div>
 		</>

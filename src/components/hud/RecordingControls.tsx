@@ -1,6 +1,9 @@
+import { ArrowCounterClockwiseIcon } from "@phosphor-icons/react/dist/csr/ArrowCounterClockwise";
+import { PauseIcon } from "@phosphor-icons/react/dist/csr/Pause";
+import { PlayIcon } from "@phosphor-icons/react/dist/csr/Play";
+import { XCircleIcon } from "@phosphor-icons/react/dist/csr/XCircle";
 import { memo } from "react";
 import type { useScopedT } from "@/contexts/I18nContext";
-import { Icon } from "@/design/icons/Icon";
 import { color } from "@/design/tokens/color";
 import { DiaphragmButton } from "./DiaphragmButton";
 import styles from "./hud.module.css";
@@ -61,11 +64,11 @@ export const RecordingControls = memo(function RecordingControls(props: Recordin
 									: props.t("tooltips.pauseRecording")
 							}
 						>
-							<Icon
-								name={props.paused ? "resume" : "pause"}
-								className={props.paused ? "" : "text-white/60"}
-								style={props.paused ? { color: color.semanticWarning } : undefined}
-							/>
+							{props.paused ? (
+								<PlayIcon size={20} weight="regular" style={{ color: color.semanticWarning }} />
+							) : (
+								<PauseIcon size={20} weight="regular" className="text-white/60" />
+							)}
 						</button>
 					)}
 					<button
@@ -75,7 +78,7 @@ export const RecordingControls = memo(function RecordingControls(props: Recordin
 						aria-label={props.t("tooltips.restartRecording")}
 						title={props.t("tooltips.restartRecording")}
 					>
-						<Icon name="restart" className="text-white/60" />
+						<ArrowCounterClockwiseIcon size={20} weight="regular" className="text-white/60" />
 					</button>
 					<button
 						className={auxIconBtnClasses}
@@ -84,7 +87,7 @@ export const RecordingControls = memo(function RecordingControls(props: Recordin
 						aria-label={props.t("tooltips.cancelRecording")}
 						title={props.t("tooltips.cancelRecording")}
 					>
-						<Icon name="cancel" className="text-white/60" />
+						<XCircleIcon size={20} weight="regular" className="text-white/60" />
 					</button>
 				</div>
 			)}
