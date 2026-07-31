@@ -4,6 +4,18 @@ module.exports = {
 	content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
 	theme: {
 		extend: {
+			// Named keys here (not transitionDuration/transitionTimingFunction — those get
+			// spread into these by tailwindcss-animate itself, which would just reintroduce
+			// the ambiguity) resolve unambiguously to the animate-plugin's own duration/ease
+			// matchers, since core Tailwind's transitionDuration/transitionTimingFunction
+			// scales don't define these names. Bracket syntax (duration-[280ms]) collides
+			// with the plugin's matcher and silently drops from the compiled CSS.
+			animationDuration: {
+				standard: "280ms",
+			},
+			animationTimingFunction: {
+				standard: "cubic-bezier(0.32, 0.72, 0, 1)",
+			},
 			keyframes: {
 				"accordion-down": {
 					from: { height: "0" },

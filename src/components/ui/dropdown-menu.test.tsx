@@ -49,8 +49,8 @@ describe("DropdownMenuContent", () => {
 		expect(glassSurface.style.borderRadius).toBe("20px");
 
 		const positioner = glassSurface.parentElement as HTMLElement;
-		expect(positioner.className).toContain("duration-[280ms]");
-		expect(positioner.className).toContain("ease-[cubic-bezier(0.32,0.72,0,1)]");
+		expect(positioner.className).toContain("duration-standard");
+		expect(positioner.className).toContain("ease-standard");
 	});
 
 	it("gives submenus the same radius and easing as top-level menus", async () => {
@@ -73,7 +73,7 @@ describe("DropdownMenuContent", () => {
 		expect(glassSurface.style.borderRadius).toBe("20px");
 
 		const positioner = glassSurface.parentElement as HTMLElement;
-		expect(positioner.className).toContain("duration-[280ms]");
-		expect(positioner.className).toContain("ease-[cubic-bezier(0.32,0.72,0,1)]");
+		expect(positioner.className).toContain("duration-standard");
+		expect(positioner.className).toContain("ease-standard");
 	});
 });

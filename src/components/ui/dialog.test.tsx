@@ -86,8 +86,8 @@ describe("DialogContent", () => {
 		);
 		const positioner = screen.getByText("Example").closest("[data-iris-glass]")
 			?.parentElement as HTMLElement;
-		expect(positioner.className).toContain("duration-[280ms]");
-		expect(positioner.className).toContain("ease-[cubic-bezier(0.32,0.72,0,1)]");
+		expect(positioner.className).toContain("duration-standard");
+		expect(positioner.className).toContain("ease-standard");
 	});
 
 	it("uses the radius-lg token for the modal surface", () => {

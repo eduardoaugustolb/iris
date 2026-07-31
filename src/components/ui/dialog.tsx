@@ -36,7 +36,7 @@ const DialogContent = React.forwardRef<
 		<DialogOverlay />
 		<DialogPrimitive.Content
 			ref={ref}
-			className="fixed inset-x-0 top-[50%] z-[10000] flex translate-y-[-50%] justify-center !pointer-events-none duration-[280ms] ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%]"
+			className="fixed inset-x-0 top-[50%] z-[10000] flex translate-y-[-50%] justify-center !pointer-events-none duration-standard ease-standard data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-top-[48%]"
 			{...props}
 		>
 			<Glass
