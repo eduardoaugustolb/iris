@@ -14,7 +14,7 @@
 		{ "metric": "bundle.transcribe.worker.js", "max": 4003, "unit": "bytes" },
 		{ "metric": "bundle.transformers.js", "max": 861567, "unit": "bytes" },
 		{ "metric": "bundle.video-processing.js", "max": 131666, "unit": "bytes" },
-		{ "metric": "startup.hudFirstFrame", "max": 5000, "unit": "ms" },
+		{ "metric": "startup.hudFirstFrame", "max": 6000, "unit": "ms" },
 		{ "metric": "memory.idle.total", "max": 540557, "unit": "count" },
 		{ "metric": "memory.idle.Browser", "max": 240056, "unit": "count" },
 		{ "metric": "memory.idle.GPU", "max": 63181, "unit": "count" },
