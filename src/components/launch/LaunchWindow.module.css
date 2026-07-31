@@ -73,6 +73,6 @@
 }
 
 .languageMenuItemActive {
-	background: rgba(52, 178, 123, 0.14);
+	background: color-mix(in srgb, var(--brand-primary) 14%, transparent);
 	color: #ffffff;
 }

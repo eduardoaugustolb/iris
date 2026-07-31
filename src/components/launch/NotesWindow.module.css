@@ -4,8 +4,8 @@
 	width: 100%;
 	outline: none;
 	overflow-y: auto;
-	color: #111827;
-	caret-color: #111827;
+	color: var(--text-primary);
+	caret-color: var(--text-primary);
 }
 
 :global(.tiptap) :first-child {
@@ -84,18 +84,18 @@
 }
 
 :global(.tiptap) code {
-	background-color: #ede9fe;
+	background-color: rgba(255, 255, 255, 0.1);
 	border-radius: 0.4rem;
-	color: #111827;
+	color: var(--text-primary);
 	font-size: 0.85rem;
 	padding: 0.25em 0.3em;
 }
 
 :global(.tiptap) pre {
-	background: #111827;
+	background: var(--surface-raised);
 	border-radius: 0.5rem;
-	color: #ffffff;
-	font-family: "JetBrainsMono", monospace;
+	color: var(--text-primary);
+	font-family: var(--font-mono);
 	margin: 1.5rem 0;
 	padding: 0.75rem 1rem;
 }
@@ -108,13 +108,13 @@
 }
 
 :global(.tiptap) blockquote {
-	border-left: 3px solid #d1d5db;
+	border-left: 3px solid rgba(255, 255, 255, 0.2);
 	margin: 1.5rem 0;
 	padding-left: 1rem;
 }
 
 :global(.tiptap) hr {
 	border: none;
-	border-top: 1px solid #e5e7eb;
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
 	margin: 2rem 0;
 }

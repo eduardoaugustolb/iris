@@ -20,12 +20,15 @@ function sourceFiles(dir: string): string[] {
 			// components/hud is rebuilt on the design layer (Íris Fase 3) — always walk it.
 			if (relative === path.join("components", "hud")) return sourceFiles(full);
 
+			// components/launch is rebuilt on the design layer (Íris Fase 4) — always walk it.
+			if (relative === path.join("components", "launch")) return sourceFiles(full);
+
 			// components/ui hosts shared primitives migrated one at a time (Íris Editor
 			// sub-fase 1) — walk it so already-migrated files can be picked up below, even
 			// though most of its siblings are still legacy.
 			if (relative === path.join("components", "ui")) return sourceFiles(full);
 
-			// Skip subdirectories of components except hud/ui, and walk components itself.
+			// Skip subdirectories of components except hud/launch/ui, and walk components itself.
 			if (relative === "components") return sourceFiles(full);
 
 			// Every other subdirectory of components/ is still legacy — skip it.
@@ -51,6 +54,21 @@ describe("glass guardrail", () => {
 
 	it("finds files to check, so a broken walk can't pass silently", () => {
 		expect(files.length).toBeGreaterThan(0);
+	});
+
+	it("walks components/launch, now that those surfaces are rebuilt on the design layer", () => {
+		const launchFiles = files.filter((file) => file.includes(path.join("components", "launch")));
+		expect(launchFiles.length).toBeGreaterThan(0);
+		expect(
+			launchFiles.some((file) =>
+				file.endsWith(path.join("components", "launch", "SourceSelector.module.css")),
+			),
+		).toBe(true);
+		expect(
+			launchFiles.some((file) =>
+				file.endsWith(path.join("components", "launch", "NotesToolbar.tsx")),
+			),
+		).toBe(true);
 	});
 
 	it("never builds the glass material outside the Glass primitive", () => {
