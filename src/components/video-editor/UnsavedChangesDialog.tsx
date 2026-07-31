@@ -47,7 +47,7 @@ export function UnsavedChangesDialog({
 
 	return (
 		<Dialog open={isOpen} onOpenChange={(open) => !open && onCancel()}>
-			<DialogContent className="bg-[#09090b] border-white/10 rounded-2xl max-w-sm p-6 gap-0">
+			<DialogContent className="rounded-2xl max-w-sm p-6 gap-0">
 				<DialogHeader className="mb-5">
 					<div className="flex items-center gap-3">
 						<img
