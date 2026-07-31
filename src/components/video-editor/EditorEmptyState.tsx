@@ -1,6 +1,6 @@
+import { ApertureIcon } from "@phosphor-icons/react/dist/csr/Aperture";
 import { FolderOpenIcon } from "@phosphor-icons/react/dist/csr/FolderOpen";
 import { UploadIcon } from "@phosphor-icons/react/dist/csr/Upload";
-import { VideoCameraIcon } from "@phosphor-icons/react/dist/csr/VideoCamera";
 import { WarningCircleIcon } from "@phosphor-icons/react/dist/csr/WarningCircle";
 import { XIcon } from "@phosphor-icons/react/dist/csr/X";
 import { useCallback, useRef, useState } from "react";
@@ -202,7 +202,7 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 						onClick={handleImportVideo}
 						className="flex items-center justify-center gap-2.5 w-full px-4 py-3 rounded-xl text-white font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b] bg-[#5E5CE6] hover:bg-[#8886F0] active:bg-[#5E5CE6] focus-visible:ring-[#5E5CE6]"
 					>
-						<VideoCameraIcon size={16} weight="regular" />
+						<ApertureIcon size={16} weight="regular" />
 						{te("emptyState.importVideoButton")}
 					</button>
 					<button
