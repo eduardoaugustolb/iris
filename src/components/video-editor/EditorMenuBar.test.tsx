@@ -173,4 +173,17 @@ describe("<EditorMenuBar />", () => {
 		const undoItem = await screen.findByRole("menuitem", { name: /Undo/ });
 		expect(undoItem).toHaveAttribute("aria-disabled", "true");
 	});
+
+	it("renders the Quit item in the warning colour, not red", async () => {
+		const user = userEvent.setup();
+		render(<EditorMenuBar {...makeProps()} />);
+
+		await user.click(screen.getByRole("button", { name: "File" }));
+		const quitItem = await screen.findByRole("menuitem", { name: /Quit/ });
+
+		// color.semanticWarning from src/design/tokens/color.ts — DESIGN.md reserves red
+		// exclusively for the recording state, so destructive-ish-but-not-data-loss menu
+		// items (Quit) use the warning tone instead.
+		expect(quitItem.className).toContain("text-[#FF9F0A]");
+	});
 });
