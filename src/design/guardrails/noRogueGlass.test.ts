@@ -91,9 +91,11 @@ function sourceFiles(dir: string): string[] {
 				"TutorialHelp.tsx",
 				"KeyboardShortcutsHelp.tsx",
 			];
+			const MIGRATED_EDITOR_SHELL = ["VideoEditor.tsx", "VideoPlayback.tsx"];
 			if (
 				!MIGRATED_EDITOR_DIALOGS.includes(entry.name) &&
-				!MIGRATED_EDITOR_PANELS.includes(entry.name)
+				!MIGRATED_EDITOR_PANELS.includes(entry.name) &&
+				!MIGRATED_EDITOR_SHELL.includes(entry.name)
 			)
 				return [];
 		}
@@ -177,6 +179,16 @@ describe("glass guardrail", () => {
 			"TutorialHelp.tsx",
 			"KeyboardShortcutsHelp.tsx",
 		];
+		for (const name of expected) {
+			expect(
+				files.some((file) => file.endsWith(path.join("components", "video-editor", name))),
+				`expected ${name} to be walked by the glass guardrail`,
+			).toBe(true);
+		}
+	});
+
+	it("walks the editor shell surfaces migrated in the Fase 5.4 batch", () => {
+		const expected = ["VideoEditor.tsx", "VideoPlayback.tsx"];
 		for (const name of expected) {
 			expect(
 				files.some((file) => file.endsWith(path.join("components", "video-editor", name))),

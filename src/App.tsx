@@ -1,3 +1,4 @@
+import { ApertureIcon } from "@phosphor-icons/react/dist/csr/Aperture";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { CountdownOverlay } from "./components/launch/CountdownOverlay.tsx";
 import { LaunchWindow } from "./components/launch/LaunchWindow";
@@ -71,30 +72,15 @@ export default function App() {
 					<ShortcutsProvider>
 						<Suspense
 							fallback={
-								<div className="flex flex-col items-center justify-center gap-3 h-screen bg-[#09090b]">
-									<svg
-										className="animate-spin text-[#34B27B]"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										width={28}
-										height={28}
-									>
-										<circle
-											className="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
-											stroke="currentColor"
-											strokeWidth="4"
-										/>
-										<path
-											className="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-										/>
-									</svg>
-									<span className="text-white/50 text-sm">{tEditor("loadingEditor")}</span>
+								<div className="flex flex-col items-center justify-center gap-3 h-screen bg-[#0A0A0C]">
+									<ApertureIcon
+										className="animate-spin text-[#5E5CE6]"
+										size={28}
+										weight="regular"
+									/>
+									<span className="text-sm text-[var(--text-secondary)]">
+										{tEditor("loadingEditor")}
+									</span>
 								</div>
 							}
 						>
