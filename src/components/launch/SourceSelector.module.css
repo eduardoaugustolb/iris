@@ -1,8 +1,9 @@
 /*
  * Window container: opaque elevated surface (DESIGN.md §2/§5). This is a
- * transparent Electron window, so neither backdrop-filter nor Glass can be used
- * here — Glass always casts a box-shadow, and Electron does not round shadow
- * corners, which would paint a square shadow beyond the rounded corners.
+ * transparent Electron window, so neither the frosted backdrop blur nor Glass
+ * can be used here — Glass always casts a box-shadow, and Electron does not
+ * round shadow corners, which would paint a square shadow beyond the rounded
+ * corners.
  */
 .windowContainer {
 	background: var(--surface-raised);
