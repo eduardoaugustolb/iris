@@ -1,5 +1,5 @@
+import { CheckIcon } from "@phosphor-icons/react/dist/csr/Check";
 import { useCallback, useEffect, useState } from "react";
-import { MdCheck } from "react-icons/md";
 import { useScopedT } from "@/contexts/I18nContext";
 import { Button } from "../ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
@@ -71,12 +71,12 @@ export function SourceSelector() {
 	if (loading) {
 		return (
 			<div
-				className={`h-full flex items-center justify-center ${styles.glassContainer}`}
+				className={`h-full flex items-center justify-center ${styles.windowContainer}`}
 				style={{ minHeight: "100vh" }}
 			>
 				<div className="text-center">
-					<div className="animate-spin duration-500 rounded-[50%] h-6 w-6 border-2 border-b-transparent border-[#34B27B] mx-auto mb-2" />
-					<p className="text-xs text-zinc-400">{t("sourceSelector.loading")}</p>
+					<div className="animate-spin duration-500 rounded-[50%] h-6 w-6 border-2 border-b-transparent border-[#5E5CE6] mx-auto mb-2" />
+					<p className="text-xs text-white/60">{t("sourceSelector.loading")}</p>
 				</div>
 			</div>
 		);
@@ -85,19 +85,19 @@ export function SourceSelector() {
 	if (hasNoSources) {
 		return (
 			<div
-				className={`h-full flex items-center justify-center ${styles.glassContainer}`}
+				className={`h-full flex items-center justify-center ${styles.windowContainer}`}
 				style={{ minHeight: "100vh" }}
 			>
 				<div className="max-w-[320px] px-6 text-center">
 					<h2 className="text-sm font-semibold text-white">{t("sourceSelector.emptyTitle")}</h2>
-					<p className="mt-2 text-xs leading-5 text-zinc-400">
+					<p className="mt-2 text-xs leading-5 text-white/60">
 						{loadFailed
 							? t("sourceSelector.loadFailedDescription")
 							: t("sourceSelector.emptyDescription")}
 					</p>
 					<Button
 						onClick={() => void fetchSources()}
-						className="mt-4 h-8 rounded-lg bg-[#34B27B] px-5 text-[11px] font-semibold text-white transition-transform duration-150 hover:bg-[#34B27B]/85 active:scale-95"
+						className="mt-4 h-8 rounded-lg bg-[#5E5CE6] px-5 text-[11px] font-semibold text-white transition-transform duration-150 hover:bg-[#8886F0] active:scale-95"
 					>
 						{tc("actions.reload")}
 					</Button>
@@ -124,9 +124,9 @@ export function SourceSelector() {
 						className="w-full aspect-video object-cover"
 					/>
 					{isSelected && (
-						<div className="absolute right-1.5 top-1.5">
+						<div className="absolute right-1.5 top-1.5" data-testid="source-selector-check">
 							<div className={styles.checkBadge}>
-								<MdCheck size={11} className="text-white" />
+								<CheckIcon size={11} weight="bold" className="text-white" />
 							</div>
 						</div>
 					)}
@@ -142,7 +142,7 @@ export function SourceSelector() {
 	};
 
 	return (
-		<div className={`min-h-screen flex flex-col ${styles.glassContainer}`}>
+		<div className={`min-h-screen flex flex-col ${styles.windowContainer}`}>
 			<div className="flex-1 flex flex-col w-full px-3.5 pt-3.5">
 				<Tabs
 					defaultValue={screenSources.length === 0 ? "windows" : "screens"}
@@ -151,13 +151,13 @@ export function SourceSelector() {
 					<TabsList className="mb-3 grid h-8 grid-cols-2 rounded-xl border border-white/[0.06] bg-white/[0.04] p-0.5">
 						<TabsTrigger
 							value="screens"
-							className="rounded-lg py-1 text-[11px] text-zinc-400 transition-all data-[state=active]:bg-white/[0.12] data-[state=active]:text-white"
+							className="rounded-lg py-1 text-[11px] text-white/60 transition-all data-[state=active]:bg-white/[0.12] data-[state=active]:text-white"
 						>
 							{t("sourceSelector.screens", { count: String(screenSources.length) })}
 						</TabsTrigger>
 						<TabsTrigger
 							value="windows"
-							className="rounded-lg py-1 text-[11px] text-zinc-400 transition-all data-[state=active]:bg-white/[0.12] data-[state=active]:text-white"
+							className="rounded-lg py-1 text-[11px] text-white/60 transition-all data-[state=active]:bg-white/[0.12] data-[state=active]:text-white"
 						>
 							{t("sourceSelector.windows", { count: String(windowSources.length) })}
 						</TabsTrigger>
@@ -185,7 +185,7 @@ export function SourceSelector() {
 					data-testid="source-selector-cancel-button"
 					variant="ghost"
 					onClick={() => window.close()}
-					className="h-8 rounded-lg px-5 text-[11px] text-zinc-400 transition-transform duration-150 hover:bg-white/5 hover:text-white active:scale-95"
+					className="h-8 rounded-lg px-5 text-[11px] text-white/60 transition-transform duration-150 hover:bg-white/5 hover:text-white active:scale-95"
 				>
 					{tc("actions.cancel")}
 				</Button>
@@ -193,7 +193,7 @@ export function SourceSelector() {
 					data-testid="source-selector-share-button"
 					onClick={handleShare}
 					disabled={!selectedSource}
-					className="h-8 rounded-lg bg-[#34B27B] px-5 text-[11px] font-semibold text-white transition-transform duration-150 hover:bg-[#34B27B]/85 active:scale-95 disabled:bg-zinc-700 disabled:opacity-30"
+					className="h-8 rounded-lg bg-[#5E5CE6] px-5 text-[11px] font-semibold text-white transition-transform duration-150 hover:bg-[#8886F0] active:scale-95 disabled:bg-white/10 disabled:opacity-40"
 				>
 					{tc("actions.share")}
 				</Button>

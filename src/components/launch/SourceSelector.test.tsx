@@ -46,6 +46,31 @@ describe("SourceSelector", () => {
 		expect(screen.getByRole("button", { name: "Reload" })).toBeInTheDocument();
 	});
 
+	it("shows a Phosphor check icon on the selected source card", async () => {
+		window.electronAPI = {
+			...window.electronAPI,
+			getSources: vi.fn().mockResolvedValue([
+				{
+					id: "screen:1:0",
+					name: "Display 1",
+					thumbnail: "data:image/png;base64,abc",
+					display_id: "1",
+					appIcon: null,
+				},
+			]),
+			selectSource: vi.fn(),
+		} as typeof window.electronAPI;
+
+		render(<SourceSelector />);
+
+		await screen.findByText("Display 1");
+		fireEvent.click(screen.getAllByTestId("source-selector-card")[0]);
+
+		const checkBadge = document.querySelector('[data-testid="source-selector-check"]');
+		expect(checkBadge).not.toBeNull();
+		expect(checkBadge?.querySelector("svg")).not.toBeNull();
+	});
+
 	it("reloads capture sources from the empty state", async () => {
 		const getSources = vi
 			.fn()
