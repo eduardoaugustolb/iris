@@ -33,6 +33,11 @@ function sourceFiles(dir: string): string[] {
 			// pick out only the migrated dialogs.
 			if (relative === path.join("components", "video-editor")) return sourceFiles(full);
 
+			// components/video-editor/timeline is rebuilt on the design layer (Íris Fase 6)
+			// — always walk it.
+			if (relative === path.join("components", "video-editor", "timeline"))
+				return sourceFiles(full);
+
 			// Skip subdirectories of components except hud/launch/ui/video-editor, and walk
 			// components itself.
 			if (relative === "components") return sourceFiles(full);
@@ -69,12 +74,8 @@ function sourceFiles(dir: string): string[] {
 			if (!MIGRATED_UI_PRIMITIVES.includes(entry.name)) return [];
 		}
 
-		// components/video-editor is fully rebuilt on the design layer (Íris Fase 5)
-		// except the timeline subdirectory (Íris Fase 6) — skip timeline only.
-		if (relative.startsWith(path.join("components", "video-editor", "timeline") + path.sep)) {
-			return [];
-		}
-
+		// components/video-editor is fully rebuilt on the design layer (Íris Fase 5),
+		// including the timeline subdirectory (Íris Fase 6) — walk it all.
 		return /\.(ts|tsx|css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) ? [full] : [];
 	});
 }
@@ -180,11 +181,28 @@ describe("glass guardrail", () => {
 		}
 	});
 
-	it("still skips the timeline subdirectory until Fase 6", () => {
+	it("walks the whole timeline subdirectory, now that Fase 6 rebuilt it", () => {
 		const timelineFiles = files.filter((file) =>
 			file.includes(path.join("components", "video-editor", "timeline")),
 		);
-		expect(timelineFiles).toEqual([]);
+		expect(timelineFiles.length).toBeGreaterThan(0);
+		for (const name of [
+			"TimelineEditor.tsx",
+			"TimelineWrapper.tsx",
+			"Item.tsx",
+			"ItemGlass.module.css",
+			"Row.tsx",
+			"Subrow.tsx",
+			"BackgroundWaveform.tsx",
+			"KeyframeMarkers.tsx",
+		]) {
+			expect(
+				timelineFiles.some((file) =>
+					file.endsWith(path.join("components", "video-editor", "timeline", name)),
+				),
+				`expected ${name} to be walked by the glass guardrail`,
+			).toBe(true);
+		}
 	});
 
 	it("never builds the glass material outside the Glass primitive", () => {

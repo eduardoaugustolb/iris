@@ -1,6 +1,6 @@
 {
 	"budgets": [
-		{ "metric": "bundle.total", "max": 3604000, "unit": "bytes" },
+		{ "metric": "bundle.total", "max": 3622000, "unit": "bytes" },
 		{ "metric": "bundle.ShortcutsConfigDialog.js", "max": 5895, "unit": "bytes" },
 		{ "metric": "bundle.VideoEditor.css", "max": 4034, "unit": "bytes" },
 		{ "metric": "bundle.VideoEditor.js", "max": 773173, "unit": "bytes" },
@@ -9,7 +9,7 @@
 		{ "metric": "bundle.gif.worker.js", "max": 17468, "unit": "bytes" },
 		{ "metric": "bundle.index.css", "max": 85362, "unit": "bytes" },
 		{ "metric": "bundle.index.js", "max": 644539, "unit": "bytes" },
-		{ "metric": "bundle.phosphor-icons.js", "max": 200000, "unit": "bytes" },
+		{ "metric": "bundle.phosphor-icons.js", "max": 213000, "unit": "bytes" },
 		{ "metric": "bundle.pixi.js", "max": 569621, "unit": "bytes" },
 		{ "metric": "bundle.react-vendor.js", "max": 485000, "unit": "bytes" },
 		{ "metric": "bundle.transcribe.worker.js", "max": 4003, "unit": "bytes" },

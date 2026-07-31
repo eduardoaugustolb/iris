@@ -1,18 +1,16 @@
+import { ArrowsOutIcon } from "@phosphor-icons/react/dist/csr/ArrowsOut";
+import { CaretDownIcon } from "@phosphor-icons/react/dist/csr/CaretDown";
+import { ChatCircleTextIcon } from "@phosphor-icons/react/dist/csr/ChatCircleText";
+import { CheckIcon } from "@phosphor-icons/react/dist/csr/Check";
+import { CrosshairIcon } from "@phosphor-icons/react/dist/csr/Crosshair";
+import { GaugeIcon } from "@phosphor-icons/react/dist/csr/Gauge";
+import { MagicWandIcon } from "@phosphor-icons/react/dist/csr/MagicWand";
+import { MagnifyingGlassPlusIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlassPlus";
+import { PlusIcon } from "@phosphor-icons/react/dist/csr/Plus";
+import { ScissorsIcon } from "@phosphor-icons/react/dist/csr/Scissors";
+import { SubtitlesIcon } from "@phosphor-icons/react/dist/csr/Subtitles";
 import type { Range, Span } from "dnd-timeline";
 import { useTimelineContext } from "dnd-timeline";
-import {
-	Captions,
-	Check,
-	ChevronDown,
-	Gauge,
-	Maximize,
-	MessageSquare,
-	Plus,
-	ScanEye,
-	Scissors,
-	WandSparkles,
-	ZoomIn,
-} from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -462,7 +460,7 @@ function PlaybackCursor({
 			}}
 		>
 			<div
-				className="absolute top-0 bottom-0 w-[2px] bg-[#6C55FF] shadow-[0_0_18px_rgba(108,85,255,0.68)] cursor-ew-resize pointer-events-auto hover:shadow-[0_0_24px_rgba(108,85,255,0.85)] transition-shadow"
+				className="absolute top-0 bottom-0 w-[2px] bg-[#5E5CE6] shadow-[0_0_18px_rgba(94,92,230,0.68)] cursor-ew-resize pointer-events-auto hover:shadow-[0_0_24px_rgba(94,92,230,0.85)] transition-shadow"
 				style={{
 					[sideProperty]: `${offset}px`,
 				}}
@@ -476,7 +474,7 @@ function PlaybackCursor({
 					className="absolute -top-2 left-1/2 -translate-x-1/2 hover:scale-110 transition-transform"
 					style={{ width: "20px", height: "20px" }}
 				>
-					<div className="w-4 h-4 mx-auto mt-[2px] bg-[#6C55FF] rotate-45 rounded-[5px] shadow-lg shadow-[#6C55FF]/30 border border-white/30" />
+					<div className="w-4 h-4 mx-auto mt-[2px] bg-[#5E5CE6] rotate-45 rounded-[5px] shadow-lg shadow-[#5E5CE6]/30 border border-white/30" />
 				</div>
 				{isDragging && (
 					<div className="absolute -top-6 left-1/2 -translate-x-1/2 px-1.5 py-0.5 rounded bg-black/80 text-[10px] text-white/90 font-medium tabular-nums whitespace-nowrap border border-white/10 shadow-lg pointer-events-none">
@@ -557,7 +555,7 @@ function TimelineAxis({
 
 	return (
 		<div
-			className="h-9 bg-[#0c0d10] border-b border-white/[0.07] relative overflow-hidden select-none"
+			className="h-9 bg-[#141416] border-b border-white/[0.07] relative overflow-hidden select-none"
 			style={{
 				[sideProperty === "right" ? "marginRight" : "marginLeft"]: `${sidebarWidth}px`,
 			}}
@@ -594,7 +592,7 @@ function TimelineAxis({
 							<span
 								className={cn(
 									"text-[10px] font-medium tabular-nums tracking-tight",
-									marker.time === currentTimeMs ? "text-[#34B27B]" : "text-slate-500",
+									marker.time === currentTimeMs ? "text-[#5E5CE6]" : "text-[var(--text-tertiary)]",
 								)}
 							>
 								{marker.label}
@@ -1648,15 +1646,15 @@ export default function TimelineEditor({
 
 	if (!videoDuration || videoDuration === 0) {
 		return (
-			<div className="flex-1 flex flex-col items-center justify-center rounded-lg bg-[#09090b] gap-3">
+			<div className="flex-1 flex flex-col items-center justify-center rounded-lg bg-[#0A0A0C] gap-3">
 				<div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center">
-					<Plus className="w-6 h-6 text-slate-600" />
+					<PlusIcon size={24} className="text-[var(--text-tertiary)]" />
 				</div>
 				<div className="text-center">
-					<p className="text-sm font-medium text-slate-300">
+					<p className="text-sm font-medium text-[var(--text-secondary)]">
 						{hasVideoSource ? "Loading Timeline" : "No Video Loaded"}
 					</p>
-					<p className="text-xs text-slate-500 mt-1">
+					<p className="text-xs text-[var(--text-tertiary)] mt-1">
 						{hasVideoSource
 							? "Video opened, waiting for duration metadata"
 							: "Drag and drop a video to start editing"}
@@ -1667,26 +1665,26 @@ export default function TimelineEditor({
 	}
 
 	return (
-		<div className="flex-1 min-h-0 flex flex-col bg-[#09090b] overflow-hidden">
-			<div className="flex items-center gap-2 px-3 py-1.5 border-b border-white/[0.06] bg-[#08090b]/95">
+		<div className="flex-1 min-h-0 flex flex-col bg-[#0A0A0C] overflow-hidden">
+			<div className="flex items-center gap-2 px-3 py-1.5 border-b border-white/[0.06] bg-[#141416]">
 				<div className="flex items-center gap-0.5 rounded-xl border border-white/[0.06] bg-white/[0.025] p-0.5">
 					<Button
 						onClick={handleAddZoom}
 						variant="ghost"
 						size="icon"
-						className="h-7 w-7 rounded-lg text-slate-400 hover:text-[#34B27B] hover:bg-[#34B27B]/10 transition-all"
+						className="h-7 w-7 rounded-lg text-[var(--text-secondary)] hover:text-[#5E5CE6] hover:bg-[#5E5CE6]/10 transition-all"
 						title={t("buttons.addZoom")}
 					>
-						<ZoomIn className="w-4 h-4" />
+						<MagnifyingGlassPlusIcon size={16} />
 					</Button>
 					<Button
 						onClick={handleAddCameraFullscreen}
 						variant="ghost"
 						size="icon"
-						className="h-7 w-7 rounded-lg text-slate-400 hover:text-[#38bdf8] hover:bg-[#38bdf8]/10 transition-all"
+						className="h-7 w-7 rounded-lg text-[var(--text-secondary)] hover:text-[#38bdf8] hover:bg-[#38bdf8]/10 transition-all"
 						title={t("buttons.addCameraFullscreen")}
 					>
-						<Maximize className="w-4 h-4" />
+						<ArrowsOutIcon size={16} />
 					</Button>
 					<Button
 						onClick={() => onToggleAutoZoom?.(!autoZoomEnabled)}
@@ -1694,12 +1692,12 @@ export default function TimelineEditor({
 						size="icon"
 						aria-pressed={autoZoomEnabled}
 						className={cn(
-							"h-7 w-7 rounded-lg transition-all hover:bg-[#34B27B]/10 hover:text-[#34B27B]",
-							autoZoomEnabled ? "bg-[#34B27B]/15 text-[#34B27B]" : "text-slate-400",
+							"h-7 w-7 rounded-lg transition-all hover:bg-[#5E5CE6]/10 hover:text-[#5E5CE6]",
+							autoZoomEnabled ? "bg-[#5E5CE6]/15 text-[#5E5CE6]" : "text-[var(--text-secondary)]",
 						)}
 						title={autoZoomEnabled ? t("buttons.autoZoomOn") : t("buttons.autoZoomOff")}
 					>
-						<WandSparkles className="w-4 h-4" />
+						<MagicWandIcon size={16} />
 					</Button>
 					<Button
 						onClick={() => onToggleAutoFocusAll?.(!autoFocusAll)}
@@ -1707,37 +1705,37 @@ export default function TimelineEditor({
 						size="icon"
 						aria-pressed={autoFocusAll}
 						className={cn(
-							"h-7 w-7 rounded-lg transition-all hover:bg-[#34B27B]/10 hover:text-[#34B27B]",
-							autoFocusAll ? "bg-[#34B27B]/15 text-[#34B27B]" : "text-slate-400",
+							"h-7 w-7 rounded-lg transition-all hover:bg-[#5E5CE6]/10 hover:text-[#5E5CE6]",
+							autoFocusAll ? "bg-[#5E5CE6]/15 text-[#5E5CE6]" : "text-[var(--text-secondary)]",
 						)}
 						title={autoFocusAll ? t("buttons.autoFocusAllOn") : t("buttons.autoFocusAllOff")}
 					>
-						<ScanEye className="w-4 h-4" />
+						<CrosshairIcon size={16} />
 					</Button>
 					<Button
 						onClick={handleAddTrim}
 						variant="ghost"
 						size="icon"
-						className="h-7 w-7 rounded-lg text-slate-400 hover:text-[#ef4444] hover:bg-[#ef4444]/10 transition-all"
+						className="h-7 w-7 rounded-lg text-[var(--text-secondary)] hover:text-[#ef4444] hover:bg-[#ef4444]/10 transition-all"
 						title={t("buttons.addTrim")}
 					>
-						<Scissors className="w-4 h-4" />
+						<ScissorsIcon size={16} />
 					</Button>
 					<Button
 						onClick={handleAddAnnotation}
 						variant="ghost"
 						size="icon"
-						className="h-7 w-7 rounded-lg text-slate-400 hover:text-[#B4A046] hover:bg-[#B4A046]/10 transition-all"
+						className="h-7 w-7 rounded-lg text-[var(--text-secondary)] hover:text-[#B4A046] hover:bg-[#B4A046]/10 transition-all"
 						title={t("buttons.addAnnotation")}
 					>
-						<MessageSquare className="w-4 h-4" />
+						<ChatCircleTextIcon size={16} />
 					</Button>
 					{BLUR_REGIONS_ENABLED && (
 						<Button
 							onClick={handleAddBlur}
 							variant="ghost"
 							size="icon"
-							className="h-7 w-7 rounded-lg text-slate-400 hover:text-[#7dd3fc] hover:bg-[#7dd3fc]/10 transition-all"
+							className="h-7 w-7 rounded-lg text-[var(--text-secondary)] hover:text-[#7dd3fc] hover:bg-[#7dd3fc]/10 transition-all"
 							title={t("buttons.addBlur")}
 						>
 							<svg
@@ -1757,10 +1755,10 @@ export default function TimelineEditor({
 						onClick={handleAddSpeed}
 						variant="ghost"
 						size="icon"
-						className="h-7 w-7 rounded-lg text-slate-400 hover:text-[#d97706] hover:bg-[#d97706]/10 transition-all"
+						className="h-7 w-7 rounded-lg text-[var(--text-secondary)] hover:text-[#d97706] hover:bg-[#d97706]/10 transition-all"
 						title={t("buttons.addSpeed")}
 					>
-						<Gauge className="w-4 h-4" />
+						<GaugeIcon size={16} />
 					</Button>
 					{onGenerateCaptions && (
 						<Button
@@ -1768,10 +1766,10 @@ export default function TimelineEditor({
 							disabled={isGeneratingCaptions || !videoUrl}
 							variant="ghost"
 							size="icon"
-							className="h-7 w-7 rounded-lg text-slate-400 hover:text-[#a78bfa] hover:bg-[#a78bfa]/10 transition-all"
+							className="h-7 w-7 rounded-lg text-[var(--text-secondary)] hover:text-[#a78bfa] hover:bg-[#a78bfa]/10 transition-all"
 							title={captionsLabel}
 						>
-							<Captions className="w-4 h-4" />
+							<SubtitlesIcon size={16} />
 						</Button>
 					)}
 				</div>
@@ -1781,10 +1779,10 @@ export default function TimelineEditor({
 							<Button
 								variant="ghost"
 								size="sm"
-								className="h-7 px-2 rounded-lg text-[11px] text-slate-400 hover:text-slate-200 hover:bg-white/[0.07] transition-all gap-1"
+								className="h-7 px-2 rounded-lg text-[11px] text-[var(--text-secondary)] hover:text-[#F5F5F7] hover:bg-white/[0.08] transition-all gap-1"
 							>
 								<span className="font-medium">{getAspectRatioLabel(aspectRatio)}</span>
-								<ChevronDown className="w-3 h-3" />
+								<CaretDownIcon size={12} />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
@@ -1792,25 +1790,25 @@ export default function TimelineEditor({
 								<DropdownMenuItem
 									key={ratio}
 									onClick={() => onAspectRatioChange(ratio)}
-									className="text-slate-300 hover:text-white hover:bg-white/10 cursor-pointer flex items-center justify-between gap-3"
+									className="text-[var(--text-secondary)] hover:text-[#F5F5F7] hover:bg-white/[0.08] cursor-pointer flex items-center justify-between gap-3"
 								>
 									<span>{getAspectRatioLabel(ratio)}</span>
-									{aspectRatio === ratio && <Check className="w-3 h-3 text-[#34B27B]" />}
+									{aspectRatio === ratio && <CheckIcon size={12} className="text-[#5E5CE6]" />}
 								</DropdownMenuItem>
 							))}
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div>
 				<div className="flex-1" />
-				<div className="hidden md:flex items-center gap-3 text-[10px] text-slate-500 font-medium">
+				<div className="hidden md:flex items-center gap-3 text-[10px] text-[var(--text-tertiary)] font-medium">
 					<span className="flex items-center gap-1.5">
-						<kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#34B27B] font-sans">
+						<kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#5E5CE6] font-sans">
 							{scrollLabels.pan}
 						</kbd>
 						<span>{t("labels.pan")}</span>
 					</span>
 					<span className="flex items-center gap-1.5">
-						<kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#34B27B] font-sans">
+						<kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded text-[#5E5CE6] font-sans">
 							{scrollLabels.zoom}
 						</kbd>
 						<span>{t("labels.zoom")}</span>
@@ -1819,7 +1817,7 @@ export default function TimelineEditor({
 			</div>
 			<div
 				ref={timelineContainerRef}
-				className="flex-1 min-h-0 overflow-auto custom-scrollbar bg-[#09090b] relative"
+				className="flex-1 min-h-0 overflow-auto custom-scrollbar bg-[#0A0A0C] relative"
 				onClick={() => setSelectedKeyframeId(null)}
 			>
 				<TimelineWrapper
