@@ -10,7 +10,7 @@
 		{ "metric": "bundle.index.css", "max": 85362, "unit": "bytes" },
 		{ "metric": "bundle.index.js", "max": 644539, "unit": "bytes" },
 		{ "metric": "bundle.pixi.js", "max": 569621, "unit": "bytes" },
-		{ "metric": "bundle.react-vendor.js", "max": 565000, "unit": "bytes" },
+		{ "metric": "bundle.react-vendor.js", "max": 570000, "unit": "bytes" },
 		{ "metric": "bundle.transcribe.worker.js", "max": 4003, "unit": "bytes" },
 		{ "metric": "bundle.transformers.js", "max": 861567, "unit": "bytes" },
 		{ "metric": "bundle.video-processing.js", "max": 131666, "unit": "bytes" },

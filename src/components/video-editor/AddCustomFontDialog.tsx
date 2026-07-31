@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { PlusIcon } from "@phosphor-icons/react/dist/csr/Plus";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -105,65 +105,47 @@ export function AddCustomFontDialog({ onFontAdded }: AddCustomFontDialogProps) {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button
-					variant="outline"
-					size="sm"
-					className="w-full bg-white/5 border-white/10 text-slate-200 hover:bg-white/10 h-9 text-xs"
-				>
-					<Plus className="w-3 h-3 mr-1" />
+				<Button variant="outline" size="sm" className="w-full h-9 text-xs">
+					<PlusIcon className="mr-1" />
 					{t("customFont.dialogTitle")}
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="text-slate-200">
+			<DialogContent className="text-[#F5F5F7]">
 				<DialogHeader>
 					<DialogTitle>{t("customFont.dialogTitle")}</DialogTitle>
-					<DialogDescription className="text-slate-400">
+					<DialogDescription className="text-[var(--text-secondary)]">
 						Add a custom font from Google Fonts to use in your annotations.
 					</DialogDescription>
 				</DialogHeader>
 
 				<div className="space-y-4 mt-4">
 					<div className="space-y-2">
-						<Label htmlFor="import-url" className="text-slate-200">
-							{t("customFont.urlLabel")}
-						</Label>
+						<Label htmlFor="import-url">{t("customFont.urlLabel")}</Label>
 						<Input
 							id="import-url"
 							placeholder={t("customFont.urlPlaceholder")}
 							value={importUrl}
 							onChange={(e) => handleImportUrlChange(e.target.value)}
-							className="bg-white/5 border-white/10 text-slate-200"
 						/>
-						<p className="text-xs text-slate-400">{t("customFont.urlHelp")}</p>
+						<p className="text-xs text-[var(--text-secondary)]">{t("customFont.urlHelp")}</p>
 					</div>
 
 					<div className="space-y-2">
-						<Label htmlFor="font-name" className="text-slate-200">
-							{t("customFont.nameLabel")}
-						</Label>
+						<Label htmlFor="font-name">{t("customFont.nameLabel")}</Label>
 						<Input
 							id="font-name"
 							placeholder={t("customFont.namePlaceholder")}
 							value={fontName}
 							onChange={(e) => setFontName(e.target.value)}
-							className="bg-white/5 border-white/10 text-slate-200"
 						/>
-						<p className="text-xs text-slate-400">{t("customFont.nameHelp")}</p>
+						<p className="text-xs text-[var(--text-secondary)]">{t("customFont.nameHelp")}</p>
 					</div>
 
 					<div className="flex justify-end gap-2 mt-6">
-						<Button
-							variant="outline"
-							onClick={() => setOpen(false)}
-							className="bg-white/5 border-white/10 text-slate-200 hover:bg-white/10"
-						>
+						<Button variant="outline" onClick={() => setOpen(false)}>
 							{tc("actions.cancel")}
 						</Button>
-						<Button
-							onClick={handleAdd}
-							disabled={loading}
-							className="bg-blue-600 hover:bg-blue-700 text-white"
-						>
+						<Button onClick={handleAdd} disabled={loading}>
 							{loading ? t("customFont.addingButton") : t("customFont.addButton")}
 						</Button>
 					</div>

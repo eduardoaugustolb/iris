@@ -1,4 +1,5 @@
-import { Keyboard, RotateCcw } from "lucide-react";
+import { ArrowCounterClockwiseIcon } from "@phosphor-icons/react/dist/csr/ArrowCounterClockwise";
+import { KeyboardIcon } from "@phosphor-icons/react/dist/csr/Keyboard";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -131,17 +132,17 @@ export function ShortcutsConfigDialog() {
 				if (!open) handleClose();
 			}}
 		>
-			<DialogContent className="text-white max-w-[420px] max-h-[85vh] flex flex-col">
+			<DialogContent className="text-[#F5F5F7] max-w-[420px] max-h-[85vh] flex flex-col">
 				<DialogHeader className="shrink-0">
 					<DialogTitle className="flex items-center gap-2 text-sm">
-						<Keyboard className="w-4 h-4 text-[#34B27B]" />
+						<KeyboardIcon size={16} weight="regular" className="text-[#5E5CE6]" />
 						{t("title")}
 					</DialogTitle>
 				</DialogHeader>
 
 				<div className="flex-1 min-h-0 overflow-y-auto pr-1 -mr-1">
 					<div className="space-y-0.5">
-						<p className="text-[10px] text-slate-500 mb-2 uppercase tracking-wide font-semibold">
+						<p className="text-[10px] text-[var(--text-tertiary)] mb-2 uppercase tracking-wide font-semibold">
 							{t("configurable")}
 						</p>
 						{SHORTCUT_ACTIONS.filter((action) => BLUR_REGIONS_ENABLED || action !== "addBlur").map(
@@ -150,8 +151,10 @@ export function ShortcutsConfigDialog() {
 								const hasConflict = conflict?.forAction === action;
 								return (
 									<div key={action}>
-										<div className="flex items-center justify-between py-1.5 px-1 border-b border-white/5">
-											<span className="text-sm text-slate-300">{t(`actions.${action}`)}</span>
+										<div className="flex items-center justify-between py-1.5 px-1 border-b border-white/10">
+											<span className="text-sm text-[var(--text-primary)]">
+												{t(`actions.${action}`)}
+											</span>
 											<button
 												type="button"
 												onClick={() => {
@@ -162,18 +165,18 @@ export function ShortcutsConfigDialog() {
 												className={[
 													"px-2 py-1 rounded text-xs font-mono border transition-all min-w-[90px] text-center select-none",
 													isCapturing
-														? "bg-[#34B27B]/20 border-[#34B27B] text-[#34B27B] animate-pulse"
+														? "bg-[#5E5CE6]/20 border-[#5E5CE6] text-[#5E5CE6] animate-pulse"
 														: hasConflict
-															? "bg-amber-500/10 border-amber-500/50 text-amber-400"
-															: "bg-white/5 border-white/10 text-slate-200 hover:border-[#34B27B]/50 hover:text-[#34B27B] cursor-pointer",
+															? "bg-[#FF9F0A]/10 border-[#FF9F0A]/50 text-[#FF9F0A]"
+															: "bg-white/10 border-white/10 text-[#F5F5F7] hover:border-[#5E5CE6]/50 hover:text-[#5E5CE6] cursor-pointer",
 												].join(" ")}
 											>
 												{isCapturing ? t("pressKey") : formatBinding(draft[action], isMac)}
 											</button>
 										</div>
 										{hasConflict && conflict?.conflictWith.type === "configurable" && (
-											<div className="flex items-center justify-between px-1 py-1.5 mb-0.5 bg-amber-500/10 border border-amber-500/20 rounded text-xs">
-												<span className="text-amber-400">
+											<div className="flex items-center justify-between px-1 py-1.5 mb-0.5 bg-[#FF9F0A]/10 border border-[#FF9F0A]/20 rounded text-xs">
+												<span className="text-[#FF9F0A]">
 													⚠{" "}
 													{t("alreadyUsedBy", {
 														action: t(`actions.${conflict.conflictWith.action}`),
@@ -183,14 +186,14 @@ export function ShortcutsConfigDialog() {
 													<button
 														type="button"
 														onClick={handleSwap}
-														className="px-2 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded text-amber-300 font-medium transition-colors"
+														className="px-2 py-0.5 bg-[#FF9F0A]/20 hover:bg-[#FF9F0A]/30 border border-[#FF9F0A]/40 rounded text-[#FF9F0A] font-medium transition-colors"
 													>
 														{t("swap")}
 													</button>
 													<button
 														type="button"
 														onClick={handleCancelConflict}
-														className="px-2 py-0.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-slate-400 transition-colors"
+														className="px-2 py-0.5 bg-white/10 hover:bg-white/15 border border-white/10 rounded text-[var(--text-secondary)] transition-colors"
 													>
 														{tc("actions.cancel")}
 													</button>
@@ -204,46 +207,42 @@ export function ShortcutsConfigDialog() {
 					</div>
 
 					<div className="space-y-0.5 mt-2">
-						<p className="text-[10px] text-slate-500 mb-2 uppercase tracking-wide font-semibold">
+						<p className="text-[10px] text-[var(--text-tertiary)] mb-2 uppercase tracking-wide font-semibold">
 							{t("fixed")}
 						</p>
 						{FIXED_SHORTCUTS.map(({ i18nKey, label, display }) => (
 							<div
 								key={i18nKey}
-								className="flex items-center justify-between py-1.5 px-1 border-b border-white/5 last:border-0"
+								className="flex items-center justify-between py-1.5 px-1 border-b border-white/10 last:border-0"
 							>
-								<span className="text-sm text-slate-400">
+								<span className="text-sm text-[var(--text-secondary)]">
 									{t(`fixedActions.${i18nKey}`, { defaultValue: label })}
 								</span>
-								<kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded text-xs font-mono text-slate-400 min-w-[90px] text-center">
+								<kbd className="px-2 py-1 bg-white/10 border border-white/10 rounded text-xs font-mono text-[var(--text-secondary)] min-w-[90px] text-center">
 									{display}
 								</kbd>
 							</div>
 						))}
 					</div>
 
-					<p className="text-[10px] text-slate-500 mt-1">{t("helpText")}</p>
+					<p className="text-[10px] text-[var(--text-tertiary)] mt-1">{t("helpText")}</p>
 				</div>
 
 				<DialogFooter className="shrink-0 flex gap-2 sm:justify-between mt-2">
 					<Button
 						variant="ghost"
 						size="sm"
-						className="text-slate-400 gap-1.5"
+						className="text-[var(--text-secondary)] gap-1.5"
 						onClick={handleReset}
 					>
-						<RotateCcw className="w-3 h-3" />
+						<ArrowCounterClockwiseIcon />
 						{t("resetToDefaults")}
 					</Button>
 					<div className="flex gap-2">
 						<Button variant="ghost" size="sm" onClick={handleClose}>
 							{tc("actions.cancel")}
 						</Button>
-						<Button
-							size="sm"
-							className="bg-[#34B27B] hover:bg-[#2d9e6c] text-white"
-							onClick={handleSave}
-						>
+						<Button size="sm" onClick={handleSave}>
 							{tc("actions.save")}
 						</Button>
 					</div>
