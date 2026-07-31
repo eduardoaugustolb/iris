@@ -1,4 +1,4 @@
-import { FilmSlateIcon } from "@phosphor-icons/react/dist/csr/FilmSlate";
+import { FilmReelIcon } from "@phosphor-icons/react/dist/csr/FilmReel";
 import { FolderOpenIcon } from "@phosphor-icons/react/dist/csr/FolderOpen";
 import { UploadIcon } from "@phosphor-icons/react/dist/csr/Upload";
 import { WarningCircleIcon } from "@phosphor-icons/react/dist/csr/WarningCircle";
@@ -202,7 +202,7 @@ export function EditorEmptyState({ onVideoImported, onProjectOpened }: EditorEmp
 						onClick={handleImportVideo}
 						className="flex items-center justify-center gap-2.5 w-full px-4 py-3 rounded-xl text-white font-medium text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#09090b] bg-[#5E5CE6] hover:bg-[#8886F0] active:bg-[#5E5CE6] focus-visible:ring-[#5E5CE6]"
 					>
-						<FilmSlateIcon size={16} weight="regular" />
+						<FilmReelIcon size={16} weight="regular" />
 						{te("emptyState.importVideoButton")}
 					</button>
 					<button
