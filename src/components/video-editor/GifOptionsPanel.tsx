@@ -43,7 +43,7 @@ export function GifOptionsPanel({
 		<div className="space-y-4 animate-in slide-in-from-bottom-2 duration-200">
 			{/* Frame Rate */}
 			<div className="space-y-2">
-				<label className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+				<label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
 					Frame Rate
 				</label>
 				<Select
@@ -51,16 +51,12 @@ export function GifOptionsPanel({
 					onValueChange={(value) => onFrameRateChange(Number(value) as GifFrameRate)}
 					disabled={disabled}
 				>
-					<SelectTrigger className="w-full bg-white/5 border-white/10 text-slate-200 hover:bg-white/10">
+					<SelectTrigger className="w-full">
 						<SelectValue />
 					</SelectTrigger>
-					<SelectContent className="bg-[#1a1a1f] border-white/10 z-[100]">
+					<SelectContent>
 						{GIF_FRAME_RATES.map((rate) => (
-							<SelectItem
-								key={rate.value}
-								value={String(rate.value)}
-								className="text-slate-200 focus:bg-white/10 focus:text-white"
-							>
+							<SelectItem key={rate.value} value={String(rate.value)}>
 								{rate.label}
 							</SelectItem>
 						))}
@@ -70,7 +66,7 @@ export function GifOptionsPanel({
 
 			{/* Size Preset */}
 			<div className="space-y-2">
-				<label className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+				<label className="text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
 					Output Size
 				</label>
 				<Select
@@ -78,22 +74,18 @@ export function GifOptionsPanel({
 					onValueChange={(value) => onSizePresetChange(value as GifSizePreset)}
 					disabled={disabled}
 				>
-					<SelectTrigger className="w-full bg-white/5 border-white/10 text-slate-200 hover:bg-white/10">
+					<SelectTrigger className="w-full">
 						<SelectValue />
 					</SelectTrigger>
-					<SelectContent className="bg-[#1a1a1f] border-white/10 z-[100]">
+					<SelectContent>
 						{sizePresetOptions.map((option) => (
-							<SelectItem
-								key={option.value}
-								value={option.value}
-								className="text-slate-200 focus:bg-white/10 focus:text-white"
-							>
+							<SelectItem key={option.value} value={option.value}>
 								{option.label}
 							</SelectItem>
 						))}
 					</SelectContent>
 				</Select>
-				<div className="text-xs text-slate-500">
+				<div className="text-xs text-[var(--text-tertiary)]">
 					Output: {outputDimensions.width} × {outputDimensions.height}px
 				</div>
 			</div>
@@ -101,8 +93,8 @@ export function GifOptionsPanel({
 			{/* Loop Toggle */}
 			<div className="flex items-center justify-between py-2">
 				<div>
-					<label className="text-sm font-medium text-slate-200">Loop Animation</label>
-					<p className="text-xs text-slate-500">GIF will play continuously</p>
+					<label className="text-sm font-medium text-[#F5F5F7]">Loop Animation</label>
+					<p className="text-xs text-[var(--text-tertiary)]">GIF will play continuously</p>
 				</div>
 				<Switch checked={loop} onCheckedChange={onLoopChange} disabled={disabled} />
 			</div>

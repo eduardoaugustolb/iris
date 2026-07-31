@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { TrashIcon } from "@phosphor-icons/react/dist/csr/Trash";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useScopedT } from "@/contexts/I18nContext";
@@ -43,10 +43,10 @@ export function BlurSettingsPanel({
 		<div className="min-w-0 p-4 flex flex-col h-full overflow-y-auto custom-scrollbar">
 			<div className="mb-3">
 				<div className="mb-4">
-					<span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+					<span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
 						{t("annotation.blurTypeMosaic")}
 					</span>
-					<div className="mt-1 text-xl font-semibold text-slate-100">
+					<div className="mt-1 text-xl font-semibold text-[#F5F5F7]">
 						{t("annotation.typeBlur")}
 					</div>
 				</div>
@@ -73,7 +73,7 @@ export function BlurSettingsPanel({
 								className={cn(
 									"h-12 rounded-lg border flex items-center justify-center transition-all p-2 gap-2",
 									isActive
-										? "bg-[#34B27B] border-[#34B27B]"
+										? "bg-[#5E5CE6] border-[#5E5CE6]"
 										: "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20",
 								)}
 							>
@@ -81,7 +81,7 @@ export function BlurSettingsPanel({
 									<div
 										className={cn(
 											"w-8 h-5 border-2 rounded-sm",
-											isActive ? "border-white" : "border-slate-400",
+											isActive ? "border-white" : "border-white/25",
 										)}
 									/>
 								)}
@@ -89,7 +89,7 @@ export function BlurSettingsPanel({
 									<div
 										className={cn(
 											"w-8 h-5 border-2 rounded-full",
-											isActive ? "border-white" : "border-slate-400",
+											isActive ? "border-white" : "border-white/25",
 										)}
 									/>
 								)}
@@ -102,7 +102,7 @@ export function BlurSettingsPanel({
 				</div>
 
 				<div className="mt-4">
-					<label className="text-xs font-medium text-slate-300 mb-2 block">
+					<label className="text-xs font-medium text-[#F5F5F7] mb-2 block">
 						{t("annotation.blurColor")}
 					</label>
 					<div className="grid grid-cols-2 gap-2">
@@ -127,7 +127,7 @@ export function BlurSettingsPanel({
 									className={cn(
 										"h-10 rounded-lg border flex items-center gap-2 px-3 transition-all",
 										isActive
-											? "bg-[#34B27B] border-[#34B27B]"
+											? "bg-[#5E5CE6] border-[#5E5CE6]"
 											: "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20",
 									)}
 								>
@@ -141,7 +141,7 @@ export function BlurSettingsPanel({
 											}),
 										}}
 									/>
-									<span className="text-xs text-slate-200">
+									<span className="text-xs text-[#F5F5F7]">
 										{t(`annotation.${option.labelKey}`)}
 									</span>
 								</button>
@@ -152,10 +152,10 @@ export function BlurSettingsPanel({
 
 				<div className="mt-4 p-3 rounded-lg editor-control-surface">
 					<div className="flex items-center justify-between mb-2">
-						<span className="text-xs font-medium text-slate-300">
+						<span className="text-xs font-medium text-[#F5F5F7]">
 							{t("annotation.mosaicBlockSize")}
 						</span>
-						<span className="text-[10px] text-slate-400 font-mono">
+						<span className="text-[10px] text-[var(--text-secondary)] font-mono">
 							{Math.round(blurRegion.blurData?.blockSize ?? DEFAULT_BLUR_BLOCK_SIZE)}
 							px
 						</span>
@@ -174,7 +174,7 @@ export function BlurSettingsPanel({
 						min={MIN_BLUR_BLOCK_SIZE}
 						max={MAX_BLUR_BLOCK_SIZE}
 						step={1}
-						className="w-full [&_[role=slider]]:bg-[#34B27B] [&_[role=slider]]:border-[#34B27B] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
+						className="w-full [&_[role=slider]]:bg-[#5E5CE6] [&_[role=slider]]:border-[#5E5CE6] [&_[role=slider]]:h-3 [&_[role=slider]]:w-3"
 					/>
 				</div>
 
@@ -182,9 +182,9 @@ export function BlurSettingsPanel({
 					onClick={onDelete}
 					variant="destructive"
 					size="sm"
-					className="w-full gap-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:border-red-500/30 transition-all mt-4"
+					className="w-full gap-2 transition-all mt-4"
 				>
-					<Trash2 className="w-4 h-4" />
+					<TrashIcon size={16} weight="regular" />
 					{t("annotation.deleteAnnotation")}
 				</Button>
 			</div>

@@ -1,4 +1,5 @@
-import { Film, Image } from "lucide-react";
+import { FilmStripIcon } from "@phosphor-icons/react/dist/csr/FilmStrip";
+import { ImageIcon } from "@phosphor-icons/react/dist/csr/Image";
 import { useScopedT } from "@/contexts/I18nContext";
 import type { ExportFormat } from "@/lib/exporter/types";
 import { cn } from "@/lib/utils";
@@ -10,8 +11,8 @@ interface FormatSelectorProps {
 }
 
 const formatOptions: Array<{ value: ExportFormat; icon: React.ReactNode }> = [
-	{ value: "mp4", icon: <Film className="w-5 h-5" /> },
-	{ value: "gif", icon: <Image className="w-5 h-5" /> },
+	{ value: "mp4", icon: <FilmStripIcon size={20} weight="regular" /> },
+	{ value: "gif", icon: <ImageIcon size={20} weight="regular" /> },
 ];
 
 export function FormatSelector({
@@ -39,27 +40,27 @@ export function FormatSelector({
 						onClick={() => onFormatChange(option.value)}
 						className={cn(
 							"relative flex flex-col items-center gap-2 p-4 rounded-xl border transition-all duration-200",
-							"focus:outline-none focus:ring-2 focus:ring-[#34B27B]/50 focus:ring-offset-2 focus:ring-offset-[#09090b]",
+							"focus:outline-none focus:ring-2 focus:ring-[#5E5CE6]/50 focus:ring-offset-2 focus:ring-offset-[#0A0A0C]",
 							isSelected
-								? "bg-[#34B27B]/10 border-[#34B27B]/50 text-white"
-								: "bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:border-white/20 hover:text-slate-200",
+								? "bg-[#5E5CE6]/10 border-[#5E5CE6]/50 text-white"
+								: "bg-white/5 border-white/10 text-[var(--text-secondary)] hover:bg-white/10 hover:border-white/20 hover:text-[#F5F5F7]",
 							disabled && "opacity-50 cursor-not-allowed",
 						)}
 					>
 						<div
 							className={cn(
 								"w-10 h-10 rounded-full flex items-center justify-center transition-colors",
-								isSelected ? "bg-[#34B27B]/20 text-[#34B27B]" : "bg-white/5",
+								isSelected ? "bg-[#5E5CE6]/20 text-[#5E5CE6]" : "bg-white/5",
 							)}
 						>
 							{option.icon}
 						</div>
 						<div className="text-center">
 							<div className="font-medium text-sm">{labels.label}</div>
-							<div className="text-xs text-slate-500 mt-0.5">{labels.description}</div>
+							<div className="text-xs text-[var(--text-tertiary)] mt-0.5">{labels.description}</div>
 						</div>
 						{isSelected && (
-							<div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#34B27B]" />
+							<div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[#5E5CE6]" />
 						)}
 					</button>
 				);
