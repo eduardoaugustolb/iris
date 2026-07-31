@@ -162,15 +162,12 @@ export function EditorMenuBar(props: EditorMenuBarProps) {
 					<DropdownMenuTrigger asChild>
 						<button
 							type="button"
-							className="px-2.5 py-1.5 rounded-lg text-[13px] font-semibold text-slate-300 hover:text-white hover:bg-white/[0.08] transition-all duration-150 outline-none focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:bg-white/[0.08]"
+							className="px-2.5 py-1.5 rounded-lg text-[13px] font-semibold text-[rgba(245,245,247,0.62)] hover:text-[#F5F5F7] hover:bg-white/[0.08] transition-all duration-150 outline-none focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:bg-white/[0.08]"
 						>
 							{menu.label}
 						</button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent
-						align="start"
-						className={`bg-[#09090b]/95 backdrop-blur-md border border-white/[0.08] text-slate-200 ${menu.minWidthClass}`}
-					>
+					<DropdownMenuContent align="start" className={menu.minWidthClass}>
 						{menu.items.map((item) => (
 							<Fragment key={item.id}>
 								{item.separatorBefore && <DropdownMenuSeparator className="bg-white/[0.08]" />}
@@ -179,8 +176,8 @@ export function EditorMenuBar(props: EditorMenuBarProps) {
 									disabled={item.disabled}
 									className={
 										item.danger
-											? "hover:bg-red-500/20 focus:bg-red-500/20 focus:text-red-400 text-red-400 cursor-pointer justify-between"
-											: "hover:bg-white/[0.08] focus:bg-white/[0.08] focus:text-white cursor-pointer justify-between"
+											? "hover:bg-[#FF9F0A]/20 focus:bg-[#FF9F0A]/20 focus:text-[#FF9F0A] text-[#FF9F0A] cursor-pointer justify-between"
+											: "hover:bg-white/[0.08] focus:bg-white/[0.08] focus:text-[#F5F5F7] text-[#F5F5F7] cursor-pointer justify-between"
 									}
 								>
 									<span>{item.label}</span>

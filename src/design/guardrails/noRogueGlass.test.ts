@@ -17,17 +17,29 @@ function sourceFiles(dir: string): string[] {
 		const relative = path.relative(SRC, full);
 
 		if (entry.isDirectory()) {
-			// components/hud is rebuilt on the design layer (Íris Fase 3) — always
-			// walk it even though the rest of "components" is still legacy.
+			// components/hud is rebuilt on the design layer (Íris Fase 3) — always walk it.
 			if (relative === path.join("components", "hud")) return sourceFiles(full);
 
-			// Skip subdirectories of components except hud, and walk components itself
+			// components/ui hosts shared primitives migrated one at a time (Íris Editor
+			// sub-fase 1) — walk it so already-migrated files can be picked up below, even
+			// though most of its siblings are still legacy.
+			if (relative === path.join("components", "ui")) return sourceFiles(full);
+
+			// Skip subdirectories of components except hud/ui, and walk components itself.
 			if (relative === "components") return sourceFiles(full);
 
 			// Every other subdirectory of components/ is still legacy — skip it.
 			if (relative.startsWith("components" + path.sep)) return [];
 
 			return LEGACY_ALLOWLIST.includes(relative) ? [] : sourceFiles(full);
+		}
+
+		// Inside components/ui specifically, only already-migrated primitives are
+		// checked — the rest of that directory is still legacy Tailwind/shadcn.
+		const inComponentsUi = relative.startsWith(path.join("components", "ui") + path.sep);
+		if (inComponentsUi) {
+			const MIGRATED_UI_PRIMITIVES = ["dialog.tsx", "dropdown-menu.tsx"];
+			if (!MIGRATED_UI_PRIMITIVES.includes(entry.name)) return [];
 		}
 
 		return /\.(ts|tsx|css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) ? [full] : [];

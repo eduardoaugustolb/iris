@@ -1787,7 +1787,7 @@ export default function TimelineEditor({
 								<ChevronDown className="w-3 h-3" />
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end" className="bg-[#1a1a1a] border-white/10">
+						<DropdownMenuContent align="end">
 							{ASPECT_RATIOS.map((ratio) => (
 								<DropdownMenuItem
 									key={ratio}
