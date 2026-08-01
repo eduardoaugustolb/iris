@@ -132,17 +132,18 @@ Como o Íris está aproximando o material via web, a tradução prática dessa r
 
 ---
 
-## Parte 5 — Ícones: usar SF Symbols de verdade, não reinventar
+## Parte 5 — Ícones: usar uma biblioteca única de verdade, não reinventar
 
-A exigência de que os ícones sigam o padrão da Apple tem uma resposta técnica direta: **não desenhar um sistema de ícones customizado pro app inteiro**. A própria Apple recomenda usar SF Symbols para os ícones internos do app em vez de gráficos customizados — e a razão é mais funcional que estética:
+A exigência de ícones consistentes tem uma resposta técnica direta: **não desenhar um sistema de ícones customizado pro app inteiro**. A escolha é **`@phosphor-icons/react`** com deep import `dist/csr/<Nome>` — não SF Symbols, que é exclusivo de Apple e quebraria em Windows/Linux:
 
-- Cada símbolo tem 9 pesos (de ultralight a black), casados exatamente com os pesos da fonte SF Pro — o que garante que um ícone ao lado de um texto sempre pareça desenhado pela mesma mão, sem trabalho manual de alinhamento.
-- Cada símbolo existe em 3 escalas (pequena, média, grande) e 4 modos de renderização (monocromático, hierárquico, paleta, multicor) — e herda automaticamente Dynamic Type e configurações de acessibilidade do sistema, algo que um ícone customizado nunca vai ter de graça.
+- Cada ícone Phosphor existe na mesma família de pesos (thin→fill) e escala da fonte embarcada Iris Sans, então um ícone ao lado de um texto sempre parece desenhado pela mesma mão, sem trabalho manual de alinhamento.
+- É uma biblioteca cross-platform embarcada (nenhum recurso do sistema), então o rodapé visual é idêntico em macOS, Windows e Linux — o mesmo motivo pelo qual a tipografia é embarcada (Parte 1).
+- Deep import `dist/csr/<Nome>` mantém o tree-shaking no bundle: só os ícones usados entram no build.
 
 **Aplicação prática no Íris:**
-- **Todo ícone funcional da interface** (toolbar, menu de configurações, botões do HUD — pausar, parar, configurações, microfone, câmera, etc.) usa **SF Symbols reais**, direto da biblioteca do sistema (`SFSymbols.app` pra explorar, ou a fonte SF Symbols embarcada). Nada de redesenhar um "ícone de pausa" do zero.
+- **Todo ícone funcional da interface** (toolbar, menu de configurações, botões do HUD — pausar, parar, configurações, microfone, câmera, etc.) vem de `@phosphor-icons/react` com deep import `dist/csr/<Nome>`, renderizado como `<Nome>Icon` com `weight="regular"`. Nada de redesenhar um "ícone de pausa" do zero, nem importar de `lucide-react`/`react-icons` (banidos no `dependencyGuard`).
 - **A única peça de iconografia autoral do produto é a própria marca Íris** (o símbolo de íris/lente da seção 7 do `DESIGN.md`) — porque é isso que carrega identidade de marca. Todo o resto da UI é funcional, não precisa (e não deve) ter assinatura visual própria.
-- **Se um dia for necessário um símbolo customizado** que a biblioteca não cobre, ele precisa seguir as regras de autoria da própria Apple: mesmo nível de detalhe, peso óptico, alinhamento, posição e perspectiva dos símbolos do sistema — alinhado à mesma grade, nunca "quase parecido".
+- **Se um dia for necessário um símbolo customizado** que a biblioteca não cobre, ele precisa seguir as mesmas regras dos ícones Phosphor: mesmo nível de detalhe, peso óptico e alinhamento à grade — nunca "quase parecido".
 
 ## Referências
 
@@ -154,6 +155,4 @@ A exigência de que os ícones sigam o padrão da Apple tem uma resposta técnic
 - Nielsen Norman Group — [Recognition vs. Recall](https://www.nngroup.com/videos/recognition-vs-recall/)
 - Laws of UX — leis de Fitts, Hick, Jakob, Miller — [uxdesigninstitute.com/blog/laws-of-ux](https://www.uxdesigninstitute.com/blog/laws-of-ux/)
 - Doherty & Thadani (IBM, 1982) via LogRocket — [Doherty Threshold](https://blog.logrocket.com/ux-design/designing-instant-feedback-doherty-threshold/)
-- Apple Developer — [Motion — Foundations, Human Interface Guidelines](https://developers.apple.com/design/human-interface-guidelines/foundations/motion)
-- Apple Developer — [SF Symbols — Foundations, Human Interface Guidelines](https://developers.apple.com/design/human-interface-guidelines/foundations/sf-symbols)
-- Apple Developer — [WWDC19: Introducing SF Symbols](https://developer.apple.com/videos/play/wwdc2019/206/)
+- Apple Developer — [Motion — Foundations, Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/foundations/motion)

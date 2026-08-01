@@ -116,7 +116,7 @@
 	"imageUpload": {
 		"invalidFileType": "Tipo de arquivo inválido",
 		"jpgOnly": "Por favor, envie um arquivo de imagem JPG ou JPEG.",
-		"uploadSuccess": "Imagem personalizada enviada com sucesso!",
+		"uploadSuccess": "Imagem personalizada enviada",
 		"failedToUpload": "Falha ao enviar imagem",
 		"errorReading": "Ocorreu um erro ao ler o arquivo."
 	},
@@ -164,7 +164,7 @@
 		"tipShiftTabCycle": "Use Shift+Tab para alternar para trás.",
 		"invalidImageType": "Tipo de imagem inválido",
 		"imageFormatsOnly": "Por favor, envie um arquivo de imagem JPG, PNG, GIF ou WebP.",
-		"imageUploadSuccess": "Imagem enviada com sucesso!"
+		"imageUploadSuccess": "Imagem enviada"
 	},
 	"fontStyles": {
 		"classic": "Clássico",

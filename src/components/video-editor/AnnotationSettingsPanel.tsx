@@ -54,7 +54,7 @@ const FONT_FAMILIES: Array<
 	| { value: string; labelKey?: never; name: string }
 > = [
 	{ value: "Inter", name: "Inter" },
-	{ value: "system-ui, -apple-system, sans-serif", labelKey: "classic" },
+	{ value: "system-ui, sans-serif", labelKey: "classic" },
 	{ value: "Georgia, serif", labelKey: "editor" },
 	{ value: "Impact, Arial Black, sans-serif", labelKey: "strong" },
 	{ value: "Courier New, monospace", labelKey: "typewriter" },

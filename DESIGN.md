@@ -55,12 +55,12 @@ Modo claro é suportado mas secundário — deriva automaticamente do modo escur
 
 ## 4. Tipografia
 
-Fonte do sistema Apple, sem fallback para fontes de terceiros — o app roda exclusivamente em macOS, então usar a stack nativa é a escolha correta (e é literalmente o que a Apple usa):
+Fontes embarcadas no produto (`Iris Sans`, alias de Inter Variable; `Iris Mono`, alias de JetBrains Mono Variable), declaradas em `src/design/fonts.css` e expostas como tokens. O app roda em macOS, Windows e Linux, então a UI não empresta fonte de sistema de nenhuma plataforma — o rodapé visual é idêntico nas três:
 
 ```css
---font-display: -apple-system, "SF Pro Display", system-ui, sans-serif;
---font-text: -apple-system, "SF Pro Text", system-ui, sans-serif;
---font-mono: "SF Mono", ui-monospace, monospace;
+--font-display: "Iris Sans", system-ui, sans-serif;
+--font-text: "Iris Sans", system-ui, sans-serif;
+--font-mono: "Iris Mono", ui-monospace, monospace;
 ```
 
 Escala tipográfica (usar exatamente estes 7 degraus, nenhum valor intermediário):
@@ -145,12 +145,12 @@ Janela principal do app: largura mínima 720px, altura mínima 480px. HUD de gra
 
 ## 7. Logo e ícone
 
-**Regra geral de iconografia:** a marca Íris (símbolo de olho/lente, ver detalhamento abaixo) é a **única** peça de iconografia desenhada pelo produto. Todo ícone funcional da interface — toolbar, HUD, menu de configurações, qualquer botão com ícone — usa **SF Symbols reais da Apple**, não um ícone customizado equivalente. Motivo prático, não só estético: SF Symbols já vem com peso óptico casado à fonte do sistema, 3 escalas e 4 modos de renderização, e herda Dynamic Type e acessibilidade de graça — nenhum ícone desenhado à mão reproduz isso sem trabalho manual constante. Detalhamento completo dessa decisão está em `UX-PRINCIPLES.md`, Parte 5.
+**Regra geral de iconografia:** a marca Íris (símbolo de olho/lente, ver detalhamento abaixo) é a **única** peça de iconografia desenhada pelo produto. Todo ícone funcional da interface — toolbar, HUD, menu de configurações, qualquer botão com ícone — vem de **`@phosphor-icons/react`** com deep import `dist/csr/<Nome>` (peso óptico casado à fonte embarcada, mesma família de peso e escala em macOS/Windows/Linux). Nenhum ícone é desenhado à mão nem emprestado de uma biblioteca de sistema (SF Symbols é exclusivo de Apple). Motivo completo em `UX-PRINCIPLES.md`, Parte 5.
 
 **Conceito de construção da marca:** um diafragma de abertura óptica (aperture) estilizado — as lâminas curvas que se abrem/fecham em uma lente de câmera real, não uma câmera inteira, só o padrão geométrico do diafragma. 6 lâminas em rotação simétrica, formando um vazio central hexagonal-arredondado (nunca um círculo perfeito — o hexágono arredondado é o que torna a forma reconhecível e não-genérica).
 
 - Cor do ícone: gradiente sutil de `--brand-primary` (#5E5CE6) para `--brand-primary-hover` (#8886F0), 135deg, aplicado apenas nas lâminas — nunca no fundo do ícone.
-- Fundo do ícone (app icon do macOS): segue o padrão de squircle nativo do macOS (o SO aplica a máscara automaticamente — não desenhar o squircle manualmente), preenchido com `--surface-raised` (#141416).
+- Fundo do ícone (app icon): segue o padrão de squircle nativo de cada plataforma (o SO aplica a máscara automaticamente — não desenhar o squircle manualmente), preenchido com `--surface-raised` (#141416).
 - Versão monocromática (menu bar icon, 16×16 e 20×20): apenas o contorno das lâminas em `--text-primary`, sem preenchimento, stroke de 1.2px.
 
 **Uso proibido:** nunca desenhar o diafragma totalmente fechado (viraria um ponto sem forma) nem totalmente aberto (viraria um círculo genérico) — o ângulo de referência oficial é 35% aberto, é o ponto em que a forma hexagonal do vazio central é mais legível.

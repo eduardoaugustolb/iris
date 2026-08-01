@@ -120,7 +120,7 @@
 	"imageUpload": {
 		"invalidFileType": "Geçersiz dosya türü",
 		"jpgOnly": "Lütfen JPG, JPEG veya PNG görüntü dosyası yükleyin.",
-		"uploadSuccess": "Özel görüntü başarıyla yüklendi!",
+		"uploadSuccess": "Özel görüntü yüklendi",
 		"failedToUpload": "Görüntü yüklenemedi",
 		"errorReading": "Dosya okunurken bir hata oluştu."
 	},
@@ -163,7 +163,7 @@
 		"tipShiftTabCycle": "Geriye doğru geçiş yapmak için Shift+Tab kullanın.",
 		"invalidImageType": "Geçersiz dosya türü",
 		"imageFormatsOnly": "Lütfen bir JPG, PNG, GIF veya WebP görüntü dosyası yükleyin.",
-		"imageUploadSuccess": "Görüntü başarıyla yüklendi!",
+		"imageUploadSuccess": "Görüntü yüklendi",
 		"blurColor": "Bulanıklık Rengi",
 		"blurColorBlack": "Siyah",
 		"blurColorWhite": "Beyaz",

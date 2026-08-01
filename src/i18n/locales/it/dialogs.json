@@ -21,7 +21,7 @@
 		"format": "Formato",
 		"frames": "Fotogrammi",
 		"cancelExport": "Annulla esportazione",
-		"savedSuccessfully": "{{format}} salvato con successo!"
+		"savedSuccessfully": "{{format}} salvato"
 	},
 	"tutorial": {
 		"triggerLabel": "Come funziona il taglio",

@@ -91,10 +91,9 @@ export default function App() {
 				);
 			default:
 				return (
-					<div>
-						<div className="w-full h-full bg-background text-foreground">
-							<h1>Íris</h1>
-						</div>
+					<div className="h-screen w-full flex flex-col items-center justify-center gap-3 bg-[#0A0A0C]">
+						<ApertureIcon className="text-[#5E5CE6]" size={32} weight="regular" />
+						<h1 className="text-[15px] font-semibold tracking-tight text-[#F5F5F7]">Íris</h1>
 					</div>
 				);
 		}

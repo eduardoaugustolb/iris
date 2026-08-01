@@ -120,7 +120,7 @@
 	"imageUpload": {
 		"invalidFileType": "无效的文件类型",
 		"jpgOnly": "请上传 JPG、JPEG 或 PNG 格式的图片文件。",
-		"uploadSuccess": "自定义图片上传成功！",
+		"uploadSuccess": "自定义图片上传成功",
 		"failedToUpload": "上传图片失败",
 		"errorReading": "读取文件时出错。"
 	},
@@ -163,7 +163,7 @@
 		"tipShiftTabCycle": "使用 Shift+Tab 反向循环切换。",
 		"invalidImageType": "无效的文件类型",
 		"imageFormatsOnly": "请上传 JPG、PNG、GIF 或 WebP 格式的图片文件。",
-		"imageUploadSuccess": "图片上传成功！",
+		"imageUploadSuccess": "图片上传成功",
 		"blurColor": "模糊颜色",
 		"blurColorBlack": "黑色",
 		"blurColorWhite": "白色",

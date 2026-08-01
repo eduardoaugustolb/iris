@@ -121,7 +121,7 @@
 	"imageUpload": {
 		"invalidFileType": "Invalid file type",
 		"jpgOnly": "Please upload a JPG, JPEG, or PNG image file.",
-		"uploadSuccess": "Custom image uploaded successfully!",
+		"uploadSuccess": "Custom image uploaded",
 		"failedToUpload": "Failed to upload image",
 		"errorReading": "There was an error reading the file."
 	},
@@ -169,7 +169,7 @@
 		"tipShiftTabCycle": "Use Shift+Tab to cycle backwards.",
 		"invalidImageType": "Invalid file type",
 		"imageFormatsOnly": "Please upload a JPG, PNG, GIF, or WebP image file.",
-		"imageUploadSuccess": "Image uploaded successfully!"
+		"imageUploadSuccess": "Image uploaded"
 	},
 	"fontStyles": {
 		"classic": "Classic",

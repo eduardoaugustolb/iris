@@ -21,7 +21,7 @@
 		"format": "Biçim",
 		"frames": "Kareler",
 		"cancelExport": "Dışa Aktarımı İptal Et",
-		"savedSuccessfully": "{{format}} başarıyla kaydedildi!"
+		"savedSuccessfully": "{{format}} kaydedildi"
 	},
 	"tutorial": {
 		"triggerLabel": "Kırpma nasıl çalışır",

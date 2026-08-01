@@ -21,7 +21,7 @@
 		"format": "Định dạng",
 		"frames": "Khung hình",
 		"cancelExport": "Hủy xuất",
-		"savedSuccessfully": "Đã lưu {{format}} thành công!"
+		"savedSuccessfully": "Đã lưu {{format}}"
 	},
 	"tutorial": {
 		"triggerLabel": "Cách hoạt động của công cụ cắt",

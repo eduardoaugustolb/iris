@@ -121,7 +121,7 @@
 	"imageUpload": {
 		"invalidFileType": "無效的檔案類型",
 		"jpgOnly": "請上傳 JPG、JPEG 或 PNG 格式的圖片檔案。",
-		"uploadSuccess": "自訂圖片上傳成功！",
+		"uploadSuccess": "自訂圖片上傳成功",
 		"failedToUpload": "上傳圖片失敗",
 		"errorReading": "讀取檔案時出錯。"
 	},
@@ -164,7 +164,7 @@
 		"tipShiftTabCycle": "使用 Shift+Tab 反向循環切換。",
 		"invalidImageType": "無效的檔案類型",
 		"imageFormatsOnly": "請上傳 JPG、PNG、GIF 或 WebP 格式的圖片檔案。",
-		"imageUploadSuccess": "圖片上傳成功！",
+		"imageUploadSuccess": "圖片上傳成功",
 		"blurColor": "模糊顏色",
 		"blurColorBlack": "黑色",
 		"blurColorWhite": "白色",

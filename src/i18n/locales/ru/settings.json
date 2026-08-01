@@ -120,7 +120,7 @@
 	"imageUpload": {
 		"invalidFileType": "Неверный тип файла",
 		"jpgOnly": "Пожалуйста, загрузите изображение JPG или JPEG.",
-		"uploadSuccess": "Пользовательское изображение успешно загружено!",
+		"uploadSuccess": "Пользовательское изображение загружено",
 		"failedToUpload": "Не удалось загрузить изображение",
 		"errorReading": "Произошла ошибка при чтении файла."
 	},
@@ -168,7 +168,7 @@
 		"tipShiftTabCycle": "Используйте Shift+Tab для циклического переключения в обратном направлении.",
 		"invalidImageType": "Неверный тип файла",
 		"imageFormatsOnly": "Пожалуйста, загрузите изображение JPG, PNG, GIF или WebP.",
-		"imageUploadSuccess": "Изображение успешно загружено!"
+		"imageUploadSuccess": "Изображение загружено"
 	},
 	"fontStyles": {
 		"classic": "Классический",

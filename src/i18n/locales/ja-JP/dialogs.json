@@ -21,7 +21,7 @@
 		"format": "フォーマット",
 		"frames": "フレーム",
 		"cancelExport": "エクスポートをキャンセル",
-		"savedSuccessfully": "{{format}}を正常に保存しました！"
+		"savedSuccessfully": "{{format}}を保存しました"
 	},
 	"tutorial": {
 		"triggerLabel": "トリミングの仕組み",

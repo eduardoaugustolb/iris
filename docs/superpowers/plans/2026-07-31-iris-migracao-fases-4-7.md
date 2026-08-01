@@ -13,10 +13,10 @@
 | 1 | Poda de dependências e config Electron | ✅ `gsap`/`motion`/`emoji-picker-react`/`mp4box` fora; `dependencyGuard` os bane |
 | 2 | Camada de design (`src/design/tokens`, `Glass`, motion, guardrails) | ✅ mergeado |
 | 3 | HUD sobre `Glass` + Phosphor, animação-diafragma | ✅ mergeado (PR #1) |
-| 4 | Launch, source selector, countdown, notes | ⬜ **não iniciada** |
-| 5 | Editor (Pilar C + reconstrução visual) | 🔶 sub-fase 1 (menubar, empty state, `dialog.tsx`, `dropdown-menu.tsx`) fechada (PR #2) |
-| 6 | Timeline | ⬜ **não iniciada** |
-| 7 | Endurecimento (budgets apertados, emenda de docs) | ⬜ **não iniciada** |
+| 4 | Launch, source selector, countdown, notes | ✅ mergeado (PR #8) |
+| 5 | Editor (Pilar C + reconstrução visual) | ✅ mergeado (PRs #3–#8) |
+| 6 | Timeline | ✅ mergeado (PR #9) |
+| 7 | Endurecimento (budgets apertados, emenda de docs) | ✅ mergeado |
 
 ### Inventário do que ainda é legado (levantado em 2026-07-31)
 
@@ -83,17 +83,17 @@ dois primitivos migrados de `components/ui/` (`LEGACY_ALLOWLIST` de `noRogueGlas
 **Meta:** todas as superfícies fora do editor sobre a camada de design; eliminar o verde legado do
 fluxo de escolha de fonte.
 
-- [ ] **Task 4.1** — Migrar `SourceSelector.tsx` + `SourceSelector.module.css`: `#34B27B` →
+- [x] **Task 4.1** — Migrar `SourceSelector.tsx` + `SourceSelector.module.css`: `#34B27B` →
   `color.brandPrimary`/`hover`, `MdCheck` → `CheckIcon` (Phosphor deep import), áreas de janela em
   `--surface-base`, cards de fonte em `Glass level={2}` (janela não portalizada, ancorada ao app) ou
   `level={3}` se virar overlay — seguir o precedente do HUD. `react-icons` some do repo.
-- [ ] **Task 4.2** — Migrar `NotesToolbar.tsx` (`lucide-react` → Phosphor) e `NotesWindow.tsx` +
+- [x] **Task 4.2** — Migrar `NotesToolbar.tsx` (`lucide-react` → Phosphor) e `NotesWindow.tsx` +
   `NotesWindow.module.css` para tokens/`Glass`.
-- [ ] **Task 4.3** — `CountdownOverlay.tsx` para tokens (timer em Caption Numérica, `--surface-base`
+- [x] **Task 4.3** — `CountdownOverlay.tsx` para tokens (timer em Caption Numérica, `--surface-base`
   translúcido só se necessário — é conteúdo de gravação, então preferir opaco).
-- [ ] **Task 4.4** — `LaunchWindow.module.css`: mover o que resta de material cru para `Glass`/tokens;
+- [x] **Task 4.4** — `LaunchWindow.module.css`: mover o que resta de material cru para `Glass`/tokens;
   manter só o que é Electron-only (`-webkit-app-region`, scrollbars custom em linguagens).
-- [ ] **Task 4.5** — Guardrail: estender a varredura de `noRogueGlass.test.ts` para
+- [x] **Task 4.5** — Guardrail: estender a varredura de `noRogueGlass.test.ts` para
   `components/launch` (padrão dos carve-outs de `components/hud`), com teste da mudança.
 
 ## 4. Fase 5 — Editor (sub-fases 2–5)
@@ -103,28 +103,28 @@ Pré-requisito: os primitivos `components/ui` que o editor usa em massa estão m
 Mapa de uso medido: `button` (9), `dialog` (6), `select` (4), `slider` (3), `tooltip`/`tabs`/`switch`/
 `label` (2 cada), `popover`/`input`/`accordion`/`toggle-group` (1 cada).
 
-- [ ] **Task 5.1 (sub-fase 2) — Primitivos `components/ui`:** `button`, `switch`, `slider`, `select`,
+- [x] **Task 5.1 (sub-fase 2) — Primitivos `components/ui`:** `button`, `switch`, `slider`, `select`,
   `popover`, `tabs`, `tooltip`, `accordion`, `input`, `label`, `toggle-group`, `toggle`, `card`,
   `sonner`. Cada um: material → `Glass` quando for superfície flutuante (popover, select-content,
   accordion, sonner toast) ou tokens puros quando for controle inline (switch/slider/button usam
   `--brand-primary` no estado ativo, não `#34B27B`); ícones lucide → Phosphor; extender guardrail a
   cada arquivo migrado (a lista `MIGRATED_UI_PRIMITIVES` de `noRogueGlass.test.ts`). O `switch` segue
   a spec do toggle de DESIGN.md §9 (trilho 40×24, thumb branco, `--ease-spring`).
-- [ ] **Task 5.2 (sub-fase 3) — Diálogos:** conteúdo interno de `ExportDialog`, `ShortcutsConfigDialog`,
+- [x] **Task 5.2 (sub-fase 3) — Diálogos:** conteúdo interno de `ExportDialog`, `ShortcutsConfigDialog`,
   `UnsavedChangesDialog`, `AddCustomFontDialog` em tokens/Phosphor/escala base-4 (o shell de `Glass`
   já vem do `dialog.tsx`). Botões via `button.tsx` migrado. Copiar o checklist de DESIGN.md §12 por
   diálogo.
-- [ ] **Task 5.3 (sub-fase 4) — Painéis de configuração:** `SettingsPanel` (2221 linhas),
+- [x] **Task 5.3 (sub-fase 4) — Painéis de configuração:** `SettingsPanel` (2221 linhas),
   `AnnotationSettingsPanel`, `BlurSettingsPanel`, `GifOptionsPanel`, `CropControl`, `FormatSelector`,
   `PlaybackControls`, `TutorialHelp`, `KeyboardShortcutsHelp`. Grupos com ≤ ~7 controles visíveis
   (Lei de Miller, UX-PRINCIPLES Parte 3), seções com título, divulgação progressiva para opções
   avançadas. Material: painéis laterais sólidos em `--surface-raised`, popovers/tooltips em `Glass`
   `level={3}`.
-- [ ] **Task 5.4 (sub-fase 5) — Casca e playback:** `VideoEditor.tsx` (3353) e `VideoPlayback.tsx`
+- [x] **Task 5.4 (sub-fase 5) — Casca e playback:** `VideoEditor.tsx` (3353) e `VideoPlayback.tsx`
   (2333). Shell em `--surface-base`; toolbar em `Glass level={2}`; barra de progresso em
   `--brand-primary` pontual. Verde legado banido do fallback de loading em `App.tsx` (trocar por
   diafragma Phosphor `Aperture` + tokens). Sem vidro no preview (é conteúdo).
-- [ ] **Task 5.5** — Guardrail: zerar a exemption de `components/video-editor` em
+- [x] **Task 5.5** — Guardrail: zerar a exemption de `components/video-editor` em
   `noRogueGlass.test.ts` ao fim da sub-fase 5; mover os carve-outs restantes de `components/ui` para
   a lista migrada completa.
 
@@ -132,32 +132,32 @@ Mapa de uso medido: `button` (9), `dialog` (6), `select` (4), `slider` (3), `too
 
 **Meta:** última superfície, conteúdo opaco (nunca vidro).
 
-- [ ] **Task 6.1** — `TimelineEditor.tsx` (1873), `TimelineWrapper.tsx` (545) em tokens/escala base-4;
+- [x] **Task 6.1** — `TimelineEditor.tsx` (1873), `TimelineWrapper.tsx` (545) em tokens/escala base-4;
   trilho da linha do tempo em `--surface-raised`, cores de seleção neutras/acento pontual.
-- [ ] **Task 6.2** — `Item.tsx` + `ItemGlass.module.css`: **remover** o `backdrop-filter` do `.glassRed`
+- [x] **Task 6.2** — `Item.tsx` + `ItemGlass.module.css`: **remover** o `backdrop-filter` do `.glassRed`
   (viola guardrail e custa render) e o verde legado do `.glassGreen` (remap para tokens). Item de
   timeline é conteúdo → opaco, com borda especular sutil em vez de material translúcido.
-- [ ] **Task 6.3** — `Row`/`Subrow`/`BackgroundWaveform`/`KeyframeMarkers` em tokens.
-- [ ] **Task 6.4** — Guardrail: `noRogueGlass` passa a varrer `components/video-editor/timeline`
+- [x] **Task 6.3** — `Row`/`Subrow`/`BackgroundWaveform`/`KeyframeMarkers` em tokens.
+- [x] **Task 6.4** — Guardrail: `noRogueGlass` passa a varrer `components/video-editor/timeline`
   integralmente.
 
 ## 6. Fase 7 — Endurecimento
 
-- [ ] **Task 7.1** — Remover `lucide-react` e `react-icons` de `package.json` (últimos arquivos já
+- [x] **Task 7.1** — Remover `lucide-react` e `react-icons` de `package.json` (últimos arquivos já
   migrados nas fases 4–6) e adicioná-los a `BANNED_DEPENDENCIES` (`src/lib/perf/dependencyGuard.ts`).
   Re-medir bundle (`npm run bench:*` / budgets) e confirmar ganho registrado.
-- [ ] **Task 7.2** — Guardrails novos: banir cores legadas (`#34B27B`, `#09090b`) fora de
+- [x] **Task 7.2** — Guardrails novos: banir cores legadas (`#34B27B`, `#09090b`) fora de
   `src/design/tokens/color.ts`; estender `noBannedFonts`/`spacingScale` (hoje só varrem
   `src/design/`) para `src/components`; checar peso >700 e contraste ≥4.5:1 na UI migrada (os
   utilitários `contrast.ts` já existem).
-- [ ] **Task 7.3** — `src/index.css`: remover o tema `hsl(var(--...))` do shadcn quando o último
+- [x] **Task 7.3** — `src/index.css`: remover o tema `hsl(var(--...))` do shadcn quando o último
   consumidor legado migrar; `body` passa a `--surface-base` + `--text-primary`; reconciliar com
   `tokens.generated.css` (fonte única em `scripts/generate-design-css.ts`).
-- [ ] **Task 7.4** — `src/App.tsx`: estilizar a janela `default` (hoje `<h1>Íris</h1>` vazio) e o
+- [x] **Task 7.4** — `src/App.tsx`: estilizar a janela `default` (hoje `<h1>Íris</h1>` vazio) e o
   fallback de loading do editor nos tokens; remover último `#09090b`/verde.
-- [ ] **Task 7.5** — `sonner.tsx` (toasts) em tokens/Glass; conferir voz de DESIGN.md §10
+- [x] **Task 7.5** — `sonner.tsx` (toasts) em tokens/Glass; conferir voz de DESIGN.md §10
   ("Salvo em Vídeos", sem "Oops!") nos textos existentes.
-- [ ] **Task 7.6** — Docs: aplicar a emenda prevista em `2026-07-29` (DESIGN.md §4/§7,
+- [x] **Task 7.6** — Docs: aplicar a emenda prevista em `2026-07-29` (DESIGN.md §4/§7,
   UX-PRINCIPLES.md Parte 5, README/ROADMAP/CLAUDE.md deixam de declarar macOS-only); re-apertar
   budgets nos números conquistados; checklist final de DESIGN.md §12 sobre cada tela.
 
@@ -188,10 +188,10 @@ Cada fase termina verde e mergeável sozinha; o app permanece utilizável em tod
 
 ## 9. Definição de pronto (todas as fases)
 
-- [ ] `npm run test` (Vitest) verde, incluindo guardrails.
-- [ ] `npx tsc --noEmit` sem erros; `npm run lint` (Biome) limpo.
-- [ ] `npm run bench:*` dentro dos orçamentos de `perf-budgets.json`.
-- [ ] Zero `lucide-react`/`react-icons` nos arquivos da fase; zero hex legado (`#34B27B`, `#09090b`).
-- [ ] Nenhuma superfície com `backdrop-filter` fora de `Glass`; checklist DESIGN.md §12 por tela.
+- [x] `npm run test` (Vitest) verde, incluindo guardrails.
+- [x] `npx tsc --noEmit` sem erros; `npm run lint` (Biome) limpo.
+- [x] `npm run bench:*` dentro dos orçamentos de `perf-budgets.json`.
+- [x] Zero `lucide-react`/`react-icons` nos arquivos da fase; zero hex legado (`#34B27B`, `#09090b`).
+- [x] Nenhuma superfície com `backdrop-filter` fora de `Glass`; checklist DESIGN.md §12 por tela.
 - [ ] Smoke manual em macOS (o HUD/recording é native-fragile — ver AGENTS.md) antes de merge de fase
   que toque janelas/recording.

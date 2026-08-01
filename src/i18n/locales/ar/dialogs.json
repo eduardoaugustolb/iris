@@ -21,7 +21,7 @@
 		"format": "الصيغة",
 		"frames": "الإطارات",
 		"cancelExport": "إلغاء التصدير",
-		"savedSuccessfully": "تم حفظ {{format}} بنجاح!"
+		"savedSuccessfully": "تم حفظ {{format}}"
 	},
 	"tutorial": {
 		"triggerLabel": "كيف يعمل القص",

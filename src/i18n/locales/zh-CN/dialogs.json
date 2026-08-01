@@ -21,7 +21,7 @@
 		"format": "格式",
 		"frames": "帧",
 		"cancelExport": "取消导出",
-		"savedSuccessfully": "{{format}} 保存成功！"
+		"savedSuccessfully": "{{format}} 保存成功"
 	},
 	"tutorial": {
 		"triggerLabel": "剪辑功能说明",

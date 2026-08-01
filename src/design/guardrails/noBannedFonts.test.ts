@@ -4,20 +4,21 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const DESIGN = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const COMPONENTS = path.join(DESIGN, "..", "components");
 
-function designFiles(dir: string): string[] {
+function sourceFiles(root: string, dir = root): string[] {
 	return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
 		const full = path.join(dir, entry.name);
 
-		if (entry.isDirectory()) return designFiles(full);
+		if (entry.isDirectory()) return sourceFiles(root, full);
 
 		return /\.(tsx?|css)$/.test(entry.name) && !/\.test\.tsx?$/.test(entry.name) ? [full] : [];
 	});
 }
 
 describe("typography guardrail", () => {
-	const sources = designFiles(DESIGN).map((file) => ({
-		file: path.basename(file),
+	const sources = [...sourceFiles(DESIGN), ...sourceFiles(COMPONENTS)].map((file) => ({
+		file: path.relative(path.join(DESIGN, ".."), file),
 		source: fs.readFileSync(file, "utf8"),
 	}));
 

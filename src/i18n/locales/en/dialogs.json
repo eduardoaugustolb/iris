@@ -21,7 +21,7 @@
 		"format": "Format",
 		"frames": "Frames",
 		"cancelExport": "Cancel Export",
-		"savedSuccessfully": "{{format}} saved successfully!"
+		"savedSuccessfully": "{{format}} saved"
 	},
 	"tutorial": {
 		"triggerLabel": "How trimming works",

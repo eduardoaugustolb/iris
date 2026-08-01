@@ -38,8 +38,8 @@ describe("Toaster", () => {
 		const message = await screen.findByText("Boom");
 		const toastEl = message.closest("[data-sonner-toast]") as HTMLElement;
 		expect(toastEl).not.toBeNull();
-		expect(toastEl.className).toContain("bg-[#141416]");
-		expect(toastEl.className).toContain("text-[#F5F5F7]");
+		expect(toastEl.className).toContain("bg-surface-raised");
+		expect(toastEl.className).toContain("text-[var(--text-primary)]");
 		// Glass material must not leak out of the Glass primitive.
 		expect(toastEl.className).not.toMatch(/backdrop-(blur|filter)/);
 		expect(toastEl.className).not.toContain("#09090b");

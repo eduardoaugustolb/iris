@@ -120,7 +120,7 @@
 	"imageUpload": {
 		"invalidFileType": "Tipo de archivo no válido",
 		"jpgOnly": "Por favor sube un archivo de imagen JPG, JPEG o PNG.",
-		"uploadSuccess": "¡Imagen personalizada subida exitosamente!",
+		"uploadSuccess": "Imagen personalizada subida",
 		"failedToUpload": "Error al subir la imagen",
 		"errorReading": "Hubo un error al leer el archivo."
 	},
@@ -168,7 +168,7 @@
 		"tipShiftTabCycle": "Usa Shift+Tab para recorrer hacia atrás.",
 		"invalidImageType": "Tipo de archivo no válido",
 		"imageFormatsOnly": "Por favor sube un archivo de imagen JPG, PNG, GIF o WebP.",
-		"imageUploadSuccess": "¡Imagen subida exitosamente!"
+		"imageUploadSuccess": "Imagen subida"
 	},
 	"fontStyles": {
 		"classic": "Clásico",
