@@ -16,12 +16,7 @@ if (!windowType) {
 	}, 5_000);
 }
 const showNotes = new URLSearchParams(window.location.search).get("showNotes") === "true";
-if (
-	showNotes ||
-	windowType === "hud-overlay" ||
-	windowType === "source-selector" ||
-	windowType === "countdown-overlay"
-) {
+if (showNotes || windowType === "source-selector" || windowType === "countdown-overlay") {
 	document.body.style.background = "transparent";
 	document.documentElement.style.background = "transparent";
 	document.getElementById("root")?.style.setProperty("background", "transparent");

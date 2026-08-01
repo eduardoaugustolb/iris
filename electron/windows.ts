@@ -173,11 +173,9 @@ export function createHudOverlayWindow(): BrowserWindow {
 	});
 
 	if (VITE_DEV_SERVER_URL) {
-		win.loadURL(VITE_DEV_SERVER_URL + "?windowType=hud-overlay");
+		win.loadURL(VITE_DEV_SERVER_URL + "hud.html");
 	} else {
-		win.loadFile(path.join(RENDERER_DIST, "index.html"), {
-			query: { windowType: "hud-overlay" },
-		});
+		win.loadFile(path.join(RENDERER_DIST, "hud.html"));
 	}
 
 	return track("hud", win);

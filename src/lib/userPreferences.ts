@@ -1,7 +1,9 @@
 import {
-	DEFAULT_EDITOR_LAYOUT_SETTINGS,
-	DEFAULT_EXPORT_SETTINGS,
-} from "@/components/video-editor/editorDefaults";
+	DEFAULT_EDITOR_ASPECT_RATIO,
+	DEFAULT_EDITOR_PADDING,
+	DEFAULT_EXPORT_FORMAT,
+	DEFAULT_EXPORT_QUALITY,
+} from "@/lib/editorDefaults";
 import type { ExportFormat, ExportQuality } from "@/lib/exporter";
 import type { AspectRatio } from "@/utils/aspectRatioUtils";
 
@@ -40,10 +42,10 @@ export interface UserPreferences {
 }
 
 export const DEFAULT_PREFS: UserPreferences = {
-	padding: DEFAULT_EDITOR_LAYOUT_SETTINGS.padding,
-	aspectRatio: DEFAULT_EDITOR_LAYOUT_SETTINGS.aspectRatio,
-	exportQuality: DEFAULT_EXPORT_SETTINGS.quality,
-	exportFormat: DEFAULT_EXPORT_SETTINGS.format,
+	padding: DEFAULT_EDITOR_PADDING,
+	aspectRatio: DEFAULT_EDITOR_ASPECT_RATIO,
+	exportQuality: DEFAULT_EXPORT_QUALITY,
+	exportFormat: DEFAULT_EXPORT_FORMAT,
 	exportFolder: null,
 	projectFolder: null,
 	trayLayout: "horizontal",
