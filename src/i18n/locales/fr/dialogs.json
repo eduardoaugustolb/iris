@@ -21,7 +21,7 @@
 		"format": "Format",
 		"frames": "Images",
 		"cancelExport": "Annuler l'export",
-		"savedSuccessfully": "{{format}} enregistré avec succès !"
+		"savedSuccessfully": "{{format}} enregistré"
 	},
 	"tutorial": {
 		"triggerLabel": "Comment fonctionne la coupe",

@@ -19,7 +19,7 @@
   <a href="./LICENSE"><img src="https://img.shields.io/github/license/eduardoaugustolb/iris?style=for-the-badge&label=License" alt="License" /></a>
   <a href="https://github.com/eduardoaugustolb/iris/releases/latest"><img src="https://img.shields.io/github/v/release/eduardoaugustolb/iris?style=for-the-badge&label=Release" alt="Latest Release" /></a>
   <a href="https://github.com/eduardoaugustolb/iris/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/eduardoaugustolb/iris/ci.yml?style=for-the-badge&label=CI" alt="CI Status" /></a>
-  <img src="https://img.shields.io/badge/platform-macOS-lightgrey?style=for-the-badge" alt="Platform" />
+  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey?style=for-the-badge" alt="Platform" />
 </p>
 
 Íris takes everything OpenScreen already did well — recording, zooms, cursor effects, webcam overlay, captions, editing, annotations, and export — and rebuilds the experience around three goals: **lighter** (lower resource usage, faster startup), **more stable** (fewer crashes, more predictable recording pipeline), and **more refined** (a native, premium interface with real attention to detail, documented in [`DESIGN.md`](./DESIGN.md)).
@@ -81,11 +81,11 @@ After running this command, go to **System Settings > Privacy & Security** to gr
 > **Upgrading and hitting permission issues?** If you already had Íris installed and the new version won't record (Screen Recording or Accessibility keep failing even after you grant them), uninstall the old version, remove Íris's existing entries under **System Settings > Privacy & Security** (both Screen Recording and Accessibility), then do a fresh install and grant the permissions again when prompted.
 
 > [!NOTE]
-> Íris currently targets **macOS only**. Windows and Linux support from upstream OpenScreen is not carried over in this fork — see [Platform scope](#platform-scope) below.
+> Íris targets **macOS, Windows, and Linux** — see [Platform scope](#platform-scope) below.
 
 ## Platform scope
 
-Everything in the editor and export — zooms, backgrounds, motion blur, crop/trim/speed, blur regions, annotations, auto-captions, projects, export, and all languages — targets macOS exclusively in this fork. Capture uses the native ScreenCaptureKit pipeline for higher-quality, clean window-level recording, real cursor capture (shape, type, and clicks) powering cursor themes and click effects, and native webcam capture.
+Everything in the editor and export — zooms, backgrounds, motion blur, crop/trim/speed, blur regions, annotations, auto-captions, projects, export, and all languages — works identically across platforms. Capture uses the native pipeline of each OS: **ScreenCaptureKit** on macOS (clean window-level recording, real cursor capture powering cursor themes and click effects, native webcam capture) and **WGC** (Windows Graphics Capture) on Windows; Linux ships with native packaging (Nix/flake).
 
 **System audio**: requires macOS 13+. On macOS 14.2+ you'll be prompted to grant audio capture permission. macOS 12 and below can't capture system audio (microphone still works).
 

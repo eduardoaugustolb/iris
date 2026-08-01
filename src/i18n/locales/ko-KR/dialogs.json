@@ -21,7 +21,7 @@
 		"format": "형식",
 		"frames": "프레임",
 		"cancelExport": "내보내기 취소",
-		"savedSuccessfully": "{{format}} 저장이 완료되었습니다!"
+		"savedSuccessfully": "{{format}} 저장됨"
 	},
 	"tutorial": {
 		"triggerLabel": "트리밍 사용법",

@@ -120,7 +120,7 @@
 	"imageUpload": {
 		"invalidFileType": "نوع ملف غير صالح",
 		"jpgOnly": "يرجى رفع ملف صورة JPG أو JPEG.",
-		"uploadSuccess": "تم رفع الصورة المخصصة بنجاح!",
+		"uploadSuccess": "تم رفع الصورة المخصصة",
 		"failedToUpload": "فشل رفع الصورة",
 		"errorReading": "حدث خطأ أثناء قراءة الملف."
 	},
@@ -170,7 +170,7 @@
 		"tipShiftTabCycle": "استخدم Shift+Tab للتنقل للخلف.",
 		"invalidImageType": "نوع ملف غير صالح",
 		"imageFormatsOnly": "يرجى رفع ملف صورة JPG أو PNG أو GIF أو WebP.",
-		"imageUploadSuccess": "تم رفع الصورة بنجاح!"
+		"imageUploadSuccess": "تم رفع الصورة"
 	},
 	"fontStyles": {
 		"classic": "كلاسيكي",

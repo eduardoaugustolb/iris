@@ -34,6 +34,7 @@ OpenScreen is a free, open-source screen recorder and video editor (Electron + R
 - Biome handles lint AND format. Tabs, double quotes, 100-col width, LF line endings. Run `npm run lint:fix` before committing.
 - React functional components only. Hooks at top level (Biome `useHookAtTopLevel` is `error`).
 - Imports: use the `useImportType` discipline (Biome organizes them).
+- **Design tokens no Tailwind:** `tailwind.config.cjs` mapeia os tokens em utilitárias (`bg-surface-base|raised`, `bg-brand-primary|primary-hover`, `bg-text-*`, `text-text-*`), que compilam para `var(--…)`. Para *background* sempre use essas utilitárias — `bg-[var(--…)]` é **dropado** pelo Tailwind v3 (valor arbitrário ambíguo); `text-[var(--…)]` compila normalmente.
 - Husky + lint-staged runs Biome on staged `*.{ts,tsx,js,jsx,mts,cts,json}`.
 - The repo is pre-1.x and not production-grade — rough edges are expected, but new code should be clean.
 

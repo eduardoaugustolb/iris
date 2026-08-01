@@ -15,4 +15,4 @@ If a request conflicts with either file, say so explicitly and ask rather than s
 
 ## Rebrand context
 
-Íris is a fork of OpenScreen, macOS-only, with different goals: lighter, more stable, more visually refined (see `README.md`'s "Why this fork exists"). OpenScreen's own roadmap, AI Edition direction, and cross-platform (Windows/Linux) scope do **not** carry over — don't reintroduce them or reference them as this project's plans. `ROADMAP.md` is currently a placeholder pending Íris's own direction.
+Íris is a fork of OpenScreen with different goals: lighter, more stable, more visually refined (see `README.md`'s "Why this fork exists"). It ships on macOS, Windows and Linux. OpenScreen's own roadmap, AI Edition direction, GitHub issue backlog, and Discord-based process do **not** carry over — don't reintroduce them or reference them as this project's plans. `ROADMAP.md` is currently a placeholder pending Íris's own direction.

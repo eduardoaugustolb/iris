@@ -21,7 +21,7 @@
 		"format": "Formato",
 		"frames": "Quadros",
 		"cancelExport": "Cancelar Exportação",
-		"savedSuccessfully": "{{format}} salvo com sucesso!"
+		"savedSuccessfully": "{{format}} salvo"
 	},
 	"tutorial": {
 		"triggerLabel": "Como funciona o recorte",

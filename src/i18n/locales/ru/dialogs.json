@@ -21,7 +21,7 @@
 		"format": "Формат",
 		"frames": "Кадры",
 		"cancelExport": "Отменить экспорт",
-		"savedSuccessfully": "{{format}} успешно сохранён!"
+		"savedSuccessfully": "{{format}} сохранён"
 	},
 	"tutorial": {
 		"triggerLabel": "Как работает обрезка",

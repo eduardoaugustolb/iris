@@ -20,8 +20,10 @@ describe("findBannedDependencies", () => {
 		expect([...BANNED_DEPENDENCIES].sort()).toEqual([
 			"emoji-picker-react",
 			"gsap",
+			"lucide-react",
 			"motion",
 			"mp4box",
+			"react-icons",
 		]);
 	});
 });
