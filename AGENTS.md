@@ -28,6 +28,21 @@ OpenScreen is a free, open-source screen recorder and video editor (Electron + R
 - `nix/`, `flake.nix` — Linux packaging
 - `release/`, `dist-electron/` — build artifacts (gitignored)
 
+## Per-window entries (performance contract)
+
+Every OS window boots from one of two Vite entries (declared in `vite.config.ts#rollupOptions.input` and loaded by `electron/windows.ts`):
+
+- `index.html` → `src/main.tsx` — the editor SPA. Also mounts the lightweight source-selector, countdown and notes windows via the `windowType` URL query (`src/App.tsx` dispatches).
+- `hud.html` → `src/hud.tsx` — the always-on-top recording HUD overlay.
+
+Rules for the light windows (HUD, source-selector, countdown, notes):
+
+- **Never import `src/App.tsx` or `src/components/video-editor` from the HUD entry.** That would pull the whole editor bundle into the overlay. Enforced by `src/design/guardrails/noHudEntryLeak.test.ts` (graph walk). Extract anything shared into its own module first.
+- `import type` and dynamic `import()` are free — they add no startup bytes. Only static value imports count.
+- **Editor-only work must be gated by `windowType`** (e.g. `loadAllCustomFonts` only for `windowType === "editor"` in `src/App.tsx`), not unconditional in `main.tsx`/`App.tsx`.
+- **i18n loads lazily**: only the active locale chunk (~25 KB) loads at boot (`src/i18n/loader.ts` `loadLocale` + `I18nProvider` hydration). `getAvailableLocales`/`getLocaleName` stay synchronous.
+- The `bundle.index.js` budget in `perf-budgets.json` (280 kB) protects the shared chunk every window parses; `npm run bench:bundle` + `npm run bench:runtime` verify after any change to the boot path. CI enforces both.
+
 ## Code style
 
 - TypeScript strict mode (`tsconfig.json`). No `any` (Biome `noExplicitAny` is `warn` — don't add new `any`).

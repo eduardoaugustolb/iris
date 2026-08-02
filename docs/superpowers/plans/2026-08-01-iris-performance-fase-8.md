@@ -148,6 +148,17 @@ falha no main (traduções fora de sync, `buttons.autoZoomOn`) — pré-existent
 
 Cada PR da 8.1 é isolada e verificável; 8.5 e 8.6 podem ir juntos no fim da fase.
 
+**8.6 (PR #16):** budgets re-apertados sobre medida fresca e determinística (`bench:bundle` deu os
+mesmos bytes em rodadas diferentes). `bundle.index.js` **608 000 → 280 000** (a 8.1+8.4b cortaram o
+chunk compartilhado que toda janela parseia) e os grupos novos da 8.4b com folga de ~15% sobre o
+medido (`common 20k→16k`, `dialogs 48k→42k`, `editor 72k→65k`, `launch 40k→34k`,
+`settings 110k→100k`, `shortcuts 35k→29k`, `timeline 50k→44k`). Os budgets legados já estavam justos
+(determinísticos) — só mexi nos folgados. `AGENTS.md` ganhou a seção **"Per-window entries
+(performance contract)"**: duas entries (`index.html`→`main.tsx`, `hud.html`→`hud.tsx`), regra da HUD
+não importar `App.tsx`/`video-editor` (guardrail), `import type`/`import()` de graça, trabalho de
+editor gateado por `windowType`, i18n lazy por locale e o budget `bundle.index.js` como sentinela do
+boot path. Validado: `bench:bundle` ✅ green.
+
 ## 5. Riscos
 
 - **Entry split engorda o total:** duas entries podem duplicar CSS/ícones. Mitigado reusando
