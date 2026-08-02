@@ -31,4 +31,15 @@ describe("i18n loader (lazy per-locale chunks)", () => {
 		await loadLocale("xx-XX");
 		expect(isLocaleLoaded("xx-XX")).toBe(true);
 	});
+
+	it("falls back to the English baseline for keys a locale lacks", async () => {
+		await loadLocale("pt-BR");
+		expect(isLocaleLoaded("pt-BR")).toBe(true);
+		expect(isLocaleLoaded("en")).toBe(true);
+		// pt-BR/timeline.json is missing buttons.autoZoomOn: translate must
+		// return the English value, never the raw key.
+		expect(translate("pt-BR", "timeline", "buttons.autoZoomOn")).toBe(
+			"Auto zoom suggestions on — click to remove suggested zooms",
+		);
+	});
 });
