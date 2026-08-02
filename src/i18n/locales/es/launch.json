@@ -10,6 +10,7 @@
 		"openProject": "Abrir proyecto",
 		"useVerticalTray": "Usar bandeja vertical",
 		"useHorizontalTray": "Usar bandeja horizontal",
+		"openStudio": "Open Studio",
 		"openNotes": "Abrir notas",
 		"openNotesPlaceholder": "Escribe tus notas aquí...",
 		"notesToolbar": {
@@ -45,6 +46,9 @@
 		"loading": "Cargando fuentes...",
 		"screens": "Pantallas ({{count}})",
 		"windows": "Ventanas ({{count}})",
+		"emptyTitle": "No screens or windows found",
+		"emptyDescription": "If you just granted screen recording permission, reload this picker. On macOS you may need to reopen Íris.",
+		"loadFailedDescription": "Íris could not load capture sources. Reload this picker and try again.",
 		"defaultSourceName": "Pantalla"
 	},
 	"recording": {

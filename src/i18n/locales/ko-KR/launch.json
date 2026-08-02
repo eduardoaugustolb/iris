@@ -10,6 +10,7 @@
 		"openProject": "프로젝트 열기",
 		"useVerticalTray": "세로 트레이 사용",
 		"useHorizontalTray": "가로 트레이 사용",
+		"openStudio": "Open Studio",
 		"openNotes": "노트 열기",
 		"openNotesPlaceholder": "여기에 메모를 입력하세요...",
 		"notesToolbar": {
@@ -45,6 +46,9 @@
 		"loading": "소스 불러오는 중...",
 		"screens": "화면 ({{count}}개)",
 		"windows": "창 ({{count}}개)",
+		"emptyTitle": "No screens or windows found",
+		"emptyDescription": "If you just granted screen recording permission, reload this picker. On macOS you may need to reopen Íris.",
+		"loadFailedDescription": "Íris could not load capture sources. Reload this picker and try again.",
 		"defaultSourceName": "화면"
 	},
 	"recording": {

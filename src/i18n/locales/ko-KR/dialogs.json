@@ -40,7 +40,7 @@
 		"part3": "파트 3",
 		"finalVideo": "최종 비디오",
 		"step1Title": "1. 트림 추가",
-		"step1DescriptionBefore": "",
+		"step1DescriptionBefore": "Press ",
 		"step1DescriptionAfter": "키를 누르거나 가위 아이콘을 클릭해 제거할 구간을 표시하세요.",
 		"step2Title": "2. 조정",
 		"step2Description": "빨간 구간의 가장자리를 드래그해 잘라낼 범위를 설정하세요."
@@ -57,6 +57,8 @@
 		"detailLoadProject": "다른 프로젝트를 불러오기 전에 저장하시겠습니까?",
 		"saveAndLoadProject": "저장 후 프로젝트 불러오기",
 		"discardAndLoadProject": "저장하지 않고 프로젝트 불러오기",
+		"newProject": "New Project",
+		"importVideo": "Import Video File…",
 		"loadProject": "프로젝트 불러오기...",
 		"saveProject": "프로젝트 저장...",
 		"saveProjectAs": "다른 이름으로 프로젝트 저장..."

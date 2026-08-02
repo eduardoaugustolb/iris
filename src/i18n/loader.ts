@@ -40,6 +40,13 @@ export function isLocaleLoaded(locale: string): boolean {
 export async function loadLocale(locale: string): Promise<void> {
 	if (loadedLocales.has(locale)) return;
 
+	// Keep the English baseline present whenever a translated locale is
+	// active so `translate` can fall back instead of rendering raw keys for
+	// untranslated messages.
+	if (locale !== DEFAULT_LOCALE && !loadedLocales.has(DEFAULT_LOCALE)) {
+		await loadLocale(DEFAULT_LOCALE);
+	}
+
 	const namespaces = LOCALE_NAMESPACES[locale];
 	if (!namespaces || namespaces.length === 0) {
 		loadedLocales.add(locale);

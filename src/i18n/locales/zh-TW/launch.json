@@ -10,6 +10,7 @@
 		"openProject": "開啟專案",
 		"useVerticalTray": "使用直向托盤",
 		"useHorizontalTray": "使用橫向托盤",
+		"openStudio": "Open Studio",
 		"openNotes": "開啟筆記",
 		"openNotesPlaceholder": "在此輸入筆記...",
 		"notesToolbar": {
@@ -45,6 +46,9 @@
 		"loading": "正在載入來源...",
 		"screens": "螢幕 ({{count}})",
 		"windows": "視窗 ({{count}})",
+		"emptyTitle": "No screens or windows found",
+		"emptyDescription": "If you just granted screen recording permission, reload this picker. On macOS you may need to reopen Íris.",
+		"loadFailedDescription": "Íris could not load capture sources. Reload this picker and try again.",
 		"defaultSourceName": "螢幕"
 	},
 	"recording": {
