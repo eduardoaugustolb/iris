@@ -9,7 +9,7 @@ import {
 	useState,
 } from "react";
 import { DEFAULT_LOCALE, type I18nNamespace, LOCALE_STORAGE_KEY, type Locale } from "@/i18n/config";
-import { getAvailableLocales, translate } from "@/i18n/loader";
+import { getAvailableLocales, isLocaleLoaded, loadLocale, translate } from "@/i18n/loader";
 
 type TranslateVars = Record<string, string | number>;
 
@@ -87,8 +87,25 @@ function getInitialLocale(): Locale {
 
 export function I18nProvider({ children }: { children: ReactNode }) {
 	const [locale, setLocaleState] = useState<Locale>(getInitialLocale);
+	const [hydrated, setHydrated] = useState(() => isLocaleLoaded(locale));
 	const [systemLocaleSuggestion, setSystemLocaleSuggestion] = useState<Locale | null>(null);
 	const hasRunSystemLocaleCheckRef = useRef(false);
+
+	useEffect(() => {
+		if (isLocaleLoaded(locale)) {
+			setHydrated(true);
+			return;
+		}
+		let cancelled = false;
+		loadLocale(locale)
+			.catch(() => undefined)
+			.finally(() => {
+				if (!cancelled) setHydrated(true);
+			});
+		return () => {
+			cancelled = true;
+		};
+	}, [locale]);
 
 	const markPromptAsHandled = useCallback(() => {
 		try {
@@ -187,6 +204,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 			resolveSystemLocaleSuggestion,
 		],
 	);
+
+	if (!hydrated) return null;
 
 	return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }

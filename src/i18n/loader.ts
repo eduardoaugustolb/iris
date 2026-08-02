@@ -6,39 +6,73 @@ type LocaleValidationError = {
 	missingNamespaces: I18nNamespace[];
 };
 
-const modules = import.meta.glob("./locales/**/*.json", { eager: true }) as Record<
+// Lazy per-locale chunks: Vite code-splits each locale JSON into its own
+// module (loaded on demand via `loadLocale`), instead of inlining all 13
+// locales (~315 KB raw) into the shared chunk every window pays at startup.
+// The glob *keys* are still compile-time, so availability/validation stay
+// synchronous without loading any message content.
+const globbed = import.meta.glob("./locales/**/*.json") as Record<
 	string,
-	{ default: MessageMap }
+	() => Promise<{ default: MessageMap }>
 >;
 
-const messages: Record<string, Record<string, MessageMap>> = {};
-
-for (const [path, mod] of Object.entries(modules)) {
-	// path looks like "./locales/en/common.json"
-	const parts = path.replace("./locales/", "").replace(".json", "").split("/");
-	const locale = parts[0];
-	const namespace = parts[1];
-	if (!messages[locale]) messages[locale] = {};
-	messages[locale][namespace] = mod.default;
+const LOCALE_NAMESPACES: Record<string, string[]> = {};
+for (const path of Object.keys(globbed)) {
+	const [, locale, namespace] = path.match(/^\.\/locales\/([^/]+)\/([^/]+)\.json$/) ?? [];
+	if (!locale || !namespace) continue;
+	if (!LOCALE_NAMESPACES[locale]) LOCALE_NAMESPACES[locale] = [];
+	LOCALE_NAMESPACES[locale].push(namespace);
 }
 
-const REQUIRED_NAMESPACES = new Set<string>(I18N_NAMESPACES);
+const messages: Record<string, Record<string, MessageMap>> = {};
+const loadedLocales = new Set<string>();
 
-const localeValidationErrors: LocaleValidationError[] = Object.keys(messages)
+export function isLocaleLoaded(locale: string): boolean {
+	return loadedLocales.has(locale);
+}
+
+/**
+ * Loads every namespace of `locale` (the active locale's chunks) into the
+ * synchronous message cache. `translate`/`getMessages` are synchronous and
+ * read from the cache, so the app must call this before rendering translated
+ * UI — `I18nProvider` does, gating children on hydration.
+ */
+export async function loadLocale(locale: string): Promise<void> {
+	if (loadedLocales.has(locale)) return;
+
+	const namespaces = LOCALE_NAMESPACES[locale];
+	if (!namespaces || namespaces.length === 0) {
+		loadedLocales.add(locale);
+		return;
+	}
+
+	const loaded = await Promise.all(
+		namespaces.map(async (namespace) => {
+			const load = globbed[`./locales/${locale}/${namespace}.json`];
+			if (!load) return [namespace, {}] as const;
+			const mod = await load();
+			return [namespace, mod.default] as const;
+		}),
+	);
+
+	messages[locale] = Object.fromEntries(loaded);
+	loadedLocales.add(locale);
+}
+
+const localeValidationErrors: LocaleValidationError[] = Object.keys(LOCALE_NAMESPACES)
 	.map((locale) => {
-		const localeMessages = messages[locale] ?? {};
-		const missingNamespaces = I18N_NAMESPACES.filter((namespace) => !localeMessages[namespace]);
-		return {
-			locale,
-			missingNamespaces,
-		};
+		const localeNamespaces = LOCALE_NAMESPACES[locale] ?? [];
+		const missingNamespaces = I18N_NAMESPACES.filter(
+			(namespace) => !localeNamespaces.includes(namespace),
+		);
+		return { locale, missingNamespaces };
 	})
 	.filter((entry) => entry.missingNamespaces.length > 0);
 
 const invalidLocales = new Set(localeValidationErrors.map((entry) => entry.locale));
 
-const availableLocales = Object.keys(messages)
-	.filter((locale) => REQUIRED_NAMESPACES.size > 0 && hasRequiredNamespaces(messages[locale]))
+const availableLocales = Object.keys(LOCALE_NAMESPACES)
+	.filter((locale) => hasRequiredNamespaces(LOCALE_NAMESPACES[locale]))
 	.filter((locale) => !invalidLocales.has(locale))
 	.sort((a, b) => {
 		if (a === DEFAULT_LOCALE) return -1;
@@ -55,10 +89,10 @@ if (localeValidationErrors.length > 0) {
 	}
 }
 
-function hasRequiredNamespaces(localeMessages: Record<string, MessageMap> | undefined): boolean {
-	if (!localeMessages) return false;
-	for (const namespace of REQUIRED_NAMESPACES) {
-		if (!localeMessages[namespace]) return false;
+function hasRequiredNamespaces(localeNamespaces: string[] | undefined): boolean {
+	if (!localeNamespaces) return false;
+	for (const namespace of I18N_NAMESPACES) {
+		if (!localeNamespaces.includes(namespace)) return false;
 	}
 	return true;
 }

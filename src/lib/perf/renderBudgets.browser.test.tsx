@@ -5,6 +5,7 @@ import TimelineEditor from "@/components/video-editor/timeline/TimelineEditor";
 import type { ZoomRegion } from "@/components/video-editor/types";
 import { I18nProvider } from "@/contexts/I18nContext";
 import { ShortcutsProvider } from "@/contexts/ShortcutsContext";
+import { loadLocale } from "@/i18n/loader";
 import perfBudgets from "../../../perf-budgets.json";
 import { createRenderProfiler } from "./renderCounter";
 
@@ -39,7 +40,12 @@ const originalReleasePointerCapture = Element.prototype.releasePointerCapture;
 const originalHasPointerCapture = Element.prototype.hasPointerCapture;
 const originalElectronApi = window.electronAPI;
 
-beforeAll(() => {
+beforeAll(async () => {
+	// `I18nProvider` now gates children on the active locale's messages being
+	// loaded (lazy per-locale chunks); preload "en" so the editor mounts
+	// immediately and the bench measures renders, not i18n hydration.
+	await loadLocale("en");
+
 	// Synthetic pointer events aren't backed by an active pointer, so the
 	// browser would throw on setPointerCapture. The handlers still track the
 	// pointerId in refs, so a no-op capture keeps the interaction faithful.
