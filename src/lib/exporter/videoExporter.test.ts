@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+	getRemuxCodecBlockers,
 	getSourceCopyFastPathBlockers,
+	isRemuxEligible,
 	isSourceCopyFastPathEligible,
 	type VideoExporterConfig,
 	waitForEncoderQueueSpace,
@@ -151,6 +153,80 @@ describe("getSourceCopyFastPathBlockers", () => {
 				audioStreamCount: 1,
 			}),
 		).not.toContain("source has multiple audio tracks (must be mixed)");
+	});
+});
+
+describe("getRemuxCodecBlockers", () => {
+	it("allows an H.264 source with or without Opus audio", () => {
+		expect(
+			getRemuxCodecBlockers({ codec: "avc1.2420015", hasAudio: true, audioCodec: "opus" }),
+		).toEqual([]);
+		expect(getRemuxCodecBlockers({ codec: "h264", hasAudio: false })).toEqual([]);
+		expect(getRemuxCodecBlockers({ codec: "avc1", hasAudio: false })).toEqual([]);
+	});
+
+	it("rejects non-H.264 video codecs", () => {
+		expect(getRemuxCodecBlockers({ codec: "vp8", hasAudio: true, audioCodec: "opus" })).toContain(
+			'video codec "vp8" is not H.264',
+		);
+		expect(getRemuxCodecBlockers({ codec: "vp09", hasAudio: false })).toContain(
+			'video codec "vp09" is not H.264',
+		);
+		expect(getRemuxCodecBlockers({ codec: "av01.0.01M.08", hasAudio: false })).toContain(
+			'video codec "av01.0.01M.08" is not H.264',
+		);
+	});
+
+	it("rejects non-Opus audio codecs", () => {
+		expect(
+			getRemuxCodecBlockers({ codec: "avc1.640033", hasAudio: true, audioCodec: "aac" }),
+		).toContain('audio codec "aac" is not Opus');
+	});
+
+	it("does not block on audio when the source is video-only", () => {
+		expect(getRemuxCodecBlockers({ codec: "avc1.640033", hasAudio: false })).toEqual([]);
+	});
+});
+
+describe("isRemuxEligible", () => {
+	const videoInfo = {
+		codec: "avc1.42c015",
+		hasAudio: true,
+		audioCodec: "opus",
+		width: 1920,
+		height: 1080,
+		audioStreamCount: 1,
+	};
+
+	it("is true for an unedited H.264+Opus source at output dimensions", () => {
+		expect(isRemuxEligible(createConfig(), videoInfo)).toBe(true);
+		expect(isRemuxEligible(createConfig(), { ...videoInfo, hasAudio: false })).toBe(true);
+	});
+
+	it("rejects codecs that cannot map losslessly into MP4", () => {
+		expect(isRemuxEligible(createConfig(), { ...videoInfo, codec: "vp9" })).toBe(false);
+		expect(isRemuxEligible(createConfig(), { ...videoInfo, audioCodec: "aac" })).toBe(false);
+	});
+
+	it("inherits the source-copy blockers: timeline edits disable the remux too", () => {
+		expect(
+			isRemuxEligible(
+				createConfig({ trimRegions: [{ id: "trim", startMs: 100, endMs: 200 }] }),
+				videoInfo,
+			),
+		).toBe(false);
+		expect(
+			isRemuxEligible(
+				createConfig({ speedRegions: [{ id: "speed", startMs: 100, endMs: 200, speed: 2 }] }),
+				videoInfo,
+			),
+		).toBe(false);
+		expect(isRemuxEligible(createConfig({ webcamVideoUrl: "webcam.webm" }), videoInfo)).toBe(false);
+		expect(isRemuxEligible(createConfig({ height: 720 }), videoInfo)).toBe(false);
+	});
+
+	it("rejects multi-track sources (they must be mixed, not copied)", () => {
+		expect(isRemuxEligible(createConfig(), { ...videoInfo, audioStreamCount: 2 })).toBe(false);
 	});
 });
 
