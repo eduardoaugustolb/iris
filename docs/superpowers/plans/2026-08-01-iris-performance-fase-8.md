@@ -70,10 +70,11 @@ O baseline pós-Fase 7 (medidas de CI, 2026-08-01):
 chunk compartilhado `userPreferences`/`editorDefaults`, carregado só por HUD + VideoEditor lazy — sem
 duplicação). Janela HUD ≈ 1.224 KB parse (-12,5% vs SPA inteira); editor ≈ 1.873 KB (-3,5%).
 
-**Achado para 8.2/8.4:** `src/i18n/loader.ts:9` usa `import.meta.glob("./locales/**/*.json", { eager: true })`
-→ **13 locales + todos os namespaces (~315 KB raw) são embutidos no chunk compartilhado carregado por
-todas as janelas no startup** (dominam os 370 KB do shared chunk que a HUD paga). Converter para lazy
-(carregar só o locale ativo) é o corte de maior alavanca restante no startup.
+**Achado para 8.2/8.4:** `src/i18n/loader.ts:9` usava `import.meta.glob("./locales/**/*.json", { eager: true })`
+→ **13 locales + todos os namespaces (~315 KB raw) eram embutidos no chunk compartilhado carregado por
+todas as janelas no startup** (dominavam os 370 KB do shared chunk que a HUD paga). **Resolvido na 8.4b**
+(PR #14): glob não-eager + `loadLocale()` dinâmico — só o locale ativo (~25 KB) carrega no boot; o
+shared `index.js` caiu de 370 KB → 79 KB.
 
 **Critério de saída:** `hudFirstFrame` com folga real (não só "passa o budget") e `memory.idle.*`
 medindo a queda por janela convertida.
@@ -99,6 +100,18 @@ medindo a queda por janela convertida.
   `clearStaleSourceCache` rodam hoje em **toda** janela via `App.tsx`/`main.tsx` (duplicado também o
   background transparente em `main.tsx` e `App.tsx`). Gate por `windowType` ou por entry.
 - Cortar a duplicação `transparent` (`main.tsx:19-28` vs `App.tsx:34-38`).
+
+**8.4a (PR #13):** `loadAllCustomFonts` gateado ao editor (`windowType === "editor"`) com teste novo
+(`src/App.test.tsx`) e bloco `transparent` do `App.tsx` removido (redundante com `main.tsx`). Budgets
+`memory.idle.*` não mexidos (CI Linux é o número canônico; Gate 8.4/8.6 reapreta nas medidas de CI).
+
+**8.4b (PR #14):** i18n lazy — `loader.ts` com `import.meta.glob` não-eager (1 chunk por
+locale/namespace), `loadLocale()` popula o cache síncrono e `I18nProvider` hidrata antes de renderizar
+(carrega só o locale ativo ~25 KB; `getAvailableLocales`/`getLocaleName` continuam síncronos via chaves
+do glob). Testes: `src/i18n/loader.test.ts` (5) e browser test pré-carrega `en`. Build: shared
+`index.js` 370 kB → 79 kB; novos grupos `bundle.{common,dialogs,editor,launch,settings,shortcuts,timeline}.js`
+(orçados como agregação em disco — no boot só um locale carrega). **Nota:** `npm run i18n:check` já
+falha no main (traduções fora de sync, `buttons.autoZoomOn`) — pré-existente, fora do escopo da fase.
 
 ### Task 8.5 — Consistência: hex legado em `electron/`
 
