@@ -23,6 +23,7 @@
 		{ "metric": "render.scrub", "max": 40, "unit": "count" },
 		{ "metric": "render.zoom", "max": 40, "unit": "count" },
 		{ "metric": "render.drag", "max": 60, "unit": "count" },
+		{ "metric": "capture.droppedFramesPerMinute", "max": 1200, "unit": "count" },
 		{ "metric": "bundle.pixi.js", "max": 543500, "unit": "bytes" },
 		{ "metric": "bundle.react-vendor.js", "max": 458500, "unit": "bytes" },
 		{ "metric": "bundle.transcribe.worker.js", "max": 3850, "unit": "bytes" },
