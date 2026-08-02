@@ -1,4 +1,10 @@
 import { DEFAULT_CURSOR_THEME_ID } from "@/lib/cursor/cursorThemes";
+import {
+	DEFAULT_EDITOR_ASPECT_RATIO,
+	DEFAULT_EDITOR_PADDING,
+	DEFAULT_EXPORT_FORMAT,
+	DEFAULT_EXPORT_QUALITY,
+} from "@/lib/editorDefaults";
 import type { ExportFormat, ExportQuality, GifFrameRate, GifSizePreset } from "@/lib/exporter";
 import { DEFAULT_WALLPAPER } from "@/lib/wallpaper";
 import type { AspectRatio } from "@/utils/aspectRatioUtils";
@@ -50,8 +56,8 @@ export const DEFAULT_EDITOR_LAYOUT_SETTINGS: {
 	cropRegion: typeof DEFAULT_CROP_REGION;
 	wallpaper: string;
 } = {
-	padding: 50,
-	aspectRatio: "16:9",
+	padding: DEFAULT_EDITOR_PADDING,
+	aspectRatio: DEFAULT_EDITOR_ASPECT_RATIO,
 	cropRegion: DEFAULT_CROP_REGION,
 	wallpaper: DEFAULT_WALLPAPER,
 };
@@ -82,8 +88,8 @@ export const DEFAULT_EXPORT_SETTINGS: {
 	quality: ExportQuality;
 	format: ExportFormat;
 } = {
-	quality: "good",
-	format: "mp4",
+	quality: DEFAULT_EXPORT_QUALITY,
+	format: DEFAULT_EXPORT_FORMAT,
 };
 
 export const DEFAULT_GIF_SETTINGS: {

@@ -55,6 +55,12 @@ export default defineConfig({
 			},
 		},
 		rollupOptions: {
+			// The HUD is a standalone entry (hud.html) so the overlay window doesn't
+			// boot the editor SPA — see src/hud.tsx and noHudEntryLeak.test.ts.
+			input: {
+				index: path.resolve(__dirname, "index.html"),
+				hud: path.resolve(__dirname, "hud.html"),
+			},
 			output: {
 				manualChunks(id) {
 					if (id.includes("pixi.js") || id.includes("pixi-filters") || id.includes("@pixi/"))
