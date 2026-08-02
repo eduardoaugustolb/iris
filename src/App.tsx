@@ -29,20 +29,16 @@ export default function App() {
 		if (type !== windowType) {
 			setWindowType(type);
 		}
-
-		if (type === "source-selector" || type === "countdown-overlay") {
-			document.body.style.background = "transparent";
-			document.documentElement.style.background = "transparent";
-			document.getElementById("root")?.style.setProperty("background", "transparent");
-		}
 	}, [windowType]);
 
 	useEffect(() => {
-		// Load custom fonts on app initialization
+		// Only the editor renders user-imported fonts; the light windows
+		// (source-selector, countdown-overlay, notes) shouldn't pay for them.
+		if (windowType !== "editor") return;
 		loadAllCustomFonts().catch((error) => {
 			console.error("Failed to load custom fonts:", error);
 		});
-	}, []);
+	}, [windowType]);
 
 	const content = (() => {
 		switch (windowType) {
