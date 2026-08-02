@@ -202,7 +202,7 @@ export function createEditorWindow(): BrowserWindow {
 		alwaysOnTop: false,
 		skipTaskbar: false,
 		title: "Íris",
-		backgroundColor: "#09090b",
+		backgroundColor: "#0A0A0C",
 		show: false, // shown via ready-to-show to avoid white flash on first load
 		webPreferences: {
 			preload: path.join(__dirname, "preload.mjs"),
@@ -231,7 +231,7 @@ export function createEditorWindow(): BrowserWindow {
 	// Inject dark background before any React paint so the sub-titlebar area never
 	// flashes white on a cold Vite load.
 	win.webContents.on("dom-ready", () => {
-		win.webContents.insertCSS("html, body, #root { background: #09090b !important; }").catch(() => {
+		win.webContents.insertCSS("html, body, #root { background: #0A0A0C !important; }").catch(() => {
 			// Best-effort cosmetic; ignore if the page is mid-teardown.
 		});
 	});
@@ -359,7 +359,7 @@ export function createNotesWindow(): BrowserWindow {
 		maxWidth: 640,
 		maxHeight: 720,
 		title: "Íris - Notes",
-		backgroundColor: "#09090b",
+		backgroundColor: "#0A0A0C",
 		resizable: true,
 		alwaysOnTop: true,
 		skipTaskbar: false,
