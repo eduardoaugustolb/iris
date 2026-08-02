@@ -102,6 +102,18 @@ CI (`test:browser`) já valida; Gate 8.2 fecha nesta PR.
 - Frames perdidos por minuto sobre fonte sintética no renderer (sem native, roda em CI Linux).
 - Só se 8.2 abrir o caminho da infra; caso contrário, fica para a Fase de Stability.
 
+**Entregue (PR #17):** a infra da 8.2 abriu o caminho (teste browser, mesmo config). Novo
+`src/lib/perf/captureDroppedFrames.browser.test.tsx`: roda o renderer real (Pixi v8, mesmo
+compositor do `VideoPlayback`) numa fonte sintética — um waveform de 32 barras redesenhado a cada
+frame do ticker — e mede **frames perdidos por minuto** pela cadência do `requestAnimationFrame`
+(median gap = cadência base, cadência-relativa; long frame = gap > 1,5× mediana). Budget
+`capture.droppedFramesPerMinute` = 1200 (count) em `perf-budgets.json`, validado pelo job
+`test:browser` do CI como os `render.*`. **Calibração:** isolado sustenta ~60 fps (30–45/min, 2–3
+long frames em 4 s); na página compartilhada da suíte (como o CI roda, depois dos exporters) os
+stalls periódicos de GC dão 460–530/min com cadência base intacta — budget a ~2,4× da pior medida,
+pega tempestade de render (50% de perda já = ~1800/min) sem flakear no noise. Sanity asserts
+(frames > 80, cadência ≥ 10 fps) impedem bench quebrado passando em silêncio.
+
 ### Task 8.4 — Memória ociosa e trabalho por janela
 
 - Depois de 8.1, re-medir `memory.idle.*` e apertar os budgets com as novas medidas.
