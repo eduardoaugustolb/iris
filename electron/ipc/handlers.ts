@@ -345,7 +345,7 @@ type SelectedSource = {
 	[key: string]: unknown;
 };
 
-type AttachNativeMacWebcamRecordingInput = {
+type AttachWebcamToScreenRecordingInput = {
 	screenVideoPath?: string;
 	recordingId?: number;
 	webcam?: RecordedVideoAssetInput;
@@ -2206,59 +2206,85 @@ export function registerIpcHandlers(
 		}
 	});
 
+	async function attachWebcamToScreenRecording(payload: AttachWebcamToScreenRecordingInput) {
+		const screenVideoPath = normalizeVideoSourcePath(payload.screenVideoPath);
+		if (!screenVideoPath || !isPathWithinDir(screenVideoPath, RECORDINGS_DIR)) {
+			return {
+				success: false,
+				error: "Webcam attachment requires a recording output path.",
+			};
+		}
+
+		await fs.access(screenVideoPath, fsConstants.R_OK);
+
+		if (!payload.webcam?.fileName || !payload.webcam.videoData) {
+			return { success: false, error: "Webcam attachment is missing video data." };
+		}
+
+		const webcamVideoPath = resolveRecordingOutputPath(payload.webcam.fileName);
+		await fs.writeFile(webcamVideoPath, Buffer.from(payload.webcam.videoData));
+
+		const createdAt =
+			typeof payload.recordingId === "number" && Number.isFinite(payload.recordingId)
+				? payload.recordingId
+				: Date.now();
+		const cursorCaptureMode = normalizeCursorCaptureMode(payload.cursorCaptureMode);
+		const session: RecordingSession = {
+			screenVideoPath,
+			webcamVideoPath,
+			createdAt,
+			...(cursorCaptureMode ? { cursorCaptureMode } : {}),
+		};
+		setCurrentRecordingSessionState(session);
+		currentProjectPath = null;
+
+		const sessionManifestPath = path.join(
+			RECORDINGS_DIR,
+			`${path.parse(screenVideoPath).name}${RECORDING_SESSION_SUFFIX}`,
+		);
+		await fs.writeFile(sessionManifestPath, JSON.stringify(session, null, 2), "utf-8");
+
+		return {
+			success: true,
+			path: screenVideoPath,
+			session,
+			message: "Webcam recording attached successfully",
+		};
+	}
+
 	ipcMain.handle(
 		"attach-native-mac-webcam-recording",
-		async (_, payload: AttachNativeMacWebcamRecordingInput) => {
+		async (_, payload: AttachWebcamToScreenRecordingInput) => {
 			try {
 				if (process.platform !== "darwin") {
 					return { success: false, error: "Native macOS webcam attachment requires macOS." };
 				}
 
-				const screenVideoPath = normalizeVideoSourcePath(payload.screenVideoPath);
-				if (!screenVideoPath || !isPathWithinDir(screenVideoPath, RECORDINGS_DIR)) {
+				return await attachWebcamToScreenRecording(payload);
+			} catch (error) {
+				console.error("Failed to attach native macOS webcam recording:", error);
+				return {
+					success: false,
+					error: error instanceof Error ? error.message : String(error),
+				};
+			}
+		},
+	);
+
+	ipcMain.handle(
+		"attach-native-windows-webcam-recording",
+		async (_, payload: AttachWebcamToScreenRecordingInput) => {
+			try {
+				if (process.platform !== "win32") {
 					return {
 						success: false,
-						error: "Native macOS webcam attachment requires a recording output path.",
+						error: "Native Windows webcam attachment requires Windows.",
 					};
 				}
 
-				await fs.access(screenVideoPath, fsConstants.R_OK);
-
-				if (!payload.webcam?.fileName || !payload.webcam.videoData) {
-					return { success: false, error: "Native macOS webcam attachment is missing video data." };
-				}
-
-				const webcamVideoPath = resolveRecordingOutputPath(payload.webcam.fileName);
-				await fs.writeFile(webcamVideoPath, Buffer.from(payload.webcam.videoData));
-
-				const createdAt =
-					typeof payload.recordingId === "number" && Number.isFinite(payload.recordingId)
-						? payload.recordingId
-						: Date.now();
-				const cursorCaptureMode = normalizeCursorCaptureMode(payload.cursorCaptureMode);
-				const session: RecordingSession = {
-					screenVideoPath,
-					webcamVideoPath,
-					createdAt,
-					...(cursorCaptureMode ? { cursorCaptureMode } : {}),
-				};
-				setCurrentRecordingSessionState(session);
-				currentProjectPath = null;
-
-				const sessionManifestPath = path.join(
-					RECORDINGS_DIR,
-					`${path.parse(screenVideoPath).name}${RECORDING_SESSION_SUFFIX}`,
-				);
-				await fs.writeFile(sessionManifestPath, JSON.stringify(session, null, 2), "utf-8");
-
-				return {
-					success: true,
-					path: screenVideoPath,
-					session,
-					message: "Native macOS webcam recording attached successfully",
-				};
+				return await attachWebcamToScreenRecording(payload);
 			} catch (error) {
-				console.error("Failed to attach native macOS webcam recording:", error);
+				console.error("Failed to attach native Windows webcam recording:", error);
 				return {
 					success: false,
 					error: error instanceof Error ? error.message : String(error),

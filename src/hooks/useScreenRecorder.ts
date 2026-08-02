@@ -539,27 +539,26 @@ export function useScreenRecorder(): UseScreenRecorderReturn {
 				let storedSession = result.session;
 				if (activeWebcamRecorder && nativeScreenPath) {
 					const webcamBlob = await activeWebcamRecorder.recordedBlobPromise.catch(() => null);
-					const screenRead = await window.electronAPI.readBinaryFile(nativeScreenPath);
-					if (webcamBlob && webcamBlob.size > 0 && screenRead.success && screenRead.data) {
+					if (webcamBlob && webcamBlob.size > 0) {
 						const fixedWebcamBlob = await fixWebmDuration(webcamBlob, duration);
-						const nativeScreenFileName =
-							nativeScreenPath.split(/[\\/]/).pop() ??
-							`${RECORDING_FILE_PREFIX}${activeNativeRecording.recordingId}.mp4`;
 						const webcamFileName = `${RECORDING_FILE_PREFIX}${activeNativeRecording.recordingId}${WEBCAM_FILE_SUFFIX}${VIDEO_FILE_EXTENSION}`;
-						const stored = await window.electronAPI.storeRecordedSession({
-							screen: {
-								videoData: screenRead.data,
-								fileName: nativeScreenFileName,
-							},
+						const attachResult = await window.electronAPI.attachNativeWindowsWebcamRecording({
+							screenVideoPath: nativeScreenPath,
+							recordingId: activeNativeRecording.recordingId,
 							webcam: {
 								videoData: await fixedWebcamBlob.arrayBuffer(),
 								fileName: webcamFileName,
 							},
-							createdAt: activeNativeRecording.recordingId,
 							cursorCaptureMode,
 						});
-						if (stored.success && stored.session) {
-							storedSession = stored.session;
+						if (attachResult.success && attachResult.session) {
+							storedSession = attachResult.session;
+						} else {
+							console.error(
+								"Failed to attach native Windows webcam recording:",
+								attachResult.error,
+							);
+							toast.error(attachResult.error ?? "Failed to store webcam recording");
 						}
 					}
 				}

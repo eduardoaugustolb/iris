@@ -139,6 +139,14 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	}) => {
 		return ipcRenderer.invoke("attach-native-mac-webcam-recording", payload);
 	},
+	attachNativeWindowsWebcamRecording: (payload: {
+		screenVideoPath: string;
+		recordingId: number;
+		webcam: { fileName: string; videoData: ArrayBuffer };
+		cursorCaptureMode?: import("../src/lib/recordingSession").CursorCaptureMode;
+	}) => {
+		return ipcRenderer.invoke("attach-native-windows-webcam-recording", payload);
+	},
 	getCursorTelemetry: (videoPath?: string) => {
 		return ipcRenderer.invoke("get-cursor-telemetry", videoPath);
 	},
