@@ -1,3 +1,11 @@
+import {
+	BufferTarget,
+	EncodedAudioPacketSource,
+	EncodedPacket,
+	EncodedVideoPacketSource,
+	Mp4OutputFormat,
+	Output,
+} from "mediabunny";
 import type {
 	AnnotationRegion,
 	CameraFullscreenRegion,
@@ -166,6 +174,91 @@ export function getSourceCopyFastPathBlockers(
 	return blockers;
 }
 
+/**
+ * Codec-level reasons a source cannot be losslessly remuxed from WebM to MP4.
+ *
+ * The remux fast path only understands H.264 video (MediaRecorder on Linux, plus the
+ * webcam sidecars and the fallback path), optionally paired with Opus audio. Any other
+ * container family — VP8/VP9/AV1, AAC, PCM — must go through the full re-encode.
+ */
+export function getRemuxCodecBlockers(videoInfo: {
+	codec: string;
+	hasAudio: boolean;
+	audioCodec?: string;
+}): string[] {
+	const blockers: string[] = [];
+	if (!/^(avc1|h264)/i.test(videoInfo.codec)) {
+		blockers.push(`video codec "${videoInfo.codec}" is not H.264`);
+	}
+	if (videoInfo.hasAudio && videoInfo.audioCodec !== "opus") {
+		blockers.push(`audio codec "${videoInfo.audioCodec}" is not Opus`);
+	}
+	return blockers;
+}
+
+export function isRemuxEligible(
+	config: VideoExporterConfig,
+	videoInfo: {
+		codec: string;
+		hasAudio: boolean;
+		audioCodec?: string;
+		width: number;
+		height: number;
+		audioStreamCount?: number;
+	},
+) {
+	// The remux is just as blind to timeline edits as a verbatim source copy, so it
+	// inherits the source-copy blockers on top of its own codec requirements.
+	return (
+		getSourceCopyFastPathBlockers(config, videoInfo).length === 0 &&
+		getRemuxCodecBlockers(videoInfo).length === 0
+	);
+}
+
+/**
+ * Builds an RFC 6381 AVC codec string (`avc1.PPCCLL`) from the SPS NAL of the first video
+ * packet. web-demuxer reports a non-standard H.264 string (e.g. `avc1.2420015`) that
+ * mediabunny's chunk-metadata validation rejects, so the profile/level have to come from
+ * the SPS itself (profile_idc / constraint flags / level_idc after the Annex-B start code).
+ */
+export function avcCodecStringFromFirstPacket(firstChunk: EncodedVideoChunk): string | null {
+	const bytes = new Uint8Array(firstChunk.byteLength);
+	firstChunk.copyTo(bytes);
+
+	// Locate the first Annex-B SPS NAL (type 7) — `00 00 00 01 67` or `00 00 01 67` —
+	// and record the index of its 0x67 NAL header byte.
+	let spsNalOffset: number | null = null;
+	for (let i = 0; i < bytes.length - 4; i += 1) {
+		if (bytes[i] === 0 && bytes[i + 1] === 0 && bytes[i + 2] === 1 && bytes[i + 3] === 0x67) {
+			spsNalOffset = i + 3;
+			break;
+		}
+		if (
+			bytes[i] === 0 &&
+			bytes[i + 1] === 0 &&
+			bytes[i + 2] === 0 &&
+			bytes[i + 3] === 1 &&
+			bytes[i + 4] === 0x67
+		) {
+			spsNalOffset = i + 4;
+			break;
+		}
+	}
+	if (spsNalOffset === null) {
+		return null;
+	}
+
+	const profileIdc = bytes[spsNalOffset + 1];
+	const constraintFlags = bytes[spsNalOffset + 2];
+	const levelIdc = bytes[spsNalOffset + 3];
+	if (profileIdc === undefined || constraintFlags === undefined || levelIdc === undefined) {
+		return null;
+	}
+
+	const hex = (n: number) => n.toString(16).padStart(2, "0");
+	return `avc1.${hex(profileIdc)}${hex(constraintFlags)}${hex(levelIdc)}`;
+}
+
 function isMp4Source(videoUrl: string, blob: Blob) {
 	if (blob.type.toLowerCase().includes("mp4")) {
 		return true;
@@ -274,6 +367,14 @@ export class VideoExporter {
 			const sourceCopyResult = await this.trySourceCopyFastPath(videoInfo);
 			if (sourceCopyResult) {
 				return sourceCopyResult;
+			}
+
+			// The source-copy fast path only understands MP4. MediaRecorder (Linux screen
+			// recordings, webcam sidecars, the fallback) writes H.264+Opus WebM, which is
+			// unplayable in most editors — remux it losslessly instead of re-encoding.
+			const remuxResult = await this.tryRemuxWebmToMp4(videoInfo);
+			if (remuxResult) {
+				return remuxResult;
 			}
 
 			let webcamInfo: Awaited<ReturnType<StreamingVideoDecoder["loadMetadata"]>> | null = null;
@@ -719,6 +820,18 @@ export class VideoExporter {
 			return null;
 		}
 
+		// Loading the whole blob just to learn a .webm file isn't MP4 would waste a
+		// full-file IPC/network read on every MediaRecorder export — check the
+		// extension first. blob: URLs carry no extension, so they must load.
+		const urlPath = this.config.videoUrl.split(/[?#]/, 1)[0].toLowerCase();
+		if (!urlPath.endsWith(".mp4") && !/^blob:/i.test(this.config.videoUrl)) {
+			console.info("[VideoExporter] source-copy fast path disabled", {
+				blockers: ["source is not an MP4 (extension)"],
+				source: videoInfo,
+			});
+			return null;
+		}
+
 		const sourceBlob = await this.loadSourceBlob();
 		if (!sourceBlob || !isMp4Source(this.config.videoUrl, sourceBlob)) {
 			console.info("[VideoExporter] source-copy fast path disabled", {
@@ -784,6 +897,214 @@ export class VideoExporter {
 		}
 
 		return response.blob();
+	}
+
+	/**
+	 * Losslessly repackages an H.264 (+ optional Opus) WebM into MP4 — the MediaRecorder
+	 * format on Linux, the webcam sidecars and the fallback path. No frames are decoded or
+	 * re-encoded: the video and audio tracks are demuxed and muxed into an ISO-BMFF container
+	 * (avc1 + opus) using mediabunny. Sources whose codecs do not map losslessly (VP8/VP9/AV1,
+	 * AAC, …) are rejected here and fall through to the full re-encode.
+	 */
+	private async tryRemuxWebmToMp4(videoInfo: {
+		codec: string;
+		hasAudio: boolean;
+		audioCodec?: string;
+		width: number;
+		height: number;
+		audioStreamCount?: number;
+	}) {
+		const blockers = [
+			...getSourceCopyFastPathBlockers(this.config, videoInfo),
+			...getRemuxCodecBlockers(videoInfo),
+		];
+		if (blockers.length > 0) {
+			console.info("[VideoExporter] remux fast path disabled", { blockers, source: videoInfo });
+			return null;
+		}
+
+		// MP4 sources were already handed to the source-copy fast path; remuxing
+		// them here would be pointless. blob: URLs are in-memory (never large MP4s),
+		// so the extension check is enough — and it avoids a second full-file read.
+		const urlPath = this.config.videoUrl.split(/[?#]/, 1)[0].toLowerCase();
+		if (urlPath.endsWith(".mp4")) {
+			console.info("[VideoExporter] remux fast path disabled", {
+				blockers: ["source is an MP4, not a WebM"],
+				source: videoInfo,
+			});
+			return null;
+		}
+
+		if (this.cancelled) {
+			return { success: false, error: "Export cancelled" };
+		}
+
+		// Keep a low constant budget for the "extracting" phase. The dialog shows this as a
+		// busy indicator; the true remuxed length is only known after the first read pass.
+		this.reportProgress({
+			currentFrame: 0,
+			totalFrames: 1,
+			percentage: 1,
+			estimatedTimeRemaining: 0,
+			phase: "extracting",
+		});
+
+		// Reuse the StreamingVideoDecoder's demuxer: it already holds the source (in-memory
+		// or OPFS-streamed for large recordings) and the WASM is warm. A fresh WebDemuxer
+		// would load the file a second time and spin up a duplicate wasm instance.
+		const demuxer = this.streamingDecoder?.getDemuxer();
+		if (!demuxer) {
+			console.warn("[VideoExporter] remux fast path disabled: no demuxer available");
+			return null;
+		}
+
+		let output: Output | null = null;
+		try {
+			const mediaInfo = await demuxer.getMediaInfo();
+			const videoStream = mediaInfo.streams.find((stream) => stream.codec_type_string === "video");
+			if (!videoStream) {
+				console.warn("[VideoExporter] remux fast path disabled: no video stream");
+				return null;
+			}
+
+			const videoConfig = await demuxer.getDecoderConfig("video");
+			const audioConfig = videoInfo.hasAudio ? await demuxer.getDecoderConfig("audio") : null;
+			if (!videoConfig?.codec) {
+				console.warn("[VideoExporter] remux fast path disabled: missing video decoder config");
+				return null;
+			}
+			if (videoInfo.hasAudio && !audioConfig?.codec) {
+				console.warn("[VideoExporter] remux fast path disabled: missing audio decoder config");
+				return null;
+			}
+
+			const target = new BufferTarget();
+			output = new Output({
+				format: new Mp4OutputFormat({ fastStart: "in-memory" }),
+				target,
+			});
+
+			const videoSource = new EncodedVideoPacketSource("avc");
+			// No frameRate: MediaRecorder timestamps are the ground truth, and snapping to a
+			// nominal rate would stretch or drop frames that are not exactly periodic.
+			output.addVideoTrack(videoSource, {});
+
+			const audioSource = audioConfig ? new EncodedAudioPacketSource("opus") : null;
+			if (audioSource) {
+				output.addAudioTrack(audioSource);
+			}
+			await output.start();
+
+			const audioMeta: EncodedAudioChunkMetadata | undefined = audioConfig
+				? {
+						decoderConfig: {
+							codec: audioConfig.codec,
+							sampleRate: audioConfig.sampleRate,
+							numberOfChannels: audioConfig.numberOfChannels,
+						},
+					}
+				: undefined;
+
+			// MediaRecorder writes its first video packet with a non-zero timestamp (the
+			// B-frame encoder delay); rebase everything so the MP4 timeline starts at 0.
+			let vBaseSec: number | null = null;
+			let videoMeta: EncodedVideoChunkMetadata | undefined;
+			const videoReader = demuxer.read("video").getReader();
+			try {
+				let first = true;
+				while (!this.cancelled) {
+					const { done, value: chunk } = await videoReader.read();
+					if (done || !chunk) break;
+					if (first) {
+						// web-demuxer reports a non-standard H.264 codec string, so derive the
+						// RFC 6381 string mediabunny validates against from the SPS NAL itself.
+						const avcCodec = avcCodecStringFromFirstPacket(chunk);
+						if (!avcCodec) {
+							console.warn(
+								"[VideoExporter] remux fast path disabled: no SPS NAL in first video packet",
+							);
+							return null;
+						}
+						videoMeta = {
+							decoderConfig: {
+								codec: avcCodec,
+								...(videoConfig.codedWidth ? { codedWidth: videoConfig.codedWidth } : {}),
+								...(videoConfig.codedHeight ? { codedHeight: videoConfig.codedHeight } : {}),
+							},
+						};
+					}
+					if (vBaseSec === null) vBaseSec = chunk.timestamp / 1_000_000;
+					const packet = EncodedPacket.fromEncodedChunk(chunk).clone({
+						timestamp: chunk.timestamp / 1_000_000 - (vBaseSec ?? 0),
+					});
+					await videoSource.add(packet, first ? videoMeta : undefined);
+					first = false;
+				}
+			} finally {
+				try {
+					await videoReader.cancel();
+				} catch {
+					/* already closed */
+				}
+			}
+
+			if (this.cancelled) {
+				return { success: false, error: "Export cancelled" };
+			}
+
+			if (audioSource && audioMeta) {
+				const audioReader = demuxer.read("audio").getReader();
+				try {
+					let first = true;
+					while (!this.cancelled) {
+						const { done, value: chunk } = await audioReader.read();
+						if (done || !chunk) break;
+						const packet = EncodedPacket.fromEncodedChunk(chunk).clone({
+							timestamp: Math.max(0, chunk.timestamp / 1_000_000 - (vBaseSec ?? 0)),
+						});
+						await audioSource.add(packet, first ? audioMeta : undefined);
+						first = false;
+					}
+				} finally {
+					try {
+						await audioReader.cancel();
+					} catch {
+						/* already closed */
+					}
+				}
+			}
+
+			if (this.cancelled) {
+				return { success: false, error: "Export cancelled" };
+			}
+
+			await output.finalize();
+			const buffer = target.buffer;
+			if (!buffer) {
+				console.warn("[VideoExporter] remux fast path disabled: empty output buffer");
+				return null;
+			}
+
+			this.reportProgress({
+				currentFrame: 1,
+				totalFrames: 1,
+				percentage: 100,
+				estimatedTimeRemaining: 0,
+				phase: "finalizing",
+			});
+			console.info("[VideoExporter] using WebM→MP4 remux fast path", {
+				source: videoInfo,
+				bytes: buffer.byteLength,
+			});
+
+			return {
+				success: true,
+				blob: new Blob([buffer], { type: "video/mp4" }),
+			} satisfies ExportResult;
+		} catch (error) {
+			console.warn("[VideoExporter] remux fast path failed, falling back to re-encode:", error);
+			return null;
+		}
 	}
 
 	private reportProgress(progress: ExportProgress): void {
