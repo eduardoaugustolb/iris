@@ -132,6 +132,12 @@ falha no main (traduções fora de sync, `buttons.autoZoomOn`) — pré-existent
 - Estender `noLegacyColors` a `electron/` (nova varredura + teste que pega o ofensor). Zero mudança
   visual.
 
+**8.5 (PR #15):** as 3 ocorrências de `#09090b` em `electron/windows.ts` → `#0A0A0C` (205 editor,
+234 `insertCSS` anti-white-flash, 362 notes — a última não estava no plano, mesma correção).
+`noLegacyColors.test.ts` agora varre `src/` **e** `electron/` (root do repo + subpasta), com `expect`
+no walk do electron pra não passar em silêncio. Validação: tsc ✅, lint ✅ (0 erros/11 warnings
+pré-existentes — 3 novos vieram do `App.test.tsx` do #13), unit ✅ 686. Zero mudança visual.
+
 ### Task 8.6 — Budgets e docs
 
 - `perf-budgets.json` re-apertado sobre medida fresca (`npx vite build` → `npm run bench:bundle`),

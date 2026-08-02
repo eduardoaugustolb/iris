@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const SRC = path.join(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const ELECTRON = path.join(SRC, "..", "electron");
 const TOKENS_SOURCE = path.join(SRC, "design", "tokens", "color.ts");
 
 // Colors that may only ever exist as the single source of truth in color.ts.
@@ -21,10 +22,13 @@ function sourceFiles(dir: string): string[] {
 }
 
 describe("legacy color guardrail", () => {
-	const files = sourceFiles(SRC).filter((file) => file !== TOKENS_SOURCE);
+	const files = [...sourceFiles(SRC), ...sourceFiles(ELECTRON)].filter(
+		(file) => file !== TOKENS_SOURCE,
+	);
 
 	it("finds source files to check, so a broken walk can't pass silently", () => {
 		expect(files.length).toBeGreaterThan(0);
+		expect(sourceFiles(ELECTRON).length).toBeGreaterThan(0);
 	});
 
 	it("bans the old brand green and near-black shell everywhere but color.ts", () => {
