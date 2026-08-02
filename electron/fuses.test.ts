@@ -38,4 +38,18 @@ describe("main process hardening", () => {
 
 		expect(hook).toContain("packager.executableName");
 	});
+
+	it("resolves the Windows executable by productFilename, not executableName", () => {
+		// WinPackager exposes no `executableName` property (only LinuxPackager does),
+		// so the win32 branch must use productFilename ("Iris.exe") — otherwise the
+		// packaged exe resolves to "undefined.exe" and flipFuses() throws ENOENT.
+		const hook = fs.readFileSync(path.join(ROOT, "scripts/afterPack.mjs"), "utf8");
+		const win32Segment = hook.slice(
+			hook.indexOf('electronPlatformName === "win32"'),
+			hook.indexOf(": packager.executableName;"),
+		);
+
+		expect(win32Segment).toContain("productFilename");
+		expect(win32Segment).not.toContain("executableName");
+	});
 });

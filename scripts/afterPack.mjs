@@ -9,7 +9,9 @@ import { FuseV1Options, FuseVersion, flipFuses } from "@electron/fuses";
  *
  * Executable path per platform:
  * - darwin: `${productFilename}.app` (the .app bundle sits directly in appOutDir).
- * - win32: `${executableName}.exe`.
+ * - win32: `${productFilename}.exe` — WinPackager exposes no `executableName`
+ *   property (only LinuxPackager does), so `packager.executableName` resolves to
+ *   undefined and flipFuses() would throw ENOENT opening "undefined.exe".
  * - linux: `packager.executableName`, NOT `packager.appInfo.productFilename`.
  *   electron-builder's LinuxPackager defaults `executableName` to
  *   `appInfo.sanitizedName.toLowerCase()` (see app-builder-lib's
@@ -25,7 +27,7 @@ export default async function afterPack(context) {
 		electronPlatformName === "darwin"
 			? `${packager.appInfo.productFilename}.app`
 			: electronPlatformName === "win32"
-				? `${packager.executableName}.exe`
+				? `${packager.appInfo.productFilename}.exe`
 				: packager.executableName;
 
 	const executable = path.join(appOutDir, executableName);
