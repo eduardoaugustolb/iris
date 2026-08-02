@@ -50,8 +50,8 @@ jobs:
       - name: Upload Windows installer
         uses: actions/upload-artifact@v4
         with:
-          name: openscreen-windows
-          path: release/**/Openscreen.Setup.*.exe
+          name: iris-windows
+          path: release/**/Iris.Setup.*.exe
           if-no-files-found: error
           retention-days: 30
 
@@ -77,8 +77,8 @@ jobs:
       - name: Upload Windows Store package
         uses: actions/upload-artifact@v4
         with:
-          name: openscreen-windows-store
-          path: release/**/Openscreen.Setup.*.appx
+          name: iris-windows-store
+          path: release/**/Iris.Setup.*.appx
           if-no-files-found: error
           retention-days: 30
 
@@ -194,7 +194,7 @@ jobs:
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           ARCH="${{ matrix.arch }}"
-          DMG_NAME="Openscreen-Mac-${ARCH}-${VERSION}.dmg"
+          DMG_NAME="Iris-Mac-${ARCH}-${VERSION}.dmg"
           RELEASE_DIR="release/${VERSION}"
           DMG_OUTPUT="${RELEASE_DIR}/${DMG_NAME}"
           STAGING="${RELEASE_DIR}/dmg-staging"
@@ -207,7 +207,7 @@ jobs:
 
           hdiutil create \
             -srcfolder "$STAGING" \
-            -volname "Openscreen" \
+            -volname "Iris" \
             -fs HFS+ \
             -fsargs "-c c=64,a=16,e=16" \
             -format UDBZ \
@@ -247,7 +247,7 @@ jobs:
       - name: Upload macOS DMG
         uses: actions/upload-artifact@v4
         with:
-          name: openscreen-mac-${{ matrix.arch }}
+          name: iris-mac-${{ matrix.arch }}
           path: ${{ steps.dmg.outputs.dmg_path }}
           if-no-files-found: error
           retention-days: 30
@@ -281,7 +281,7 @@ jobs:
       - name: Upload Linux packages
         uses: actions/upload-artifact@v4
         with:
-          name: openscreen-linux
+          name: iris-linux
           path: |
             release/**/*.AppImage
             release/**/*.zsync
@@ -360,27 +360,27 @@ jobs:
       - name: Download Windows installer
         uses: actions/download-artifact@v4
         with:
-          name: openscreen-windows
+          name: iris-windows
           path: artifacts/windows
 
       - name: Download macOS arm64 DMG
         continue-on-error: true
         uses: actions/download-artifact@v4
         with:
-          name: openscreen-mac-arm64
+          name: iris-mac-arm64
           path: artifacts/mac-arm64
 
       - name: Download macOS x64 DMG
         continue-on-error: true
         uses: actions/download-artifact@v4
         with:
-          name: openscreen-mac-x64
+          name: iris-mac-x64
           path: artifacts/mac-x64
 
       - name: Download Linux packages
         uses: actions/download-artifact@v4
         with:
-          name: openscreen-linux
+          name: iris-linux
           path: artifacts/linux
 
       - name: Publish release assets
