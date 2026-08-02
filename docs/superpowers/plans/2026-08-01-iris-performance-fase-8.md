@@ -87,6 +87,15 @@ medindo a queda por janela convertida.
   CI. `renderCounter.tsx` ganha uso real ou é substituído por medição equivalente com teste.
 - Independente de 8.1 (não compartilha arquivos) — pode andar em paralelo.
 
+**Entregue (PR #12, `19a4f919`):** em vez do `scripts/bench/render.ts` (Playwright externo), a medição
+é um teste **browser** (`src/lib/perf/renderBudgets.browser.test.tsx`) que monta o `TimelineEditor`
+real com `createRenderProfiler` (React `<Profiler>`, commits do subtree) e conta renders em 3 cenários
+fixos — `render.scrub` (20 pointermoves no bg), `render.zoom` (20× `z`), `render.drag` (20 pointermoves
+no `document`). Budgets `count`: `render.scrub` 40 / `render.zoom` 40 / `render.drag` 60. Medidas
+reais: 21 / 20 / ~31 commits por 20 interações (~2× folga). Achado de debug: o dnd-kit `PointerSensor`
+escuta `pointermove` no `document`, não no `window` — disparar em `window` não engaja o drag. Job do
+CI (`test:browser`) já valida; Gate 8.2 fecha nesta PR.
+
 ### Task 8.3 — Métrica "Captura" (stretch, adiável)
 
 - Frames perdidos por minuto sobre fonte sintética no renderer (sem native, roda em CI Linux).
@@ -99,6 +108,14 @@ medindo a queda por janela convertida.
   `clearStaleSourceCache` rodam hoje em **toda** janela via `App.tsx`/`main.tsx` (duplicado também o
   background transparente em `main.tsx` e `App.tsx`). Gate por `windowType` ou por entry.
 - Cortar a duplicação `transparent` (`main.tsx:19-28` vs `App.tsx:34-38`).
+
+**8.4a (PR #13):** `loadAllCustomFonts` gateado ao editor (`windowType === "editor"`) com teste novo
+(`src/App.test.tsx` — 3 casos: editor carrega, leves não) e bloco `transparent` do `App.tsx` removido
+(era redundante com `main.tsx`, que já cobre source-selector/countdown/notes pré-render). **Não mexi
+nos budgets `memory.idle.*` nesta PR**: a máquina local mede GPU ~145 MB estável (swiftshader) vs
+63 MB do budget e `hudFirstFrame` 65 s vs 9 s — o CI Linux é o número canônico (8.1 passou nele) e o
+Gate 8.4/8.6 reapreta sobre medida de CI. O `i18n` lazy (8.4b) é o corte dominante restante — ver
+achado no fim da 8.1.
 
 ### Task 8.5 — Consistência: hex legado em `electron/`
 
