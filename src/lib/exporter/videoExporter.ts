@@ -6,7 +6,6 @@ import {
 	Mp4OutputFormat,
 	Output,
 } from "mediabunny";
-import { WebDemuxer } from "web-demuxer";
 import type {
 	AnnotationRegion,
 	CameraFullscreenRegion,
@@ -821,6 +820,18 @@ export class VideoExporter {
 			return null;
 		}
 
+		// Loading the whole blob just to learn a .webm file isn't MP4 would waste a
+		// full-file IPC/network read on every MediaRecorder export — check the
+		// extension first. blob: URLs carry no extension, so they must load.
+		const urlPath = this.config.videoUrl.split(/[?#]/, 1)[0].toLowerCase();
+		if (!urlPath.endsWith(".mp4") && !/^blob:/i.test(this.config.videoUrl)) {
+			console.info("[VideoExporter] source-copy fast path disabled", {
+				blockers: ["source is not an MP4 (extension)"],
+				source: videoInfo,
+			});
+			return null;
+		}
+
 		const sourceBlob = await this.loadSourceBlob();
 		if (!sourceBlob || !isMp4Source(this.config.videoUrl, sourceBlob)) {
 			console.info("[VideoExporter] source-copy fast path disabled", {
@@ -912,10 +923,13 @@ export class VideoExporter {
 			return null;
 		}
 
-		const sourceBlob = await this.loadSourceBlob();
-		if (!sourceBlob || isMp4Source(this.config.videoUrl, sourceBlob)) {
+		// MP4 sources were already handed to the source-copy fast path; remuxing
+		// them here would be pointless. blob: URLs are in-memory (never large MP4s),
+		// so the extension check is enough — and it avoids a second full-file read.
+		const urlPath = this.config.videoUrl.split(/[?#]/, 1)[0].toLowerCase();
+		if (urlPath.endsWith(".mp4")) {
 			console.info("[VideoExporter] remux fast path disabled", {
-				blockers: ["source is not a readable WebM"],
+				blockers: ["source is an MP4, not a WebM"],
 				source: videoInfo,
 			});
 			return null;
@@ -924,10 +938,6 @@ export class VideoExporter {
 		if (this.cancelled) {
 			return { success: false, error: "Export cancelled" };
 		}
-
-		// Same relative URL trick as StreamingVideoDecoder: resolves against the app root in
-		// both dev (http) and packaged (file://) builds, where public/wasm/ is copied over.
-		const wasmUrl = new URL("./wasm/web-demuxer.wasm", window.location.href).href;
 
 		// Keep a low constant budget for the "extracting" phase. The dialog shows this as a
 		// busy indicator; the true remuxed length is only known after the first read pass.
@@ -939,10 +949,17 @@ export class VideoExporter {
 			phase: "extracting",
 		});
 
-		const demuxer = new WebDemuxer({ wasmFilePath: wasmUrl });
+		// Reuse the StreamingVideoDecoder's demuxer: it already holds the source (in-memory
+		// or OPFS-streamed for large recordings) and the WASM is warm. A fresh WebDemuxer
+		// would load the file a second time and spin up a duplicate wasm instance.
+		const demuxer = this.streamingDecoder?.getDemuxer();
+		if (!demuxer) {
+			console.warn("[VideoExporter] remux fast path disabled: no demuxer available");
+			return null;
+		}
+
 		let output: Output | null = null;
 		try {
-			await demuxer.load(new File([sourceBlob], "source.webm", { type: sourceBlob.type }));
 			const mediaInfo = await demuxer.getMediaInfo();
 			const videoStream = mediaInfo.streams.find((stream) => stream.codec_type_string === "video");
 			if (!videoStream) {
@@ -1077,7 +1094,7 @@ export class VideoExporter {
 			});
 			console.info("[VideoExporter] using WebM→MP4 remux fast path", {
 				source: videoInfo,
-				bytes: sourceBlob.size,
+				bytes: buffer.byteLength,
 			});
 
 			return {
@@ -1087,8 +1104,6 @@ export class VideoExporter {
 		} catch (error) {
 			console.warn("[VideoExporter] remux fast path failed, falling back to re-encode:", error);
 			return null;
-		} finally {
-			demuxer.destroy();
 		}
 	}
 
