@@ -407,13 +407,30 @@ jobs:
             # prior release by date) doesn't work for this fork because the v1.4.0
             # release in the fork was re-published after v1.5.0, which makes GitHub
             # pick v1.4.0 as the "previous" for any v1.5.x release.
-            # shellcheck disable=SC2086
-            gh release create "$TAG" "${FILES[@]}" \
+            #
+            # The fork also never cloned upstream tags, so the computed previous
+            # tag (e.g. v1.7.0) may not exist as a ref here — the API then 400s on
+            # generate-notes ("Invalid previous_tag parameter"). Resolve the ref
+            # first and only anchor notes when the tag actually exists; if
+            # auto-generated notes still fail, fall back to a manual body.
+            NOTES_START_FLAG=()
+            if [[ -n "$NOTES_START_TAG" ]] \
+              && gh api "repos/{owner}/{repo}/git/ref/tags/${NOTES_START_TAG}" >/dev/null 2>&1; then
+              NOTES_START_FLAG=(--notes-start-tag "$NOTES_START_TAG")
+            fi
+            if ! gh release create "$TAG" "${FILES[@]}" \
               --target "$GITHUB_SHA" \
               --title "$TAG" \
               --generate-notes \
-              --notes-start-tag "$NOTES_START_TAG" \
-              $PRERELEASE_FLAG
+              "${NOTES_START_FLAG[@]}" \
+              $PRERELEASE_FLAG; then
+              echo "::warning::Auto-generated release notes failed; creating ${TAG} with a manual note."
+              gh release create "$TAG" "${FILES[@]}" \
+                --target "$GITHUB_SHA" \
+                --title "$TAG" \
+                --notes "Release ${TAG} of Iris. See the git history for the full changelog." \
+                $PRERELEASE_FLAG
+            fi
           fi
 
           if [[ -n "$PRERELEASE_FLAG" ]]; then
