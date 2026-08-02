@@ -10,6 +10,7 @@
 		"openProject": "Открыть проект",
 		"useVerticalTray": "Использовать вертикальную панель",
 		"useHorizontalTray": "Использовать горизонтальную панель",
+		"openStudio": "Open Studio",
 		"openNotes": "Открыть заметки",
 		"openNotesPlaceholder": "Пишите заметки здесь...",
 		"notesToolbar": {
@@ -41,6 +42,9 @@
 		"loading": "Загрузка источников...",
 		"screens": "Экраны ({{count}})",
 		"windows": "Окна ({{count}})",
+		"emptyTitle": "No screens or windows found",
+		"emptyDescription": "If you just granted screen recording permission, reload this picker. On macOS you may need to reopen Íris.",
+		"loadFailedDescription": "Íris could not load capture sources. Reload this picker and try again.",
 		"defaultSourceName": "Экран"
 	},
 	"recording": {

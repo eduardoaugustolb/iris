@@ -10,6 +10,7 @@
 		"openProject": "Proje aç",
 		"useVerticalTray": "Dikey araç çubuğunu kullan",
 		"useHorizontalTray": "Yatay araç çubuğunu kullan",
+		"openStudio": "Open Studio",
 		"openNotes": "Notları aç",
 		"openNotesPlaceholder": "Notlarınızı buraya yazın...",
 		"notesToolbar": {
@@ -45,6 +46,9 @@
 		"loading": "Kaynaklar yükleniyor...",
 		"screens": "Ekranlar ({{count}})",
 		"windows": "Pencereler ({{count}})",
+		"emptyTitle": "No screens or windows found",
+		"emptyDescription": "If you just granted screen recording permission, reload this picker. On macOS you may need to reopen Íris.",
+		"loadFailedDescription": "Íris could not load capture sources. Reload this picker and try again.",
 		"defaultSourceName": "Ekran"
 	},
 	"recording": {

@@ -10,6 +10,7 @@
 		"openProject": "فتح مشروع",
 		"useVerticalTray": "استخدام الشريط العمودي",
 		"useHorizontalTray": "استخدام الشريط الأفقي",
+		"openStudio": "Open Studio",
 		"openNotes": "فتح الملاحظات",
 		"openNotesPlaceholder": "اكتب ملاحظاتك هنا...",
 		"notesToolbar": {
@@ -41,6 +42,9 @@
 		"loading": "جاري تحميل المصادر...",
 		"screens": "الشاشات ({{count}})",
 		"windows": "النوافذ ({{count}})",
+		"emptyTitle": "No screens or windows found",
+		"emptyDescription": "If you just granted screen recording permission, reload this picker. On macOS you may need to reopen Íris.",
+		"loadFailedDescription": "Íris could not load capture sources. Reload this picker and try again.",
 		"defaultSourceName": "الشاشة"
 	},
 	"recording": {
