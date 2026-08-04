@@ -157,10 +157,28 @@ export function LaunchWindow() {
 				}
 			});
 
+		// There's no toggle for this on Linux (see setSupportsCursorModeToggle
+		// above), so the default is the only choice the user gets. Where there's
+		// no live cursor-position source (see hasLiveCursorTelemetry in the main
+		// process), fall back to "system" -- otherwise the recording would carry
+		// an "editable-overlay" cursor track that's frozen at (0, 0) for its
+		// entire length, since nothing ever samples a real position for it.
+		nativeBridgeClient.cursor
+			.getCapabilities()
+			.then((capabilities) => {
+				if (!cancelled && !capabilities.telemetry) {
+					setCursorCaptureMode("system");
+				}
+			})
+			.catch(() => {
+				// Leave the default as-is; the recording just won't have live cursor
+				// telemetry, but that's already the state we'd otherwise fall back to.
+			});
+
 		return () => {
 			cancelled = true;
 		};
-	}, []);
+	}, [setCursorCaptureMode]);
 
 	useEffect(() => {
 		if (!import.meta.env.DEV) {

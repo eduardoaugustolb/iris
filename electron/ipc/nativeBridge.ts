@@ -112,6 +112,7 @@ export function registerNativeBridgeHandlers(context: NativeBridgeContext) {
 			loadRecordingData: context.loadCursorRecordingData,
 			resolveVideoPath: context.resolveVideoPath,
 			loadTelemetry: context.loadCursorTelemetry,
+			platform,
 		}),
 	});
 	const systemService = new SystemService({

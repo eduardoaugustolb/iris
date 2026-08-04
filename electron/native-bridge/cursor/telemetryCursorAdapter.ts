@@ -1,10 +1,12 @@
 import type { CursorCapabilities, CursorRecordingData } from "../../../src/native/contracts";
 import type { CursorNativeAdapter, CursorTelemetryLoadResult } from "./adapter";
+import { hasLiveCursorTelemetry } from "./recording/factory";
 
 interface TelemetryCursorAdapterOptions {
 	loadRecordingData: (videoPath: string) => Promise<CursorRecordingData>;
 	resolveVideoPath: (videoPath?: string | null) => string | null;
 	loadTelemetry: (videoPath: string) => Promise<CursorTelemetryLoadResult>;
+	platform: NodeJS.Platform;
 }
 
 export class TelemetryCursorAdapter implements CursorNativeAdapter {
@@ -14,7 +16,7 @@ export class TelemetryCursorAdapter implements CursorNativeAdapter {
 
 	async getCapabilities(): Promise<CursorCapabilities> {
 		return {
-			telemetry: true,
+			telemetry: hasLiveCursorTelemetry(this.options.platform),
 			systemAssets: false,
 			provider: this.kind,
 		};

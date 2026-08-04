@@ -125,6 +125,13 @@ vi.mock("@/native", () => ({
 		system: {
 			getPlatform: vi.fn(async () => platformState.value),
 		},
+		cursor: {
+			getCapabilities: vi.fn(async () => ({
+				telemetry: true,
+				systemAssets: false,
+				provider: "none",
+			})),
+		},
 	},
 }));
 
