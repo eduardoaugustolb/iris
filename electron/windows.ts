@@ -80,9 +80,26 @@ ipcMain.on("hud-overlay-set-size", (_event, width: number, height: number) => {
 	const centerX = bounds.x + bounds.width / 2;
 	const bottomY = bounds.y + bounds.height;
 
+	// Clamp into the work area regardless of what centerX/bottomY computed to. On
+	// Wayland compositors (GNOME included), a client can't reposition its own
+	// window, so setBounds's x/y here is best-effort -- Electron's cached
+	// `bounds` can drift from where the window actually is, and compounding
+	// that error every time content resizes (e.g. the recording timer ticking)
+	// can walk the HUD fully off-screen, where it looks like it vanished and
+	// has no way back. Clamping guarantees the requested rect always overlaps
+	// a visible position even if the anchor math upstream has drifted.
+	const nextX = Math.min(
+		Math.max(Math.round(centerX - nextWidth / 2), workArea.x),
+		workArea.x + workArea.width - nextWidth,
+	);
+	const nextY = Math.min(
+		Math.max(Math.round(bottomY - nextHeight), workArea.y),
+		workArea.y + workArea.height - nextHeight,
+	);
+
 	hudOverlayWindow.setBounds({
-		x: Math.round(centerX - nextWidth / 2),
-		y: Math.round(bottomY - nextHeight),
+		x: nextX,
+		y: nextY,
 		width: nextWidth,
 		height: nextHeight,
 	});
