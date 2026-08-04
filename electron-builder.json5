@@ -22,16 +22,17 @@
   "directories": {
     "output": "release/${version}"
   },
-  "files": [
-    "dist",
-    "dist-electron",
-    "!*.png",
-    "!preview*.png",
-    "!*.md",
-    "!README.md",
-    "!CONTRIBUTING.md",
-    "!LICENSE"
-  ],
+  // No root-level "files" here on purpose: electron-builder's config
+  // normalizer collapses a plain string array under the root "files" key into
+  // a single {filter:[...]} FileSet object. When a platform block (mac/win/
+  // linux) *also* sets its own "files" (we do, for the onnxruntime prune
+  // below), that wrapped root FileSet ends up shoved into a secondary,
+  // effectively-ignored matcher slot, while the platform's raw-string
+  // patterns take over the primary slot alone — which falls back to packing
+  // the whole project (source, docs, node_modules dev deps, etc.) into
+  // app.asar. Keeping the whitelist only in each platform's own "files"
+  // (all raw strings, never object-wrapped) avoids that trap. See the
+  // near-identical block repeated in mac/linux/win below.
   // Asset layout contract: "wallpapers/" and "cursors/" under resourcesPath must
   // align with assetBaseDir in electron/preload.ts (packaged branch).
   "extraResources": [
@@ -62,10 +63,22 @@
     ],
     "icon": "icons/icons/mac/icon.icns",
     "artifactName": "${productName}-Mac-${arch}-${version}-Installer.${ext}",
-    // onnxruntime-node ships prebuilt binaries for every platform under
-    // node_modules/onnxruntime-node/bin/napi-v*/{darwin,linux,win32}/ — only this
-    // platform's own binaries (darwin) are needed at runtime, so drop the others.
+    // Only dist/dist-electron/package.json go into app.asar (see the long
+    // comment near the top of this file for why this can't live in a shared
+    // root "files" array). onnxruntime-node ships prebuilt binaries for every
+    // platform under node_modules/onnxruntime-node/bin/napi-v*/{darwin,linux,win32}/
+    // — only this platform's own binaries (darwin) are needed at runtime, so
+    // drop the others.
     "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json",
+      "!*.png",
+      "!preview*.png",
+      "!*.md",
+      "!README.md",
+      "!CONTRIBUTING.md",
+      "!LICENSE",
       "!**/node_modules/onnxruntime-node/bin/napi-v*/win32/**",
       "!**/node_modules/onnxruntime-node/bin/napi-v*/linux/**"
     ],
@@ -98,9 +111,26 @@
     // See the "mac" block above: only linux's own onnxruntime-node binaries are
     // needed here, so drop darwin's and win32's.
     "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json",
+      "!*.png",
+      "!preview*.png",
+      "!*.md",
+      "!README.md",
+      "!CONTRIBUTING.md",
+      "!LICENSE",
       "!**/node_modules/onnxruntime-node/bin/napi-v*/darwin/**",
       "!**/node_modules/onnxruntime-node/bin/napi-v*/win32/**"
     ]
+  },
+  "rpm": {
+    // xz (electron-builder's default) runs fpm's multi-threaded xzmt, which
+    // spikes memory enough to get OOM-killed on modest build machines.
+    // bzip2 avoids that at the cost of a somewhat larger artifact ("gz" isn't
+    // usable here: electron-builder passes it to fpm's --rpm-compression
+    // verbatim, but fpm only recognizes "gzip", not "gz").
+    "compression": "bzip2"
   },
   "win": {
     "target": [
@@ -111,6 +141,15 @@
     // See the "mac" block above: only win32's own onnxruntime-node binaries are
     // needed here, so drop darwin's and linux's.
     "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json",
+      "!*.png",
+      "!preview*.png",
+      "!*.md",
+      "!README.md",
+      "!CONTRIBUTING.md",
+      "!LICENSE",
       "!**/node_modules/onnxruntime-node/bin/napi-v*/darwin/**",
       "!**/node_modules/onnxruntime-node/bin/napi-v*/linux/**"
     ],
