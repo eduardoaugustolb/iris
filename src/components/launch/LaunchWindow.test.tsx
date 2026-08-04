@@ -211,7 +211,6 @@ function stubElectronAPI(getSelectedSource: Window["electronAPI"]["getSelectedSo
 		getPlatform: vi.fn(async () => "darwin"),
 		setHudOverlaySize: vi.fn(),
 		setHudOverlayIgnoreMouseEvents: vi.fn(),
-		moveHudOverlayBy: vi.fn(),
 		hudOverlayHide: vi.fn(),
 		hudOverlayClose: vi.fn(),
 		switchToEditor: vi.fn(async () => undefined),

@@ -26,9 +26,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
 	setHudOverlayIgnoreMouseEvents: (ignore: boolean) => {
 		ipcRenderer.send("hud-overlay-ignore-mouse-events", ignore);
 	},
-	moveHudOverlayBy: (deltaX: number, deltaY: number) => {
-		ipcRenderer.send("hud-overlay-move-by", deltaX, deltaY);
-	},
 	setHudOverlaySize: (width: number, height: number) => {
 		ipcRenderer.send("hud-overlay-set-size", width, height);
 	},

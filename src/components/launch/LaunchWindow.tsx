@@ -247,9 +247,9 @@ export function LaunchWindow() {
 		if (!barEl || !window.electronAPI?.setHudOverlaySize) return;
 		// While the user is dragging the HUD, ignore content-size measurements. A
 		// ResizeObserver-driven resize (hud-overlay-set-size) re-centres the window from
-		// its own bottom-centre anchor, which fights the position "hud-overlay-move-by" is
-		// actively applying frame-by-frame -- the two IPC channels racing is what produces
-		// the reported drift. Content size is re-measured once the drag ends instead.
+		// its own bottom-centre anchor, which fights the OS-level move the native drag
+		// region is actively applying -- the two racing is what produces the reported
+		// drift. Content size is re-measured once the drag ends instead.
 		if (isDraggingHudRef.current) return;
 
 		// Breathing room so the drop shadow isn't clipped. TOP_MARGIN must also exceed the
@@ -514,68 +514,18 @@ export function LaunchWindow() {
 			setMicrophoneEnabled(!microphoneEnabled);
 		}
 	}, [recording, saving, microphoneEnabled, setMicrophoneEnabled]);
-	const dragLastPositionRef = useRef<{ x: number; y: number } | null>(null);
-	const dragAnimationFrameRef = useRef<number | null>(null);
-	const pendingDragDeltaRef = useRef({ x: 0, y: 0 });
-	const flushHudDragMove = useCallback(() => {
-		dragAnimationFrameRef.current = null;
-		const { x, y } = pendingDragDeltaRef.current;
-		pendingDragDeltaRef.current = { x: 0, y: 0 };
-		if (x === 0 && y === 0) return;
-		window.electronAPI?.moveHudOverlayBy?.(x, y);
-	}, []);
-	const scheduleHudDragMove = useCallback(
-		(deltaX: number, deltaY: number) => {
-			pendingDragDeltaRef.current = {
-				x: pendingDragDeltaRef.current.x + deltaX,
-				y: pendingDragDeltaRef.current.y + deltaY,
-			};
-
-			if (dragAnimationFrameRef.current === null) {
-				dragAnimationFrameRef.current = window.requestAnimationFrame(flushHudDragMove);
-			}
-		},
-		[flushHudDragMove],
-	);
-	const flushPendingHudDragMove = useCallback(() => {
-		if (dragAnimationFrameRef.current !== null) {
-			window.cancelAnimationFrame(dragAnimationFrameRef.current);
-			dragAnimationFrameRef.current = null;
-		}
-		const { x, y } = pendingDragDeltaRef.current;
-		pendingDragDeltaRef.current = { x: 0, y: 0 };
-		if (x === 0 && y === 0) return;
-		window.electronAPI?.moveHudOverlayBy?.(x, y);
-	}, []);
-	useEffect(() => {
-		return () => {
-			if (dragAnimationFrameRef.current !== null) {
-				window.cancelAnimationFrame(dragAnimationFrameRef.current);
-			}
-		};
-	}, []);
-	const handleHudDragPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-		event.preventDefault();
-		event.stopPropagation();
+	// Actual window movement is handled natively via -webkit-app-region: drag on
+	// the handle (see HudOverlay's hud-drag-handle) rather than by computing
+	// pointer deltas and calling BrowserWindow.setPosition over IPC -- Wayland
+	// compositors (e.g. GNOME) refuse setPosition calls from the client, so
+	// that approach silently did nothing there. These handlers only track
+	// "is the user mid-drag" so measureHudSize can suppress the resize
+	// observer while the native OS-level move is in progress.
+	const handleHudDragPointerDown = () => {
 		setHudMouseEventsEnabled(true);
-		event.currentTarget.setPointerCapture(event.pointerId);
-		dragLastPositionRef.current = { x: event.screenX, y: event.screenY };
 		isDraggingHudRef.current = true;
 	};
-	const handleHudDragPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-		const lastPosition = dragLastPositionRef.current;
-		if (!lastPosition) return;
-		const deltaX = event.screenX - lastPosition.x;
-		const deltaY = event.screenY - lastPosition.y;
-		dragLastPositionRef.current = { x: event.screenX, y: event.screenY };
-		scheduleHudDragMove(deltaX, deltaY);
-	};
-	const handleHudDragPointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
-		dragLastPositionRef.current = null;
-		flushPendingHudDragMove();
-		if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-			event.currentTarget.releasePointerCapture(event.pointerId);
-		}
+	const handleHudDragPointerEnd = () => {
 		setHudMouseEventsEnabled(false);
 		isDraggingHudRef.current = false;
 		measureHudSize();
@@ -873,7 +823,6 @@ export function LaunchWindow() {
 				if (!isLanguageMenuOpen) setHudMouseEventsEnabled(false);
 			}}
 			onDragPointerDown={handleHudDragPointerDown}
-			onDragPointerMove={handleHudDragPointerMove}
 			onDragPointerUp={handleHudDragPointerEnd}
 			onDragPointerCancel={handleHudDragPointerEnd}
 			notices={notices}

@@ -52,20 +52,6 @@ ipcMain.on("hud-overlay-ignore-mouse-events", (_event, ignore: boolean) => {
 	}
 });
 
-ipcMain.on("hud-overlay-move-by", (_event, deltaX: number, deltaY: number) => {
-	if (
-		!hudOverlayWindow ||
-		hudOverlayWindow.isDestroyed() ||
-		!Number.isFinite(deltaX) ||
-		!Number.isFinite(deltaY)
-	) {
-		return;
-	}
-
-	const [x, y] = hudOverlayWindow.getPosition();
-	hudOverlayWindow.setPosition(Math.round(x + deltaX), Math.round(y + deltaY), false);
-});
-
 // Resize the HUD to fit its rendered content. Anchored by its bottom-centre so it
 // stays where the user dragged it while only growing/shrinking, which lets the
 // vertical tray layout grow tall instead of scrolling inside a fixed window.

@@ -22,7 +22,6 @@ export interface HudOverlayProps {
 	onOuterPointerMove: (event: React.PointerEvent) => void;
 	onOuterPointerLeave: () => void;
 	onDragPointerDown: (event: React.PointerEvent<HTMLDivElement>) => void;
-	onDragPointerMove: (event: React.PointerEvent<HTMLDivElement>) => void;
 	onDragPointerUp: (event: React.PointerEvent<HTMLDivElement>) => void;
 	onDragPointerCancel: (event: React.PointerEvent<HTMLDivElement>) => void;
 	notices: HudNoticesProps;
@@ -59,9 +58,11 @@ export function HudOverlay(props: HudOverlayProps) {
 			>
 				<div
 					data-testid="hud-drag-handle"
-					className={`flex ${props.trayLayout === "vertical" ? "h-6 w-8" : "h-8 w-7"} cursor-grab items-center justify-center active:cursor-grabbing ${styles.electronNoDrag}`}
+					// Native OS-level window drag (not a manual setPosition IPC call): Wayland
+					// compositors like GNOME's Mutter reject client-initiated setPosition, but
+					// do honor the interactive move gesture this triggers.
+					className={`flex ${props.trayLayout === "vertical" ? "h-6 w-8" : "h-8 w-7"} cursor-grab items-center justify-center active:cursor-grabbing ${styles.electronDrag}`}
 					onPointerDown={props.onDragPointerDown}
-					onPointerMove={props.onDragPointerMove}
 					onPointerUp={props.onDragPointerUp}
 					onPointerCancel={props.onDragPointerCancel}
 				>
